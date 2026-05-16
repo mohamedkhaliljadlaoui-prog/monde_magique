@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monde Magique - Espace Parents</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/auth.css?v=20260205">
+    <link rel="stylesheet" href="css/cartoon-theme.css">
+</head>
+<body class="auth-page cartoon-theme">
+    <div class="cartoon-controls">
+        <button class="cartoon-toggle" data-theme-toggle data-day-label="🌞 نهار" data-night-label="🌙 ليل">🌞 نهار</button>
+        <button class="cartoon-toggle" data-sound-toggle data-sound-on-label="🔊 صوت" data-sound-off-label="🔇 صامت">🔇 صامت</button>
+    </div>
+    <div class="auth-bubbles">
+        <span class="bubble" style="top: 18%; left: 12%;"></span>
+        <span class="bubble b2" style="top: 30%; right: 16%;"></span>
+        <span class="bubble b3" style="top: 22%; left: 24%;"></span>
+        <span class="bubble" style="bottom: 20%; right: 12%;"></span>
+        <span class="bubble b2" style="bottom: 30%; left: 20%;"></span>
+    </div>
+    <div class="auth-stars">
+        <span style="top: 10%; left: 40%;">✨</span>
+        <span style="top: 20%; right: 18%;">⭐</span>
+        <span style="bottom: 16%; left: 14%;">✨</span>
+        <span style="bottom: 26%; right: 20%;">⭐</span>
+    </div>
+    <div class="auth-sun"></div>
+    <div class="auth-cloud"></div>
+    <div class="auth-cloud cloud-2"></div>
+    <div class="auth-bird">🕊️</div>
+    <div class="auth-bird bird-2">🐦</div>
+    <div class="auth-rainbow"></div>
+    <div class="auth-balloon"></div>
+    <div class="auth-balloon balloon-2"></div>
+    <div class="auth-plane">✈️</div>
+    <div class="auth-kite"></div>
+    <div class="auth-kite kite-2"></div>
+    <div class="auth-train-track"></div>
+    <div class="auth-train">
+        <span class="wheel"></span>
+        <span class="wheel"></span>
+        <span class="wheel"></span>
+    </div>
+    <div class="auth-hills">
+        <div class="auth-hill"></div>
+        <div class="auth-hill hill-2"></div>
+    </div>
+    <div class="auth-trees">
+        <div class="auth-tree"></div>
+        <div class="auth-tree tree-2"></div>
+        <div class="auth-tree tree-3"></div>
+    </div>
+
+    <div class="auth-container">
+        <div class="auth-panel">
+            <div class="logo-section">
+                <h1>👪 Espace Parents</h1>
+                <p class="tagline">Suivez les progres de votre enfant en toute simplicite.</p>
+            </div>
+
+            <form id="parentLoginForm" class="auth-form">
+                <h2>Connexion Parent</h2>
+
+                <div class="input-group">
+                    <label for="parentEmail">Email</label>
+                    <input type="email" id="parentEmail" name="parentEmail" placeholder="parent@email.com" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="parentPassword">Mot de passe</label>
+                    <input type="password" id="parentPassword" name="parentPassword" placeholder="Votre mot de passe" required>
+                    <div class="password-toggle" id="parentToggle">👁️</div>
+                </div>
+
+                <div id="parentError" class="error-message" style="display: none;"></div>
+
+                <button type="submit" class="btn-primary">Acceder au tableau parent</button>
+
+                <div class="auth-links">
+                    <p>
+                        <a href="login.html">Connexion enfant</a> ·
+                        <a href="inscription.html">Inscription enfant</a>
+                    </p>
+                    <p>
+                        <a href="index.html">Retour a l'accueil</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+        <div class="auth-illustration">
+            <div class="mascot" title="Mascotte">🧭</div>
+            <div class="mascot-bubble">Bienvenue aux parents !</div>
+            <div style="font-size: 2.8rem;">📊👨‍👩‍👧‍👦</div>
+            <div style="font-weight: bold; color: #4a3d7a;">Suivez les progres en un clin d'oeil.</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('parentLoginForm');
+            const toggle = document.getElementById('parentToggle');
+            const passwordInput = document.getElementById('parentPassword');
+
+            if (toggle && passwordInput) {
+                toggle.addEventListener('click', () => {
+                    passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+                });
+            }
+
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const email = document.getElementById('parentEmail').value.trim().toLowerCase();
+                const password = document.getElementById('parentPassword').value;
+                const errorEl = document.getElementById('parentError');
+
+                if (!email || !password) {
+                    errorEl.textContent = 'Veuillez saisir email et mot de passe';
+                    errorEl.style.display = 'block';
+                    return;
+                }
+                errorEl.style.display = 'none';
+
+                fetch('php/api/parent.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'parentLogin', email, password })
+                })
+                    .then((res) => res.json())
+                    .then((data) => {
+                        if (data.success) {
+                            localStorage.setItem('parentEmail', email);
+                            if (data.child && data.child.id) {
+                                localStorage.setItem('parentChildId', String(data.child.id));
+                                localStorage.setItem('parentChildName', data.child.username || '');
+                            } else {
+                                localStorage.removeItem('parentChildId');
+                                localStorage.removeItem('parentChildName');
+                            }
+                            window.location.href = 'parent-dashboard.html';
+                            return;
+                        }
+
+                        errorEl.textContent = data.message || 'Identifiants incorrects';
+                        errorEl.style.display = 'block';
+                    })
+                    .catch(() => {
+                        errorEl.textContent = 'Erreur de connexion au serveur';
+                        errorEl.style.display = 'block';
+                    });
+            });
+        });
+    </script>
+    <script src="js/cartoon-theme.js"></script>
+    
+    <!-- ✨ Nouvelles fonctionnalités -->
+    <script src="js/assistant.js"></script>
+    <script src="js/resources.js"></script>
+    <script src="js/certificates.js"></script>
+    
+    <!-- Footer -->
+    <div style="text-align: center; padding: 20px; background: rgba(0,0,0,0.05); margin-top: 20px; font-size: 0.9em; opacity: 0.7;">
+        <p>Created by nourchen mehrez - wiem salhi</p>
+    </div>
+</body>
+</html>

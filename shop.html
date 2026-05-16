@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛒 Boutique - Monde Magique</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/arabic.css">
+    <link rel="stylesheet" href="css/shop.css">
+    <link rel="stylesheet" href="css/cartoon-theme.css">
+</head>
+<body class="cartoon-theme">
+    <div class="cartoon-controls">
+        <button class="cartoon-toggle" data-theme-toggle data-day-label="🌞 نهار" data-night-label="🌙 ليل">🌞 نهار</button>
+        <button class="cartoon-toggle" data-sound-toggle data-sound-on-label="🔊 صوت" data-sound-off-label="🔇 صامت">🔇 صامت</button>
+    </div>
+    <div class="shop-container">
+        <!-- Header -->
+        <header class="shop-header">
+            <div class="shop-sky">
+                <div class="shop-sun"></div>
+                <div class="shop-cloud"></div>
+                <div class="shop-cloud cloud-2"></div>
+                <div class="shop-bird">🐦</div>
+            </div>
+            <button class="back-btn" onclick="window.location.href='dashboard.html'">
+                ← العودة للوحة التحكم
+            </button>
+            <h1>🛒 متجر التخصيص</h1>
+            <div class="user-currency">
+                <span class="coins">🪙 <span id="user-coins">0</span></span>
+                <span class="diamonds">💎 <span id="user-diamonds">0</span></span>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="shop-tabs">
+            <button class="tab-btn active" data-tab="vehicles">🚗 المركبات</button>
+            <button class="tab-btn" data-tab="clothes">👕 الملابس</button>
+            <button class="tab-btn" data-tab="accessories">🎒 الإكسسوارات</button>
+        </nav>
+
+        <!-- Preview Guide -->
+        <div class="guide-preview">
+            <h3>معاينة المرشد</h3>
+            <div class="preview-container">
+                <canvas id="guide-canvas" width="400" height="500"></canvas>
+            </div>
+            <div class="guide-info">
+                <p><strong>الاسم:</strong> <span id="guide-name">تيو</span></p>
+                <p><strong>المستوى:</strong> <span id="guide-level">1</span></p>
+            </div>
+        </div>
+
+        <!-- Vehicles Section -->
+        <section class="shop-section active" id="vehicles-section">
+            <h2>🚗 المركبات</h2>
+            <div class="items-grid" id="vehicles-grid">
+                <!-- Items will be loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- Clothes Section -->
+        <section class="shop-section" id="clothes-section">
+            <h2>👕 الملابس</h2>
+            <div class="items-grid" id="clothes-grid">
+                <!-- Items will be loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- Accessories Section -->
+        <section class="shop-section" id="accessories-section">
+            <h2>🎒 الإكسسوارات</h2>
+            <div class="items-grid" id="accessories-grid">
+                <!-- Items will be loaded dynamically -->
+            </div>
+        </section>
+    </div>
+
+    <!-- Purchase Confirmation Modal -->
+    <div id="purchase-modal" class="modal">
+        <div class="modal-content">
+            <h3>تأكيد الشراء</h3>
+            <div id="modal-item-preview"></div>
+            <p id="modal-item-price"></p>
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="confirm-purchase">تأكيد الشراء</button>
+                <button class="btn btn-secondary" id="cancel-purchase">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/economy.js"></script>
+    <script src="js/guides.js"></script>
+    <script src="js/shop.js"></script>
+    <script src="js/cartoon-theme.js"></script>
+    <script>
+        // Initialize shop data
+        const SHOP_ITEMS = {
+            vehicles: [
+                {
+                    id: 'bicycle',
+                    name: 'دراجة هوائية',
+                    price: 0,
+                    currency: 'coins',
+                    level: 1,
+                    image: 'assets/images/vehicles/bicycle.png',
+                    unlocked: true
+                },
+                {
+                    id: 'scooter',
+                    name: 'سكوتر',
+                    price: 500,
+                    currency: 'coins',
+                    level: 5,
+                    image: 'assets/images/vehicles/scooter.png',
+                    unlocked: false
+                },
+                {
+                    id: 'car',
+                    name: 'سيارة',
+                    price: 2000,
+                    currency: 'coins',
+                    level: 10,
+                    image: 'assets/images/vehicles/car.png',
+                    unlocked: false
+                },
+                {
+                    id: 'train',
+                    name: 'قطار',
+                    price: 10000,
+                    currency: 'coins',
+                    level: 15,
+                    image: 'assets/images/vehicles/train.png',
+                    unlocked: false
+                },
+                {
+                    id: 'plane',
+                    name: 'طائرة',
+                    price: 50000,
+                    currency: 'coins',
+                    level: 20,
+                    image: 'assets/images/vehicles/plane.png',
+                    unlocked: false
+                }
+            ],
+            clothes: [
+                {
+                    id: 'basic',
+                    name: 'ملابس أساسية',
+                    price: 0,
+                    currency: 'coins',
+                    level: 1,
+                    image: 'assets/images/clothes/basic/outfit.png',
+                    unlocked: true
+                },
+                {
+                    id: 'explorer',
+                    name: 'مستكشف',
+                    price: 300,
+                    currency: 'coins',
+                    level: 3,
+                    image: 'assets/images/clothes/explorer/outfit.png',
+                    unlocked: false
+                },
+                {
+                    id: 'scientist',
+                    name: 'عالم',
+                    price: 800,
+                    currency: 'coins',
+                    level: 7,
+                    image: 'assets/images/clothes/scientist/outfit.png',
+                    unlocked: false
+                },
+                {
+                    id: 'pirate',
+                    name: 'قرصان',
+                    price: 1500,
+                    currency: 'coins',
+                    level: 10,
+                    image: 'assets/images/clothes/pirate/outfit.png',
+                    unlocked: false
+                },
+                {
+                    id: 'astronaut',
+                    name: 'رائد فضاء',
+                    price: 5000,
+                    currency: 'coins',
+                    level: 15,
+                    image: 'assets/images/clothes/astronaut/outfit.png',
+                    unlocked: false
+                }
+            ],
+            accessories: [
+                {
+                    id: 'backpack',
+                    name: 'حقيبة ظهر',
+                    price: 100,
+                    currency: 'coins',
+                    level: 1,
+                    image: 'assets/images/ui/backpack.png',
+                    unlocked: false
+                },
+                {
+                    id: 'hat',
+                    name: 'قبعة مستكشف',
+                    price: 200,
+                    currency: 'coins',
+                    level: 3,
+                    image: 'assets/images/ui/hat.png',
+                    unlocked: false
+                },
+                {
+                    id: 'compass',
+                    name: 'بوصلة',
+                    price: 500,
+                    currency: 'coins',
+                    level: 5,
+                    image: 'assets/images/ui/compass.png',
+                    unlocked: false
+                }
+            ]
+        };
+
+        // Load user data and initialize shop
+        document.addEventListener('DOMContentLoaded', () => {
+            ShopManager.init();
+        });
+    </script>
+    
+    <!-- ✨ Nouvelles fonctionnalités -->
+    <script src="js/assistant.js"></script>
+    <script src="js/resources.js"></script>
+    <script src="js/cartoon-theme.js"></script>
+    <script src="js/music-player.js"></script>
+    
+    <!-- Footer -->
+    <div style="text-align: center; padding: 20px; background: rgba(0,0,0,0.05); margin-top: 20px; font-size: 0.9em; opacity: 0.7;">
+        <p>Created by nourchen mehrez - wiem salhi</p>
+    </div>
+</body>
+</html>

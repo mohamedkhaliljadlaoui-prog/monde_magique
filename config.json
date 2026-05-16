@@ -1,0 +1,103 @@
+{
+  "app": {
+    "name": "Monde Magique",
+    "version": "1.0.0",
+    "environment": "development"
+  },
+  
+  "api": {
+    "base_url": "http://localhost/monde-magique/api",
+    "timeout": 30000,
+    "retry_attempts": 3
+  },
+  
+  "game": {
+    "total_stages": 10,
+    "stations_per_stage": 7,
+    "max_level": 100,
+    "daily_chatbot_limit": 50,
+    "free_chatbot_per_stage": 5,
+    "diamond_cost_per_chatbot": 1,
+    
+    "rewards": {
+      "stage_completion": {
+        "diamonds": 5,
+        "coins": 100,
+        "xp": 500
+      },
+      "perfect_score": {
+        "bonus_diamonds": 10,
+        "special_item": true
+      }
+    },
+    
+    "vehicle_upgrades": {
+      "bicycle": {
+        "unlocked": true,
+        "cost": 0
+      },
+      "scooter": {
+        "unlocked": false,
+        "cost": 500
+      },
+      "car": {
+        "unlocked": false,
+        "cost": 2000
+      },
+      "train": {
+        "unlocked": false,
+        "cost": 10000
+      },
+      "plane": {
+        "unlocked": false,
+        "cost": 50000
+      }
+    }
+  },
+  
+  "ai": {
+    "provider": "openai",
+    "model": "gpt-4",
+    "max_tokens": 500,
+    "temperature": 0.7,
+    
+    "fallback_enabled": true,
+    "cached_responses": true,
+    "cache_duration": 3600
+  },
+  
+  "languages": {
+    "default": "fr",
+    "supported": ["fr", "ar"],
+    "auto_detect": true
+  },
+  
+  "paths": {
+    "assets": "/assets",
+    "uploads": "/uploads",
+    "temp": "/temp"
+  },
+  
+  "security": {
+    "session_duration": 86400,
+    "password_min_length": 8,
+    "max_login_attempts": 5,
+    "encryption_key": "your-secret-key-here"
+  },
+  
+  "monitoring": {
+    "log_errors": true,
+    "log_queries": false,
+    "performance_tracking": true,
+    "analytics": true
+  },
+  
+  "features": {
+    "chatbot": true,
+    "voice_guidance": true,
+    "offline_mode": true,
+    "parent_dashboard": true,
+    "multiplayer": false,
+    "ar_mode": false
+  }
+}

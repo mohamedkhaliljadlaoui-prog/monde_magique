@@ -1,0 +1,1834 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌍 مغامرات العالم السحري</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --candy-red: #FF3366;
+            --candy-orange: #FF6B35;
+            --candy-yellow: #FFD700;
+            --candy-green: #00D68F;
+            --candy-teal: #00C9CC;
+            --candy-blue: #00AAFF;
+            --candy-purple: #9B59B6;
+            --candy-pink: #FF69B4;
+            --bg-deep: #0A0A2E;
+            --bg-mid: #12124A;
+            --bg-card: #1A1A5E;
+            --text-light: #FFFFFF;
+            --text-muted: rgba(255,255,255,0.65);
+            --border-r: 20px;
+            --border-thick: 4px;
+            --glow-red: 0 0 20px #FF3366aa;
+            --glow-yellow: 0 0 20px #FFD700aa;
+            --glow-green: 0 0 20px #00D68Faa;
+            --glow-blue: 0 0 20px #00AAFFaa;
+            --glow-pink: 0 0 20px #FF69B4aa;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-light);
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 15% 20%, #FF336622 0%, transparent 40%),
+                radial-gradient(circle at 85% 70%, #00AAFF22 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, #9B59B611 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bubbles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -120px;
+            border-radius: 50%;
+            opacity: 0.18;
+            animation: floatBubble linear infinite;
+        }
+
+        .bubble:nth-child(1)  { width: 60px; height: 60px; left: 5%;  background: var(--candy-red);    animation-duration: 9s;  animation-delay: 0s; }
+        .bubble:nth-child(2)  { width: 40px; height: 40px; left: 15%; background: var(--candy-yellow); animation-duration: 12s; animation-delay: 2s; }
+        .bubble:nth-child(3)  { width: 80px; height: 80px; left: 30%; background: var(--candy-blue);   animation-duration: 8s;  animation-delay: 1s; }
+        .bubble:nth-child(4)  { width: 30px; height: 30px; left: 45%; background: var(--candy-green);  animation-duration: 14s; animation-delay: 3s; }
+        .bubble:nth-child(5)  { width: 50px; height: 50px; left: 60%; background: var(--candy-pink);   animation-duration: 10s; animation-delay: .5s; }
+        .bubble:nth-child(6)  { width: 70px; height: 70px; left: 75%; background: var(--candy-orange); animation-duration: 11s; animation-delay: 4s; }
+        .bubble:nth-child(7)  { width: 35px; height: 35px; left: 88%; background: var(--candy-purple); animation-duration: 7s;  animation-delay: 1.5s; }
+        .bubble:nth-child(8)  { width: 55px; height: 55px; left: 22%; background: var(--candy-teal);   animation-duration: 13s; animation-delay: 2.5s; }
+
+        @keyframes floatBubble {
+            0%   { transform: translateY(0) scale(1); opacity: .18; }
+            50%  { opacity: .28; }
+            100% { transform: translateY(-110vh) scale(1.2); opacity: 0; }
+        }
+
+        .sparkle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+            animation: sparkleTwinkle 3s ease-in-out infinite;
+            font-size: 1.2rem;
+        }
+
+        .sparkle:nth-child(1)  { top: 10%; left: 8%;  animation-delay: 0s; }
+        .sparkle:nth-child(2)  { top: 20%; left: 92%; animation-delay: .7s; }
+        .sparkle:nth-child(3)  { top: 45%; left: 3%;  animation-delay: 1.4s; }
+        .sparkle:nth-child(4)  { top: 70%; left: 95%; animation-delay: 2.1s; }
+        .sparkle:nth-child(5)  { top: 85%; left: 12%; animation-delay: .3s; }
+        .sparkle:nth-child(6)  { top: 35%; left: 97%; animation-delay: 1s; }
+
+        @keyframes sparkleTwinkle {
+            0%,100% { transform: scale(1) rotate(0deg); opacity: .6; }
+            50% { transform: scale(1.8) rotate(180deg); opacity: 1; }
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 2000;
+            background: linear-gradient(135deg, #1A0050 0%, #2D0080 40%, #1A0050 100%);
+            border-bottom: var(--border-thick) solid var(--candy-yellow);
+            box-shadow: 0 6px 40px #9B59B666, 0 0 60px #FF336622;
+            display: flex;
+            flex-direction: column;
+            animation: dropIn .6s cubic-bezier(.34,1.56,.64,1);
+        }
+
+        @keyframes dropIn {
+            from { transform: translateY(-100%); opacity: 0; }
+            to   { transform: translateY(0); opacity: 1; }
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 24px;
+            border-bottom: 2px solid rgba(255,215,0,.2);
+        }
+
+        .logo { display: flex; align-items: center; gap: 14px; }
+
+        .logo-icon {
+            font-size: 2.6rem;
+            animation: spinGlobe 6s linear infinite;
+            filter: drop-shadow(0 0 12px var(--candy-yellow));
+        }
+
+        @keyframes spinGlobe {
+            from { transform: rotate(0deg) scale(1); }
+            50%  { transform: rotate(180deg) scale(1.15); }
+            to   { transform: rotate(360deg) scale(1); }
+        }
+
+        .logo h1 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.8rem;
+            background: linear-gradient(90deg, #FFD700, #FF69B4, #00AAFF, #00D68F);
+            background-size: 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: rainbowShift 4s linear infinite;
+            letter-spacing: 1px;
+        }
+
+        @keyframes rainbowShift {
+            0%   { background-position: 0%; }
+            100% { background-position: 300%; }
+        }
+
+        .stat-chips { display: flex; gap: 10px; align-items: center; }
+
+        .stat-chip {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,.08);
+            border: 2px solid rgba(255,255,255,.2);
+            border-radius: 50px;
+            padding: 6px 14px;
+            font-weight: 800;
+            font-size: .95rem;
+            backdrop-filter: blur(8px);
+            transition: transform .3s;
+        }
+
+        .stat-chip:hover { transform: scale(1.08); }
+        .stat-chip.coins { border-color: var(--candy-yellow); color: var(--candy-yellow); }
+        .stat-chip.diamonds { border-color: var(--candy-teal); color: var(--candy-teal); }
+        .stat-chip.xp { border-color: var(--candy-green); color: var(--candy-green); }
+
+        .nav-controls { display: flex; gap: 10px; }
+
+        .nav-btn {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all .3s cubic-bezier(.34,1.56,.64,1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg,rgba(255,255,255,.25),transparent);
+            pointer-events: none;
+        }
+
+        .nav-btn.home  { background: var(--candy-orange); color: #fff; box-shadow: var(--glow-red); }
+        .nav-btn.profile { background: var(--candy-blue); color: #fff; box-shadow: var(--glow-blue); }
+        .nav-btn:hover { transform: translateY(-4px) scale(1.08); }
+        .nav-btn:active { transform: scale(.96); }
+
+        .header-metro {
+            display: flex;
+            gap: 0;
+            padding: 10px 20px;
+            overflow-x: auto;
+            align-items: center;
+            background: rgba(0,0,0,.25);
+            scrollbar-width: thin;
+            scrollbar-color: var(--candy-yellow) transparent;
+            position: relative;
+        }
+
+        .header-metro::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            right: 20px;
+            height: 6px;
+            background: linear-gradient(90deg, var(--candy-red), var(--candy-orange), var(--candy-yellow), var(--candy-green), var(--candy-blue), var(--candy-purple));
+            border-radius: 10px;
+            z-index: 0;
+            transform: translateY(-50%);
+            box-shadow: 0 0 15px rgba(255,215,0,.5);
+        }
+
+        .metro-station {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            min-width: 90px;
+            transition: all .4s cubic-bezier(.34,1.56,.64,1);
+            padding: 4px 6px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .station-circle {
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: 0 4px 16px rgba(0,0,0,.4), inset 0 -3px 0 rgba(0,0,0,.2);
+            background: linear-gradient(135deg, #2D0080, #1A0050);
+            transition: all .4s cubic-bezier(.34,1.56,.64,1);
+            animation: stationPop .5s cubic-bezier(.34,1.56,.64,1) backwards;
+        }
+
+        .metro-station:nth-child(1) .station-circle { animation-delay: .05s; }
+        .metro-station:nth-child(2) .station-circle { animation-delay: .10s; }
+        .metro-station:nth-child(3) .station-circle { animation-delay: .15s; }
+        .metro-station:nth-child(4) .station-circle { animation-delay: .20s; }
+        .metro-station:nth-child(5) .station-circle { animation-delay: .25s; }
+        .metro-station:nth-child(6) .station-circle { animation-delay: .30s; }
+        .metro-station:nth-child(7) .station-circle { animation-delay: .35s; }
+        .metro-station:nth-child(8) .station-circle { animation-delay: .40s; }
+        .metro-station:nth-child(9) .station-circle { animation-delay: .45s; }
+        .metro-station:nth-child(10) .station-circle { animation-delay: .50s; }
+
+        @keyframes stationPop {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .station-label {
+            font-size: .72rem;
+            font-weight: 800;
+            color: rgba(255,255,255,.8);
+            text-align: center;
+            max-width: 88px;
+            line-height: 1.1;
+            text-shadow: 0 1px 4px #000;
+        }
+
+        .metro-station.active .station-circle {
+            background: linear-gradient(135deg, var(--candy-yellow), var(--candy-orange));
+            border-color: #fff;
+            box-shadow: 0 0 0 6px rgba(255,215,0,.35), 0 0 30px var(--candy-yellow), inset 0 -3px 0 rgba(0,0,0,.2);
+            transform: scale(1.2) translateY(-6px);
+        }
+
+        .metro-station.active .station-label { color: var(--candy-yellow); text-shadow: 0 0 10px var(--candy-yellow); }
+
+        .metro-station.completed .station-circle {
+            background: linear-gradient(135deg, var(--candy-green), #009f6b);
+            box-shadow: 0 0 20px var(--candy-green), inset 0 -3px 0 rgba(0,0,0,.2);
+        }
+
+        .metro-station.completed .station-label { color: var(--candy-green); }
+
+        .metro-station.locked .station-circle {
+            background: linear-gradient(135deg, #333366, #222244);
+            border-color: rgba(255,255,255,.3);
+            filter: grayscale(.8) brightness(.6);
+            cursor: not-allowed;
+        }
+
+        .metro-station.locked .station-label { opacity: .4; }
+        .metro-station:hover:not(.locked) .station-circle { transform: scale(1.18) translateY(-8px) rotate(6deg); }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 16px;
+            padding: 16px;
+            margin-top: 190px;
+            height: calc(100vh - 190px);
+            position: relative;
+            z-index: 1;
+        }
+
+        .left-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            animation: slideInLeft .6s cubic-bezier(.34,1.56,.64,1);
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-60px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .sidebar-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            padding: 8px;
+            background: #0E0E44;
+            border-radius: 18px 18px 0 0;
+            border: 3px solid var(--candy-purple);
+            border-bottom: none;
+        }
+
+        .sidebar-tab {
+            padding: 8px 6px;
+            border: 2px solid rgba(255,255,255,.1);
+            background: rgba(255,255,255,.05);
+            color: rgba(255,255,255,.6);
+            font-family: 'Fredoka One', cursive;
+            font-size: .85rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all .3s;
+            text-align: center;
+        }
+
+        .sidebar-tab:hover { background: rgba(255,255,255,.12); color: #fff; transform: scale(1.04); }
+
+        .sidebar-tab.active {
+            background: linear-gradient(135deg, var(--candy-purple), #5D35A0);
+            color: #fff;
+            border-color: var(--candy-purple);
+            box-shadow: var(--glow-pink);
+        }
+
+        .sidebar-content {
+            background: linear-gradient(180deg, #0E0E44 0%, #12124A 100%);
+            border: 3px solid var(--candy-purple);
+            border-top: none;
+            border-radius: 0 0 18px 18px;
+            padding: 16px;
+            overflow-y: auto;
+            flex: 1;
+            max-height: calc(100vh - 320px);
+            scrollbar-width: thin;
+            scrollbar-color: var(--candy-purple) transparent;
+        }
+
+        .panel-content { display: none; }
+
+        .panel-content.active {
+            display: block;
+            animation: fadeSlideIn .3s ease-out;
+        }
+
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(-12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .guide-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(255,255,255,.1);
+        }
+
+        .guide-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--candy-orange), var(--candy-red));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: var(--glow-red);
+            animation: avatarBounce 2.5s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes avatarBounce {
+            0%,100% { transform: translateY(0) rotate(0deg); }
+            30% { transform: translateY(-8px) rotate(-5deg); }
+            60% { transform: translateY(-4px) rotate(3deg); }
+        }
+
+        .guide-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.1rem;
+            background: linear-gradient(90deg, var(--candy-orange), var(--candy-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .guide-message {
+            background: rgba(255,255,255,.06);
+            border: 2px solid rgba(255,107,107,.4);
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            font-size: .88rem;
+            line-height: 1.6;
+            color: rgba(255,255,255,.9);
+            animation: messageIn .4s ease-out;
+        }
+
+        @keyframes messageIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .guide-message strong { color: var(--candy-orange); }
+
+        .achievement-item, .tip-item, .fact-item {
+            background: rgba(255,255,255,.05);
+            border-radius: 14px;
+            padding: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            border-left: 4px solid var(--candy-yellow);
+            transition: transform .3s;
+        }
+
+        .tip-item { border-left-color: var(--candy-blue); }
+        .fact-item { border-left-color: var(--candy-teal); }
+        .achievement-item:hover,.tip-item:hover,.fact-item:hover { transform: translateX(-4px); }
+
+        .achievement-icon { font-size: 1.8rem; flex-shrink: 0; }
+
+        .achievement-text h4, .tip-item h4, .fact-item h4 {
+            font-family: 'Fredoka One', cursive;
+            font-size: .9rem;
+            color: var(--candy-yellow);
+            margin-bottom: 4px;
+        }
+
+        .tip-item h4 { color: var(--candy-blue); }
+        .fact-item h4 { color: var(--candy-teal); }
+
+        .achievement-text p, .tip-item p, .fact-item p {
+            font-size: .8rem;
+            color: rgba(255,255,255,.65);
+            line-height: 1.4;
+        }
+
+        .map-container {
+            position: relative;
+            border-radius: 22px;
+            overflow: hidden;
+            border: 4px solid var(--candy-blue);
+            box-shadow: var(--glow-blue), 0 20px 60px rgba(0,0,0,.5);
+            animation: mapZoomIn .7s cubic-bezier(.34,1.56,.64,1);
+        }
+
+        @keyframes mapZoomIn {
+            from { transform: scale(.92); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        #world-map { width: 100%; height: 100%; }
+
+        .zoom-buttons {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: rgba(10,10,46,.85);
+            backdrop-filter: blur(10px);
+            padding: 12px 8px;
+            border-radius: 16px;
+            border: 2px solid rgba(255,255,255,.12);
+            box-shadow: 0 8px 32px rgba(0,0,0,.4);
+        }
+
+        .custom-zoom-btn {
+            width: 52px;
+            height: 52px;
+            background: rgba(255,255,255,.08);
+            border: 2px solid rgba(255,255,255,.15);
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: #fff;
+            transition: all .3s cubic-bezier(.34,1.56,.64,1);
+        }
+
+        .custom-zoom-btn:hover {
+            background: var(--candy-blue);
+            border-color: var(--candy-blue);
+            box-shadow: var(--glow-blue);
+            transform: scale(1.2) rotate(8deg);
+        }
+
+        .corner-guide {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            z-index: 1100;
+            pointer-events: none;
+        }
+
+        .globe-spin {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #CCE5FF, #5A81FF 60%, #1A3CBF);
+            box-shadow: 0 0 20px #5A81FF88;
+            border: 3px solid rgba(255,255,255,.3);
+            animation: globeFloat 3s ease-in-out infinite;
+        }
+
+        .globe-spin.active { animation: globeSpin 1s linear infinite; }
+
+        @keyframes globeFloat { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+        @keyframes globeSpin { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+
+        .moving-vehicle {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #fff 0%, #ffe082 100%);
+            box-shadow: 0 0 20px var(--candy-yellow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            transform: translate(-50%, -50%);
+            z-index: 1100;
+            pointer-events: none;
+            border: 3px solid #fff;
+        }
+
+        .vehicle-wiggle { animation: wiggle .4s ease-in-out infinite; }
+        .vehicle-bounce { animation: vehicleBounce .5s ease-out; }
+
+        @keyframes wiggle { 0%,100%{transform:translate(-50%,-50%) rotate(0deg);} 50%{transform:translate(-50%,-50%) rotate(8deg);} }
+        @keyframes vehicleBounce { 0%{transform:translate(-50%,-65%) scale(.9);} 50%{transform:translate(-50%,-50%) scale(1.15);} 100%{transform:translate(-50%,-50%) scale(1);} }
+
+        .coordinates-display {
+            position: absolute;
+            bottom: 14px;
+            left: 14px;
+            background: rgba(10,10,46,.85);
+            backdrop-filter: blur(8px);
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: .8rem;
+            z-index: 1000;
+            border: 1px solid rgba(0,170,255,.4);
+            color: var(--candy-blue);
+            font-weight: 700;
+        }
+
+        .cursor-coordinates {
+            position: absolute;
+            transform: translate(16px,16px);
+            background: rgba(10,10,46,.9);
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 2px solid var(--candy-blue);
+            font-size: .8rem;
+            color: var(--candy-blue);
+            z-index: 1200;
+            pointer-events: none;
+            display: none;
+            white-space: nowrap;
+            font-weight: 700;
+        }
+
+        path.trace-line {
+            stroke: var(--candy-yellow);
+            stroke-width: 4;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: drop-shadow(0 0 6px var(--candy-yellow));
+        }
+
+        @keyframes zonePulse {
+            0% { fill-opacity: .2; }
+            50% { fill-opacity: .5; }
+            100% { fill-opacity: .2; }
+        }
+
+        .zone-pulse { animation: zonePulse 1.5s ease-in-out 2; }
+
+        .country-label {
+            background: rgba(10,10,46,.9) !important;
+            border: 2px solid var(--candy-yellow) !important;
+            border-radius: 8px !important;
+            color: var(--candy-yellow) !important;
+            font-family: 'Fredoka One', cursive !important;
+            font-size: .95rem !important;
+            box-shadow: 0 0 12px var(--candy-yellow) !important;
+        }
+
+        .show-all-stages-btn {
+            position: fixed;
+            bottom: 110px;
+            right: 20px;
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--candy-orange), var(--candy-red));
+            border: 4px solid #fff;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: var(--glow-red);
+            z-index: 9920;
+            transition: all .3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fabPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes fabPulse {
+            0%,100% { box-shadow: var(--glow-red), 0 0 0 0 rgba(255,51,102,.4); }
+            50% { box-shadow: var(--glow-red), 0 0 0 12px rgba(255,51,102,0); }
+        }
+
+        .show-all-stages-btn:hover { transform: scale(1.18) rotate(15deg); }
+
+        #chatbot-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--candy-blue), var(--candy-purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--glow-blue);
+            z-index: 9999;
+            transition: all .3s;
+            border: 3px solid #fff;
+            animation: chatPulse 2.5s ease-in-out infinite;
+        }
+
+        @keyframes chatPulse {
+            0%,100% { box-shadow: var(--glow-blue); }
+            50% { box-shadow: 0 0 40px var(--candy-blue); }
+        }
+
+        #chatbot-toggle:hover { transform: scale(1.15) rotate(-10deg); }
+        #chatbot-toggle i { font-size: 1.7rem; color: #fff; }
+
+        #chatbot-container {
+            position: fixed;
+            bottom: 90px;
+            left: 20px;
+            width: 360px;
+            max-height: 520px;
+            background: linear-gradient(180deg, #0E0E44, #12124A);
+            border: 3px solid var(--candy-blue);
+            border-radius: 20px;
+            box-shadow: var(--glow-blue), 0 20px 60px rgba(0,0,0,.5);
+            display: none;
+            flex-direction: column;
+            z-index: 9998;
+            animation: chatUp .35s cubic-bezier(.34,1.56,.64,1);
+        }
+
+        @keyframes chatUp {
+            from { transform: translateY(40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        #chatbot-container.active { display: flex; }
+
+        .chatbot-header {
+            background: linear-gradient(135deg, var(--candy-blue), var(--candy-purple));
+            color: #fff;
+            padding: 14px 18px;
+            border-radius: 17px 17px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chatbot-header h3 { margin: 0; font-family: 'Fredoka One', cursive; font-size: 1.1rem; }
+
+        .chatbot-close {
+            background: rgba(255,255,255,.2);
+            border: none;
+            color: #fff;
+            font-size: 1.4rem;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform .3s;
+        }
+
+        .chatbot-close:hover { transform: rotate(90deg); background: var(--candy-red); }
+
+        #chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 14px;
+            max-height: 300px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--candy-blue) transparent;
+        }
+
+        .chat-message { margin-bottom: 10px; animation: msgIn .3s ease-out; }
+        @keyframes msgIn { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:translateY(0);} }
+        .chat-message.user { text-align: right; }
+        .chat-message.bot { text-align: left; }
+
+        .chat-message div {
+            display: inline-block;
+            padding: 10px 14px;
+            border-radius: 14px;
+            max-width: 78%;
+            word-wrap: break-word;
+            font-size: .9rem;
+        }
+
+        .chat-message.user div {
+            background: linear-gradient(135deg, var(--candy-blue), var(--candy-purple));
+            color: #fff;
+        }
+
+        .chat-message.bot div {
+            background: rgba(255,255,255,.08);
+            color: rgba(255,255,255,.9);
+            border: 1px solid rgba(255,255,255,.12);
+        }
+
+        .quick-questions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 8px 14px;
+            background: rgba(0,0,0,.2);
+        }
+
+        .quick-question-btn {
+            background: rgba(255,255,255,.06);
+            border: 2px solid var(--candy-blue);
+            color: var(--candy-blue);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: .8rem;
+            cursor: pointer;
+            transition: all .3s;
+            font-weight: 700;
+        }
+
+        .quick-question-btn:hover {
+            background: var(--candy-blue);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        #chat-form {
+            display: flex;
+            padding: 12px 14px;
+            border-top: 1px solid rgba(255,255,255,.08);
+            gap: 8px;
+        }
+
+        #chat-form input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 2px solid rgba(255,255,255,.15);
+            border-radius: 20px;
+            background: rgba(255,255,255,.06);
+            color: #fff;
+            font-family: 'Nunito', sans-serif;
+            outline: none;
+        }
+
+        #chat-form input::placeholder { color: rgba(255,255,255,.3); }
+        #chat-form input:focus { border-color: var(--candy-blue); }
+
+        #chat-form button {
+            background: linear-gradient(135deg,var(--candy-blue),var(--candy-purple));
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all .3s;
+            font-weight: 800;
+        }
+
+        #chat-form button:hover { transform: scale(1.08); }
+
+        .stages-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9950;
+            overflow: auto;
+            backdrop-filter: blur(8px);
+        }
+
+        .stages-modal.active { display: flex; }
+
+        .stages-modal-content {
+            background: linear-gradient(180deg, #0E0E44 0%, #0A0A2E 100%);
+            border: 4px solid var(--candy-yellow);
+            border-radius: 28px;
+            padding: 36px;
+            max-width: 1200px;
+            width: 90%;
+            max-height: 88vh;
+            overflow-y: auto;
+            box-shadow: var(--glow-yellow), 0 30px 80px rgba(0,0,0,.7);
+            animation: modalPop .4s cubic-bezier(.34,1.56,.64,1);
+            scrollbar-width: thin;
+            scrollbar-color: var(--candy-yellow) transparent;
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(.85); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .stages-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            border-bottom: 2px solid rgba(255,215,0,.25);
+            padding-bottom: 18px;
+        }
+
+        .stages-modal-header h2 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.9rem;
+            background: linear-gradient(90deg,var(--candy-yellow),var(--candy-orange),var(--candy-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stages-modal-close {
+            background: linear-gradient(135deg,var(--candy-red),#cc0033);
+            color: #fff;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .3s;
+            box-shadow: var(--glow-red);
+        }
+
+        .stages-modal-close:hover { transform: rotate(90deg) scale(1.1); }
+
+        .stages-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(270px,1fr));
+            gap: 22px;
+        }
+
+        .stage-card {
+            background: linear-gradient(135deg, #1A1A5E, #12124A);
+            border: 3px solid rgba(255,255,255,.1);
+            border-radius: 20px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all .4s cubic-bezier(.34,1.56,.64,1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stage-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg,rgba(255,255,255,.05),transparent);
+            pointer-events: none;
+        }
+
+        .stage-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg,transparent 30%,rgba(255,255,255,.06) 50%,transparent 70%);
+            transform: rotate(45deg);
+            animation: shimmer 4s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .stage-card:hover {
+            border-color: var(--candy-yellow);
+            transform: translateY(-12px) scale(1.04);
+            box-shadow: var(--glow-yellow), 0 20px 50px rgba(0,0,0,.4);
+        }
+
+        .stage-number {
+            font-size: 2.4rem;
+            margin-bottom: 10px;
+            display: inline-block;
+            animation: iconWobble 3s ease-in-out infinite;
+        }
+
+        @keyframes iconWobble {
+            0%,100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-8deg) scale(1.1); }
+            75% { transform: rotate(8deg) scale(1.1); }
+        }
+
+        .stage-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.2rem;
+            color: #fff;
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stage-desc {
+            font-size: .85rem;
+            color: rgba(255,255,255,.55);
+            margin-bottom: 14px;
+            line-height: 1.4;
+        }
+
+        .stage-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .stage-stat {
+            background: rgba(255,255,255,.06);
+            padding: 8px 10px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: .82rem;
+            font-weight: 800;
+            color: rgba(255,255,255,.8);
+            border: 1px solid rgba(255,255,255,.08);
+        }
+
+        .stage-btn {
+            width: 100%;
+            padding: 12px 18px;
+            background: linear-gradient(135deg,var(--candy-yellow),var(--candy-orange));
+            color: #1A0050;
+            border: none;
+            border-radius: 14px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all .3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 14px;
+            box-shadow: 0 6px 0 rgba(0,0,0,.3), 0 8px 20px rgba(255,215,0,.3);
+            position: relative;
+        }
+
+        .stage-btn:hover { transform: translateY(-3px); box-shadow: 0 9px 0 rgba(0,0,0,.3), var(--glow-yellow); }
+        .stage-btn:active { transform: translateY(2px); box-shadow: 0 4px 0 rgba(0,0,0,.3); }
+
+        .game-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            backdrop-filter: blur(10px);
+        }
+
+        .game-modal.active { display: flex; }
+
+        .game-modal-content {
+            width: 95%;
+            height: 95%;
+            background: #0A0A2E;
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+            border: 4px solid var(--candy-yellow);
+            box-shadow: var(--glow-yellow);
+        }
+
+        .game-modal-header {
+            background: linear-gradient(135deg,var(--candy-purple),#2D0080);
+            color: #fff;
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .game-modal-header h3 { margin: 0; font-family: 'Fredoka One', cursive; font-size: 1.3rem; }
+
+        .game-close-btn {
+            background: var(--candy-red);
+            color: #fff;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.4rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .3s;
+        }
+
+        .game-close-btn:hover { transform: rotate(90deg) scale(1.15); }
+        .game-iframe { width: 100%; height: calc(100% - 56px); border: none; }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg,#1A1A5E,#0E0E44);
+            padding: 14px 22px;
+            border-radius: 14px;
+            border-left: 5px solid var(--candy-blue);
+            transform: translateX(400px);
+            transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+            z-index: 10002;
+            color: #fff;
+            font-weight: 700;
+            box-shadow: 0 8px 30px rgba(0,0,0,.5), var(--glow-blue);
+        }
+
+        .toast.show { transform: translateX(0); }
+        .toast.success { border-left-color: var(--candy-green); box-shadow: 0 8px 30px rgba(0,0,0,.5), var(--glow-green); }
+        .stage-selector, .info-panel { display: none; }
+
+        .leaflet-container { background: #0A0A2E !important; }
+
+        .leaflet-popup-content-wrapper {
+            background: linear-gradient(135deg,#1A1A5E,#0E0E44) !important;
+            border: 3px solid var(--candy-yellow) !important;
+            border-radius: 16px !important;
+            color: #fff !important;
+            box-shadow: var(--glow-yellow) !important;
+        }
+
+        .leaflet-popup-tip { background: #1A1A5E !important; }
+        .leaflet-popup-close-button { color: var(--candy-pink) !important; font-size: 1.2rem !important; }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,.04); }
+        ::-webkit-scrollbar-thumb { background: var(--candy-purple); border-radius: 10px; }
+
+        @media (max-width: 1100px) {
+            .main-container { grid-template-columns: 1fr; height: auto; }
+            .map-container { height: 500px; }
+        }
+
+        @media (max-width: 680px) {
+            .stat-chips { display: none; }
+            .logo h1 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bubbles">
+        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+        <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+        <div class="bubble"></div><div class="bubble"></div>
+    </div>
+    <div class="sparkle">⭐</div>
+    <div class="sparkle">✨</div>
+    <div class="sparkle">💫</div>
+    <div class="sparkle">🌟</div>
+    <div class="sparkle">⚡</div>
+    <div class="sparkle">🎇</div>
+
+    <div class="header">
+        <div class="header-top">
+            <div class="logo">
+                <span class="logo-icon">🌍</span>
+                <h1>مغامرات العالم السحري 🚀</h1>
+            </div>
+            <div class="stat-chips">
+                <div class="stat-chip coins">🪙 <span id="user-coins">0</span></div>
+                <div class="stat-chip diamonds">💎 <span id="user-diamonds">0</span></div>
+                <div class="stat-chip xp">⭐ <span id="user-xp">0</span></div>
+            </div>
+            <div class="nav-controls">
+                <button class="nav-btn home" onclick="window.location.href='index.html'">🏠 الرئيسية</button>
+                <button class="nav-btn profile" onclick="window.location.href='profile.html'">👤 ملفي</button>
+            </div>
+        </div>
+        <div class="header-metro" id="metro-line"></div>
+    </div>
+
+    <div class="main-container">
+        <div class="left-sidebar">
+            <div class="sidebar-tabs">
+                <button class="sidebar-tab active" data-panel="guide">🧙 دليل</button>
+                <button class="sidebar-tab" data-panel="achievements">🏆 جوائز</button>
+                <button class="sidebar-tab" data-panel="tips">💡 نصائح</button>
+                <button class="sidebar-tab" data-panel="facts">🌍 حقائق</button>
+            </div>
+
+            <div class="sidebar-content">
+                <div id="guide-panel" class="panel-content active">
+                    <div class="guide-header">
+                        <div class="guide-avatar">🧙‍♂️</div>
+                        <div class="guide-title">المرشد السحري</div>
+                    </div>
+                    <div id="guide-messages">
+                        <div class="guide-message">
+                            <strong>أهلاً مغامر! 🎉</strong> انقر على أي محطة في الخريطة لبدء رحلتك حول العالم!
+                        </div>
+                    </div>
+                </div>
+
+                <div id="achievements-panel" class="panel-content">
+                    <div class="guide-header">
+                        <div class="guide-avatar" style="background:linear-gradient(135deg,var(--candy-yellow),var(--candy-orange))">🏆</div>
+                        <div class="guide-title" style="color:var(--candy-yellow)">إنجازاتك</div>
+                    </div>
+                    <div id="achievements-list">
+                        <div class="achievement-item">
+                            <div class="achievement-icon">🎯</div>
+                            <div class="achievement-text">
+                                <h4>بداية الرحلة!</h4>
+                                <p>لقد بدأت مغامرتك! أنت رائع 🚀</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tips-panel" class="panel-content">
+                    <div class="guide-header">
+                        <div class="guide-avatar" style="background:linear-gradient(135deg,var(--candy-blue),var(--candy-purple))">💡</div>
+                        <div class="guide-title" style="color:var(--candy-blue)">نصائح مفيدة</div>
+                    </div>
+                    <div id="tips-list">
+                        <div class="tip-item"><h4>📍 كيف تستخدم الخريطة</h4><p>انقر على أي منطقة لتتعلم أكثر. استخدم أزرار الزوم للتنقل!</p></div>
+                        <div class="tip-item"><h4>🎯 افتح المناطق</h4><p>أكمل المراحل بالترتيب - كل منطقة تفتح التالية!</p></div>
+                        <div class="tip-item"><h4>🎮 استكشف بالكامل</h4><p>انقر على كل نقطة اهتمام لاكتشاف حقائق رائعة!</p></div>
+                        <div class="tip-item"><h4>🏅 اكسب شارات</h4><p>أنهِ التحديات في كل منطقة لتحصل على مكافآت!</p></div>
+                    </div>
+                </div>
+
+                <div id="facts-panel" class="panel-content">
+                    <div class="guide-header">
+                        <div class="guide-avatar" style="background:linear-gradient(135deg,var(--candy-teal),#007f7f)">🌍</div>
+                        <div class="guide-title" style="color:var(--candy-teal)">حقائق مدهشة</div>
+                    </div>
+                    <div id="facts-list">
+                        <div class="fact-item"><h4>🇹🇳 تونس</h4><p>بشواطئها الذهبية وتاريخها الغني، تونس ملتقى الحضارات!</p></div>
+                        <div class="fact-item"><h4>🌍 العالم</h4><p>كوكبنا فيه 195 دولة، آلاف الثقافات وعجائب في كل مكان!</p></div>
+                        <div class="fact-item"><h4>🦁 أفريقيا</h4><p>القارة الأفريقية موطن أكبر تنوع في الحيوانات البرية!</p></div>
+                        <div class="fact-item"><h4>🏔️ آسيا</h4><p>بأكثر من 60٪ من سكان العالم، آسيا أكثر القارات اكتظاظاً!</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="map-container">
+            <div id="world-map"></div>
+            <div class="cursor-coordinates" id="cursor-coordinates"></div>
+            <div class="corner-guide"><div class="globe-spin" id="globe-spin"></div></div>
+            <div class="moving-vehicle" id="moving-vehicle" style="left:80px;top:80px">🚂</div>
+
+            <div class="zoom-buttons">
+                <button class="custom-zoom-btn" id="zoom-world" title="العالم">🌍</button>
+                <button class="custom-zoom-btn" id="zoom-tunisia" title="المجال الجغرافي">🗺️</button>
+                <button class="custom-zoom-btn" id="zoom-africa" title="المجال الجغرافي للبلاد التونسية">🌍</button>
+                <button class="custom-zoom-btn" id="zoom-europe" title="المشهد الريفي المحلي">🏘️</button>
+                <button class="custom-zoom-btn" id="zoom-asia" title="المشهد الحضري">🏙️</button>
+            </div>
+
+            <div class="coordinates-display" id="coordinates">X: 0, Y: 0, Zoom: 2</div>
+        </div>
+    </div>
+
+    <select id="stage-selector" class="stage-selector"></select>
+    <div class="info-panel"><div id="guide-message"></div><div id="stage-info"></div></div>
+
+    <button class="show-all-stages-btn" onclick="openStagesModal()" title="كل المراحل">🎮</button>
+    <div id="chatbot-toggle" onclick="toggleChatbot()"><i class="fas fa-robot"></i></div>
+
+    <div id="chatbot-container">
+        <div class="chatbot-header">
+            <h3>🤖 مساعد المغامرات</h3>
+            <button class="chatbot-close" onclick="toggleChatbot()">×</button>
+        </div>
+        <div id="chat-messages">
+            <div class="chat-message bot"><div>مرحباً مغامر! 🌟 اسألني عن أي شيء تريد معرفته عن العالم!</div></div>
+        </div>
+        <div class="quick-questions">
+            <button class="quick-question-btn" onclick="askQuickQuestion('ما هي المراحل المتاحة؟')">المراحل</button>
+            <button class="quick-question-btn" onclick="askQuickQuestion('كيف ألعب؟')">كيف ألعب؟</button>
+            <button class="quick-question-btn" onclick="askQuickQuestion('أخبرني عن المجال الجغرافي')">المجال الجغرافي 🗺️</button>
+            <button class="quick-question-btn" onclick="askQuickQuestion('كم نقاطي؟')">نقاطي ⭐</button>
+            <button class="quick-question-btn" onclick="askQuickQuestion('كيف أختار المرحلة المناسبة لي؟')">اختيار مرحلة 🎯</button>
+            <button class="quick-question-btn" onclick="askQuickQuestion('ماذا أفعل الآن؟')">ماذا الآن؟ ✅</button>
+        </div>
+        <form id="chat-form" onsubmit="sendChatMessage(event)">
+            <input type="text" id="chat-input" placeholder="اكتب سؤالك هنا...">
+            <button type="submit">📤</button>
+        </form>
+    </div>
+
+    <div class="stages-modal" id="stages-modal">
+        <div class="stages-modal-content">
+            <div class="stages-modal-header">
+                <h2>🌍 كل مراحل مغامرتك!</h2>
+                <button class="stages-modal-close" onclick="closeStagesModal()">×</button>
+            </div>
+            <div class="stages-container" id="stages-container"></div>
+        </div>
+    </div>
+
+    <div class="game-modal" id="game-modal">
+        <div class="game-modal-content">
+            <div class="game-modal-header">
+                <h3 id="game-modal-title">🎮 لعبة المغامرة</h3>
+                <button class="game-close-btn" onclick="closeGameModal()">×</button>
+            </div>
+            <iframe id="game-iframe" class="game-iframe" src=""></iframe>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"><span id="toast-message"></span></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+    let map;
+    let currentMarker = null;
+    let zoneLayerGroup;
+    let traceLayerGroup;
+    let isAnimating = false;
+    let markers = {};
+    const IMAGE_URL = 'assets/images/map.png';
+    const TUNISIA_IMAGE_URL = 'assets/images/tn.png';
+    let mapImageSize = { width: 0, height: 0 };
+    let mapImageBounds = null;
+    let mapImageCenter = null;
+    let currentImageOverlay = null;
+    let currentMapImage = IMAGE_URL;
+
+    const STAGES_DATA = {
+        tunisia:  { id:1,  name:'المجال الجغرافي',                    icon:'🗺️', nameAr:'المجال الجغرافي',                    desc:'اكتشف المفاهيم الأساسية',                 coordinates:[0.46,0.692], zoom:1.3, color:'#00D68F', description:'اكتشف المفاهيم الأساسية للمجالات الجغرافية والطبيعية', capital:'', population:'', stations:7, rewards:{coins:100, diamonds:5, xp:500} },
+        maghreb:  { id:2,  name:'المجال الجغرافي للمغرب العربي',       icon:'🗺️', nameAr:'المجال الجغرافي للمغرب العربي',       desc:'اكتشف خصائص المجال',                      coordinates:[0.506,0.344],zoom:1.05,color:'#FFD700', description:'اكتشف خصائص المجال الجغرافي للمغرب العربي', capital:'', population:'', stations:7, rewards:{coins:150, diamonds:8, xp:750} },
+        africa:   { id:3,  name:'المجال الجغرافي للبلاد التونسية',      icon:'🌍', nameAr:'المجال الجغرافي للبلاد التونسية',      desc:'اكتشف التفاصيل الجغرافية',                 coordinates:[0.556,0.5],  zoom:0.9, color:'#FF3366', description:'اكتشف التفاصيل الجغرافية لتونس', capital:'', population:'', stations:7, rewards:{coins:200, diamonds:10, xp:1000} },
+        europe:   { id:4,  name:'المشهد الريفي المحلي',                icon:'🏘️', nameAr:'المشهد الريفي المحلي',                desc:'اكتشف البيئة الريفية',                     coordinates:[0.528,0.222],zoom:1.2, color:'#00AAFF', description:'اكتشف خصائص المشهد الريفي والبيئة الريفية', capital:'', population:'', stations:7, rewards:{coins:250, diamonds:12, xp:1250} },
+        asia:     { id:5,  name:'المشهد الحضري',                        icon:'🏙️', nameAr:'المشهد الحضري',                        desc:'اكتشف خصائص المدن',                        coordinates:[0.792,0.306],zoom:1.0, color:'#9B59B6', description:'اكتشف خصائص المدن والمشاهد الحضرية', capital:'', population:'', stations:7, rewards:{coins:300, diamonds:15, xp:1500} },
+        namerica: { id:6,  name:'العلاقة بين الريف و المدينة',           icon:'🔄', nameAr:'العلاقة بين الريف و المدينة',           desc:'اكتشف التفاعل بينهما',                     coordinates:[0.222,0.278],zoom:1.0, color:'#FF6B35', description:'اكتشف التفاعل بين المناطق الريفية والحضرية', capital:'', population:'', stations:7, rewards:{coins:350, diamonds:18, xp:1750} },
+        samerica: { id:7,  name:'البلاد التونسية:التوزع الجغرافي للسكان', icon:'👥', nameAr:'البلاد التونسية:التوزع الجغرافي للسكان', desc:'اكتشف توزيع السكان',                        coordinates:[0.333,0.583],zoom:1.0, color:'#00C9CC', description:'اكتشف توزيع السكان في تونس', capital:'', population:'', stations:7, rewards:{coins:400, diamonds:20, xp:2000} },
+        oceania:  { id:8,  name:'التوزّع الفلاحي للبلاد التونسية',       icon:'🌾', nameAr:'التوزّع الفلاحي للبلاد التونسية',       desc:'اكتشف النشاط الفلاحي',                     coordinates:[0.875,0.639],zoom:1.0, color:'#FF69B4', description:'اكتشف التوزيع الجغرافي للنشاط الفلاحي', capital:'', population:'', stations:7, rewards:{coins:450, diamonds:22, xp:2250} },
+        poles:    { id:9,  name:'الصناعة في البلاد التونسية',            icon:'🏭', nameAr:'الصناعة في البلاد التونسية',            desc:'اكتشف الصناعة في تونس',                    coordinates:[0.5,0.111],  zoom:0.9, color:'#CCE5FF', description:'اكتشف أهمية الصناعة والتوزيع الصناعي في تونس', capital:'', population:'', stations:7, rewards:{coins:500, diamonds:25, xp:2500} },
+        world:    { id:10, name:'التجارة الخارجية التونسية',             icon:'🤝', nameAr:'التجارة الخارجية التونسية',             desc:'المرحلة النهائية',                          coordinates:[0.5,0.389],  zoom:0.6, color:'#FFD700', description:'اكتشف الصادرات والواردات والميزان التجاري', capital:'', population:'', stations:7, rewards:{coins:1000, diamonds:50, xp:5000} }
+    };
+
+    const STAGE_ZONES = {
+        tunisia:  { areas:[{ bounds:[[0.5,0.28],[0.56,0.36]], color:'#00D68F', label:'المجال الجغرافي' }] },
+        maghreb:  { areas:[{ bounds:[[0.45,0.25],[0.58,0.4]], color:'#FFD700', label:'المجال الجغرافي للمغرب العربي' }] },
+        africa:   { areas:[{ bounds:[[0.45,0.4],[0.68,0.78]], color:'#FF3366', label:'المجال الجغرافي للبلاد التونسية' }] },
+        europe:   { areas:[{ bounds:[[0.45,0.12],[0.62,0.3]], color:'#00AAFF', label:'المشهد الريفي المحلي' }] },
+        asia:     { areas:[{ bounds:[[0.62,0.18],[0.92,0.55]], color:'#9B59B6', label:'المشهد الحضري' }] },
+        namerica: { areas:[{ bounds:[[0.08,0.12],[0.35,0.42]], color:'#FF6B35', label:'العلاقة بين الريف و المدينة' }] },
+        samerica: { areas:[{ bounds:[[0.18,0.45],[0.4,0.82]], color:'#00C9CC', label:'البلاد التونسية:التوزع الجغرافي للسكان' }] },
+        oceania:  { areas:[{ bounds:[[0.8,0.55],[0.96,0.82]], color:'#FF69B4', label:'التوزّع الفلاحي للبلاد التونسية' }] },
+        poles:    { areas:[{ bounds:[[0.0,0.0],[1.0,0.12]], color:'#CCE5FF', label:'الصناعة في البلاد التونسية',fillOpacity:.6 },{ bounds:[[0.0,0.88],[1.0,1.0]], color:'#CCE5FF', label:'الصناعة في البلاد التونسية',fillOpacity:.6 }] },
+        world:    { areas:[{ bounds:[[0.02,0.02],[0.98,0.98]], color:'#FFD700', label:'التجارة الخارجية التونسية', fillOpacity:.1 }] }
+    };
+
+    // Coordinates in data are normalized as [x, y] (fractions of image width/height)
+    function toMapPoint(c){ return L.latLng(c[1]*mapImageSize.height, c[0]*mapImageSize.width); }
+    function toMapBounds(b){ const s=toMapPoint(b[0]),e=toMapPoint(b[1]); return[[s.lat,s.lng],[e.lat,e.lng]]; }
+
+    function loadImageSize(url){ return new Promise((res,rej)=>{ const img=new Image(); img.onload=()=>res({width:img.naturalWidth,height:img.naturalHeight}); img.onerror=()=>rej(new Error('failed')); img.src=url; }); }
+    function updateMapBoundsFromSize(s){ mapImageSize=s; mapImageBounds=[[0,0],[s.height,s.width]]; mapImageCenter=L.latLng(s.height/2,s.width/2); }
+
+    function updateMarkersVisibility(stageKey){ Object.keys(markers).forEach(k=>{ const m=markers[k]; if(stageKey&&k!==stageKey){ if(map.hasLayer(m)) map.removeLayer(m); } else if(!map.hasLayer(m)) m.addTo(map); }); }
+
+    function setMapImage(url, focusStageKey){
+        if(!map) return Promise.resolve();
+        if(url===currentMapImage){ updateMarkersVisibility(focusStageKey); return Promise.resolve(); }
+        return loadImageSize(url).then(size=>{
+            updateMapBoundsFromSize(size);
+            if(currentImageOverlay) map.removeLayer(currentImageOverlay);
+            currentImageOverlay=L.imageOverlay(url,mapImageBounds).addTo(map);
+            currentMapImage=url;
+            map.fitBounds(mapImageBounds,{animate:true,duration:.6});
+            map.setMaxBounds(mapImageBounds);
+            map.options.maxBoundsViscosity=1.0;
+            updateMarkersVisibility(focusStageKey);
+        }).catch(()=>showToast('تعذر تحميل الخريطة','error'));
+    }
+
+    function initMap(){
+        loadImageSize(IMAGE_URL).then(size=>{
+            updateMapBoundsFromSize(size);
+            map=L.map('world-map',{crs:L.CRS.Simple,minZoom:0,maxZoom:3,zoomSnap:.25,zoomDelta:.25,attributionControl:false});
+            currentImageOverlay=L.imageOverlay(IMAGE_URL,mapImageBounds).addTo(map);
+            currentMapImage=IMAGE_URL;
+            map.fitBounds(mapImageBounds);
+            map.setMaxBounds(mapImageBounds);
+            map.options.maxBoundsViscosity=1.0;
+            zoneLayerGroup=L.layerGroup().addTo(map);
+            traceLayerGroup=L.layerGroup().addTo(map);
+
+            Object.keys(STAGES_DATA).forEach(key=>{
+                const s=STAGES_DATA[key];
+                const marker=L.circleMarker(toMapPoint(s.coordinates),{radius:14,fillColor:s.color,color:'#fff',weight:4,opacity:1,fillOpacity:.9}).addTo(map);
+                marker.bindPopup(`
+                    <div style="text-align:center;color:#fff;font-family:'Nunito',sans-serif">
+                        <div style="font-size:2.4em;margin-bottom:6px">${s.icon}</div>
+                        <strong style="font-family:'Fredoka One',cursive;font-size:1.1em;color:${s.color}">${s.name}</strong><br>
+                        <small style="color:rgba(255,255,255,.6)">المرحلة ${s.id}</small><br>
+                        <button onclick="startStage('${key}')" style="margin-top:10px;padding:10px 20px;background:linear-gradient(135deg,${s.color},${s.color}cc);color:#1A0050;border:none;border-radius:20px;cursor:pointer;font-weight:800;font-family:'Fredoka One',cursive;font-size:1rem">استكشف! 🚀</button>
+                    </div>`);
+                markers[key]=marker;
+            });
+
+            map.on('mousemove',e=>updateCoordinates(e.latlng,e.containerPoint));
+            map.on('mouseout',()=>{ const c=document.getElementById('cursor-coordinates'); if(c) c.style.display='none'; });
+            map.on('moveend',()=>updateCoordinates(map.getCenter()));
+            initButtons();
+        }).catch(()=>showToast('تعذر تحميل الخريطة','error'));
+    }
+
+    function initButtons(){
+        document.getElementById('zoom-world').addEventListener('click',()=>{
+            clearOverlays();
+            setMapImage(IMAGE_URL).then(()=>{ if(mapImageBounds) map.fitBounds(mapImageBounds,{animate:true,duration:1}); });
+            updateGuideMessage('مرحباً بك في خريطة العالم! اختر مرحلة للبدء 🌍');
+            clearStageInfo();
+        });
+        document.getElementById('zoom-tunisia').addEventListener('click',()=>selectStage('tunisia'));
+        document.getElementById('zoom-africa').addEventListener('click',()=>selectStage('africa'));
+        document.getElementById('zoom-europe').addEventListener('click',()=>selectStage('europe'));
+        document.getElementById('zoom-asia').addEventListener('click',()=>selectStage('asia'));
+        document.getElementById('stage-selector').addEventListener('change',e=>{ if(e.target.value) selectStage(e.target.value); });
+    }
+
+    function loadUserProgress(){
+        const d=JSON.parse(localStorage.getItem('user_data')||'{}');
+        document.getElementById('user-xp').textContent=d.xp||0;
+        document.getElementById('user-coins').textContent=d.coins||0;
+        const dia=document.getElementById('user-diamonds');
+        if(dia) dia.textContent=d.diamonds||0;
+    }
+
+    function selectStage(stageKey){
+        const stage=STAGES_DATA[stageKey];
+        if(!stage||isAnimating) return;
+        isAnimating=true;
+        document.getElementById('stage-selector').value=stageKey;
+        const useTunisiaMap=stageKey==='tunisia';
+        const targetImage=useTunisiaMap?TUNISIA_IMAGE_URL:IMAGE_URL;
+        const globe=document.getElementById('globe-spin');
+        globe.classList.add('active');
+
+        setMapImage(targetImage,useTunisiaMap?'tunisia':null).then(()=>{
+            const targetLatLng=useTunisiaMap?mapImageCenter:toMapPoint(stage.coordinates);
+            drawAnimatedTrace(map.getCenter(),targetLatLng,1400);
+            animateVehicleTo(targetLatLng,1400,()=>{
+                map.flyTo(targetLatLng,stage.zoom,{duration:1.1,easeLinearity:.2});
+                map.once('moveend',()=>{
+                    highlightZone(stageKey);
+                    updateGuideMessage(`مرحباً بك في ${stage.name}! المرحلة ${stage.id} من رحلتك 🎉`);
+                    displayStageInfo(stage,stageKey);
+                    bounceVehicle();
+                    globe.classList.remove('active');
+                    isAnimating=false;
+                    if(markers[stageKey]) setTimeout(()=>markers[stageKey].openPopup(),200);
+                });
+            });
+        });
+    }
+
+    function displayStageInfo(stage, stageKey){
+        document.getElementById('stage-info').innerHTML=`
+            <div style="background:rgba(255,255,255,.05);border-radius:16px;padding:16px;border:2px solid ${stage.color}">
+                <div style="font-size:3rem">${stage.icon}</div>
+                <div style="font-family:'Fredoka One',cursive;font-size:1.3rem;color:${stage.color};margin:8px 0">المرحلة ${stage.id}: ${stage.name}</div>
+                <p style="font-size:.85rem;color:rgba(255,255,255,.6);margin-bottom:12px">${stage.description}</p>
+                <button onclick="startStage('${stageKey}')" style="width:100%;padding:12px;background:linear-gradient(135deg,${stage.color},${stage.color}99);color:#1A0050;border:none;border-radius:14px;font-family:'Fredoka One',cursive;font-size:1.1rem;cursor:pointer;font-weight:800">🚀 ابدأ المرحلة!</button>
+            </div>`;
+    }
+
+    function startStage(stageKey){
+        const s=STAGES_DATA[stageKey];
+        if(s){ showToast(`جاري تحميل ${s.nameAr}... 🎮`,'success'); openGameModal(stageKey,s.nameAr); }
+    }
+
+    async function probeUrl(url){
+        // HEAD is cheaper, but some servers block it; fall back to GET.
+        try {
+            const head=await fetch(url,{method:'HEAD',cache:'no-store'});
+            if(head.ok) return true;
+            if(head.status && head.status !== 405) return false;
+        } catch(_){ /* ignore */ }
+        try {
+            const get=await fetch(url,{method:'GET',cache:'no-store'});
+            return !!get.ok;
+        } catch(_){
+            return false;
+        }
+    }
+
+    async function resolveStageUrl(stageId){
+        const basePages={
+            tunisia:'stage-1-tunisia.html',
+            maghreb:'stage-2-maghreb.html',
+            africa:'stage-3-africa.html',
+            europe:'stage-4-europe.html',
+            asia:'stage-5-asia.html',
+            namerica:'stage-6-namerica.html',
+            samerica:'stage-7-samerica.html',
+            oceania:'stage-8-oceania.html',
+            poles:'stage-9-poles.html',
+            world:'stage-10-world.html'
+        };
+        const p=basePages[stageId];
+        if(!p) return null;
+
+        const candidates=[
+            p,
+            `./${p}`,
+            `stages/${p}`,
+            `./stages/${p}`
+        ];
+
+        for(const c of candidates){
+            if(await probeUrl(c)) return c;
+        }
+        return null;
+    }
+
+    async function openGameModal(stageId, stageName){
+        document.getElementById('game-modal-title').textContent=`🎮 لعبة ${stageName}`;
+        document.getElementById('game-modal').classList.add('active');
+        const iframe=document.getElementById('game-iframe');
+        iframe.src='about:blank';
+
+        const url=await resolveStageUrl(stageId);
+        if(!url){
+            showToast('تعذر فتح المرحلة (ملف غير موجود)','error');
+            return;
+        }
+        iframe.src=url;
+    }
+
+    function closeGameModal(){ document.getElementById('game-modal').classList.remove('active'); document.getElementById('game-iframe').src=''; }
+
+    function updateGuideMessage(msg){ const node=document.getElementById('guide-message'); if(node) node.textContent=msg; }
+    function clearStageInfo(){ const n=document.getElementById('stage-info'); if(n) n.innerHTML=''; document.getElementById('stage-selector').value=''; }
+
+    function updateCoordinates(latlng, cp){
+        const zoom=map.getZoom(), x=latlng.lng, y=latlng.lat;
+        const px=mapImageSize.width?(x/mapImageSize.width*100):0;
+        const py=mapImageSize.height?(y/mapImageSize.height*100):0;
+        const t=`X:${x.toFixed(0)} (${px.toFixed(1)}%), Y:${y.toFixed(0)} (${py.toFixed(1)}%), Zoom:${zoom}`;
+        document.getElementById('coordinates').innerHTML=t;
+        const c=document.getElementById('cursor-coordinates');
+        if(c&&cp){ c.textContent=t; c.style.left=`${cp.x}px`; c.style.top=`${cp.y}px`; c.style.display='block'; }
+    }
+
+    function clearOverlays(){ zoneLayerGroup&&zoneLayerGroup.clearLayers(); traceLayerGroup&&traceLayerGroup.clearLayers(); }
+
+    function animateVehicleTo(target,dur=1500,done){
+        const v=document.getElementById('moving-vehicle'), s=map.getCenter(), t0=performance.now();
+        v.classList.add('vehicle-wiggle');
+        (function frame(now){
+            const t=Math.min(1,(now-t0)/dur), e=t*(2-t);
+            const p=map.latLngToContainerPoint([s.lat+(target.lat-s.lat)*e,s.lng+(target.lng-s.lng)*e]);
+            v.style.left=`${p.x}px`; v.style.top=`${p.y}px`;
+            if(t<1) requestAnimationFrame(frame);
+            else { v.classList.remove('vehicle-wiggle'); if(typeof done==='function') done(); }
+        })(t0);
+    }
+
+    function bounceVehicle(){ const v=document.getElementById('moving-vehicle'); v.classList.remove('vehicle-bounce'); void v.offsetWidth; v.classList.add('vehicle-bounce'); setTimeout(()=>v.classList.remove('vehicle-bounce'),520); }
+
+    function drawAnimatedTrace(start,end,dur=1400){
+        traceLayerGroup.clearLayers();
+        const poly=L.polyline([start],{className:'trace-line'}).addTo(traceLayerGroup), t0=performance.now();
+        (function step(now){
+            const t=Math.min(1,(now-t0)/dur), e=t*(2-t);
+            poly.setLatLngs([start,[start.lat+(end.lat-start.lat)*e,start.lng+(end.lng-start.lng)*e]]);
+            if(t<1) requestAnimationFrame(step); else poly.setLatLngs([start,end]);
+        })(t0);
+    }
+
+    function highlightZone(key){
+        zoneLayerGroup.clearLayers();
+        const z=STAGE_ZONES[key]; if(!z||currentMapImage!==IMAGE_URL) return;
+        z.areas.forEach(a=>{
+            const r=L.rectangle(toMapBounds(a.bounds),{color:a.color,weight:3,fillColor:a.color,fillOpacity:a.fillOpacity??z.fillOpacity??0.35,dashArray:'10,5'}).addTo(zoneLayerGroup);
+            if(a.label) r.bindTooltip(a.label,{permanent:false,direction:'center',className:'country-label'});
+            r.getElement()?.classList.add('zone-pulse');
+        });
+    }
+
+    function showToast(msg,type='success'){ const t=document.getElementById('toast'), m=document.getElementById('toast-message'); m.textContent=msg; t.className=`toast ${type}`; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
+
+    const GROQ_API_URL='php/hf-api.php';
+    function toggleChatbot(){ const c=document.getElementById('chatbot-container'); c.classList.toggle('active'); if(c.classList.contains('active')) document.getElementById('chat-input').focus(); }
+
+    function getStandardChatbotAnswer(msg){
+        const raw=(msg||'').trim();
+        if(!raw) return null;
+
+        const user=JSON.parse(localStorage.getItem('user_data')||'{}');
+        const lower=raw.toLowerCase();
+
+        // نقاطي / رصيدي
+        if(lower.includes('كم نقاطي') || lower.includes('نقاطي') || lower.includes('رصيدي')){
+            const xp=user.xp||0, coins=user.coins||0, diamonds=user.diamonds||0, level=user.level||1;
+            return `⭐ مستواك: ${level}\n✨ خبرتك (XP): ${xp}\n🪙 عملاتك: ${coins}\n💎 ماساتك: ${diamonds}`;
+        }
+
+        // المراحل المتاحة
+        if(lower.includes('ما هي المراحل') || lower.includes('المراحل المتاحة') || lower === 'المراحل'){
+            const list=Object.values(STAGES_DATA)
+                .sort((a,b)=>a.id-b.id)
+                .map(s=>`${s.icon} المرحلة ${s.id}: ${s.nameAr}`)
+                .join('\n');
+            return `هذه كل المراحل المتاحة:\n${list}\n\nاكتب اسم مرحلة (مثال: المجال الجغرافي) أو اضغط على أي مرحلة من الخريطة.`;
+        }
+
+        // كيف ألعب؟
+        if(lower.includes('كيف ألعب') || lower.includes('طريقة اللعب')){
+            return 'طريقة اللعب باختصار:\n1) اختر مرحلة من الخريطة 🌍\n2) اضغط "ابدأ المرحلة" 🚀\n3) أكمل المحطات واربح 🪙 و 💎 و XP\n\nإذا قلت لي اسم المرحلة، أعطيك نصيحة سريعة.';
+        }
+
+        // أخبرني عن مرحلة
+        if(lower.startsWith('أخبرني عن') || lower.startsWith('اخبرني عن') || lower.startsWith('احكي لي عن')){
+            const q=raw.replace(/^\s*(أخبرني عن|اخبرني عن|احكي لي عن)\s*/i,'').trim();
+            if(q){
+                const stage=Object.values(STAGES_DATA).find(s=>
+                    (s.nameAr && s.nameAr.includes(q)) ||
+                    (s.name && s.name.toLowerCase().includes(q.toLowerCase()))
+                );
+                if(stage){
+                    return `${stage.icon} ${stage.nameAr}: ${stage.description}\n\n🎁 مكافآت تقريبية: 🪙 ${stage.rewards.coins} · 💎 ${stage.rewards.diamonds} · ⭐ ${stage.rewards.xp}`;
+                }
+            }
+            return 'أكيد! قل لي اسم المرحلة بالضبط مثل: المجال الجغرافي، المشهد الحضري…';
+        }
+
+        // اختيار مرحلة
+        if(lower.includes('كيف أختار المرحلة') || (lower.includes('اختيار') && lower.includes('مرحلة'))){
+            return 'لاختيار المرحلة المناسبة:\n- ابدأ بالمرحلة الأقرب لمستواك (المرحلة الحالية/السابقة).\n- كبداية ممتازة: "المجال الجغرافي" ثم "المجال الجغرافي للمغرب العربي".\n- إذا تحب المدن/الريف: "المشهد الحضري" و "المشهد الريفي المحلي".\n\nقل لي: عمرك ومستواك (Level) وأقترح لك مرحلة.';
+        }
+
+        // ماذا أفعل الآن؟
+        if(lower.includes('ماذا أفعل الآن') || lower.includes('ماذا الآن') || lower.includes('شنو نعمل')){
+            return '✅ الآن: اختر مرحلة من الخريطة، ثم اضغط "ابدأ المرحلة".\nإذا كنت داخل مرحلة: اقرأ الدرس (PDF) ثم جرّب الاختبار.\n\nهل أنت في الخريطة أم داخل مرحلة الآن؟';
+        }
+
+        return null;
+    }
+
+    function sendChatMessage(e){
+        e.preventDefault();
+        const inp=document.getElementById('chat-input'), msg=inp.value.trim();
+        if(!msg) return;
+        addChatMessage(msg,'user');
+        inp.value='';
+
+        const standardAnswer=getStandardChatbotAnswer(msg);
+        if(standardAnswer){
+            addChatMessage(standardAnswer,'bot');
+            return;
+        }
+
+        addChatMessage('يكتب...','bot-typing');
+        getChatbotResponseFromGroq(msg);
+    }
+    const CHATBOT_HISTORY=[];
+    function detectChatLanguage(text){ return /[\u0600-\u06FF]/.test(String(text||'')) ? 'ar' : 'fr'; }
+    function escapeHtml(str){
+        return String(str)
+            .replace(/&/g,'&amp;')
+            .replace(/</g,'&lt;')
+            .replace(/>/g,'&gt;')
+            .replace(/"/g,'&quot;')
+            .replace(/'/g,'&#039;');
+    }
+    function formatChatText(text){ return escapeHtml(text).replace(/\n/g,'<br>'); }
+    function recordChatTurn(sender,text){
+        if(sender==='bot-typing') return;
+        const role = sender==='user' ? 'user' : (sender==='bot' ? 'assistant' : null);
+        if(!role) return;
+        const content=String(text||'').trim();
+        if(!content) return;
+        CHATBOT_HISTORY.push({role,content});
+        if(CHATBOT_HISTORY.length>12) CHATBOT_HISTORY.splice(0, CHATBOT_HISTORY.length-12);
+    }
+    function askQuickQuestion(q){ document.getElementById('chat-input').value=q; sendChatMessage(new Event('submit')); }
+    function addChatMessage(txt,sender){
+        const c=document.getElementById('chat-messages'), d=document.createElement('div');
+        d.className=`chat-message ${sender}`;
+        d.innerHTML=`<div>${formatChatText(txt)}</div>`;
+        c.appendChild(d);
+        c.scrollTop=c.scrollHeight;
+        recordChatTurn(sender,txt);
+    }
+    function removeChatMessage(sender){
+        const c=document.getElementById('chat-messages'), ms=c.querySelectorAll(`.chat-message.${sender}`);
+        if(ms.length) ms[ms.length-1].remove();
+    }
+
+    async function getChatbotResponseFromGroq(msg){
+        try {
+            const user=JSON.parse(localStorage.getItem('user_data')||'{}');
+            const stageKey=currentActiveStage||'tunisia';
+            const s=STAGES_DATA[stageKey]||{};
+            const lang=(user.language==='ar'||user.language==='fr') ? user.language : detectChatLanguage(msg);
+            const context={
+                stage:s.id||1,
+                stage_id:s.id||1,
+                stage_key:stageKey,
+                stage_title:s.nameAr||s.name||'',
+                topic:s.nameAr||s.name||'',
+                station:null,
+                language:lang
+            };
+            const r=await fetch(GROQ_API_URL,{
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({message:msg, language:lang, context, history:CHATBOT_HISTORY.slice(-8)})
+            });
+            const data=await r.json();
+            removeChatMessage('bot-typing');
+            if(data.success&&data.message) addChatMessage(String(data.message).trim()||'مرحباً! 👋','bot');
+            else addChatMessage('عذراً، جرب مرة أخرى! 🔄','bot');
+        } catch(err){ removeChatMessage('bot-typing'); addChatMessage('عذراً 😔 حدث خطأ في الاتصال!','bot'); }
+    }
+
+    let stationStates={}, currentActiveStage='tunisia';
+
+    function buildMetroLine(){
+        const c=document.getElementById('metro-line');
+        Object.keys(STAGES_DATA).forEach((key,i)=>{
+            const s=STAGES_DATA[key], isActive=key==='tunisia';
+            stationStates[key]={completed:false,active:isActive,locked:!isActive,index:i};
+            const el=document.createElement('div');
+            el.className=`metro-station ${isActive?'active':'locked'}`;
+            el.id=`station-${key}`;
+            el.addEventListener('click',()=>{ if(!stationStates[key].locked) selectStageAndUpdateMetro(key); });
+            el.innerHTML=`<div class="station-circle">${s.icon}</div><div class="station-label">${s.name}</div>`;
+            c.appendChild(el);
+        });
+    }
+
+    const GUIDE_MESSAGES={
+        tunisia:'🗺️ أهلاً بك! نبدأ مع: المجال الجغرافي.',
+        maghreb:'🗺️ ممتاز! الآن: المجال الجغرافي للمغرب العربي.',
+        africa:'🌍 رائع! الآن: المجال الجغرافي للبلاد التونسية.',
+        europe:'🏘️ جميل! الآن: المشهد الريفي المحلي.',
+        asia:'🏙️ ممتاز! الآن: المشهد الحضري.',
+        namerica:'🔄 رائع! الآن: العلاقة بين الريف و المدينة.',
+        samerica:'👥 ممتاز! الآن: البلاد التونسية:التوزع الجغرافي للسكان.',
+        oceania:'🌾 رائع! الآن: التوزّع الفلاحي للبلاد التونسية.',
+        poles:'🏭 ممتاز! الآن: الصناعة في البلاد التونسية.',
+        world:'🤝 المرحلة الأخيرة! الآن: التجارة الخارجية التونسية. 🎉'
+    };
+
+    function addGuideMessage(txt){ const c=document.getElementById('guide-messages'); if(!c) return; const d=document.createElement('div'); d.className='guide-message'; d.textContent=txt; const ex=c.querySelectorAll('.guide-message'); if(ex.length>=5) ex[0].remove(); c.appendChild(d); c.scrollTop=c.scrollHeight; }
+
+    function selectStageAndUpdateMetro(key){
+        const keys=Object.keys(STAGES_DATA), idx=keys.indexOf(key), old=currentActiveStage;
+        stationStates[old]={...stationStates[old],active:false,completed:true,locked:false};
+        currentActiveStage=key;
+        stationStates[key]={...stationStates[key],active:true,completed:false,locked:false};
+        keys.forEach((k,i)=>{ if(i>idx) stationStates[k]={...stationStates[k],locked:true,active:false,completed:false}; });
+        updateMetroVisualState();
+        if(GUIDE_MESSAGES[key]) addGuideMessage(GUIDE_MESSAGES[key]);
+        selectStage(key);
+    }
+
+    function updateMetroVisualState(){
+        Object.keys(STAGES_DATA).forEach(k=>{
+            const el=document.getElementById(`station-${k}`); if(!el) return;
+            el.classList.remove('active','locked','completed');
+            if(stationStates[k].active) el.classList.add('active');
+            else if(stationStates[k].completed) el.classList.add('completed');
+            else if(stationStates[k].locked) el.classList.add('locked');
+        });
+    }
+
+    function setupSidebarTabs(){
+        document.querySelectorAll('.sidebar-tab').forEach(tab=>{
+            tab.addEventListener('click',function(){
+                document.querySelectorAll('.sidebar-tab').forEach(t=>t.classList.remove('active'));
+                document.querySelectorAll('.panel-content').forEach(p=>p.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById(`${this.getAttribute('data-panel')}-panel`).classList.add('active');
+            });
+        });
+    }
+
+    function openStagesModal(){ document.getElementById('stages-modal').classList.add('active'); renderStagesList(); document.body.style.overflow='hidden'; }
+    function closeStagesModal(){ document.getElementById('stages-modal').classList.remove('active'); document.body.style.overflow='auto'; }
+    function selectStageAndOpenGame(k){ closeStagesModal(); startStage(k); }
+
+    function renderStagesList(){
+        const c=document.getElementById('stages-container'); if(!c) return;
+        c.innerHTML=Object.entries(STAGES_DATA).map(([key,s])=>`
+            <div class="stage-card" onclick="selectStageAndOpenGame('${key}')">
+                <div class="stage-number">${s.icon}</div>
+                <div class="stage-title">#${s.id} ${s.name}</div>
+                <div class="stage-desc">${s.description}</div>
+                <div class="stage-stats">
+                    <div class="stage-stat">🪙 ${s.rewards.coins}</div>
+                    <div class="stage-stat">💎 ${s.rewards.diamonds}</div>
+                    <div class="stage-stat">⭐ ${s.rewards.xp}</div>
+                    <div class="stage-stat">🎯 ${s.stations}</div>
+                </div>
+                <button class="stage-btn" onclick="event.stopPropagation();startStage('${key}')">▶️ ابدأ الآن!</button>
+            </div>`).join('');
+    }
+
+    document.addEventListener('keydown',e=>{
+        if(e.key==='Escape'){
+            closeGameModal();
+            closeStagesModal();
+            if(document.getElementById('chatbot-container').classList.contains('active')) toggleChatbot();
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded',()=>{
+        const m=document.getElementById('stages-modal');
+        if(m) m.addEventListener('click',e=>{ if(e.target===m) closeStagesModal(); });
+    });
+
+    window.selectStage=selectStage;
+    window.startStage=startStage;
+    window.toggleChatbot=toggleChatbot;
+    window.sendChatMessage=sendChatMessage;
+    window.askQuickQuestion=askQuickQuestion;
+    window.closeGameModal=closeGameModal;
+    window.openStagesModal=openStagesModal;
+    window.closeStagesModal=closeStagesModal;
+    window.selectStageAndOpenGame=selectStageAndOpenGame;
+
+    document.addEventListener('DOMContentLoaded',()=>{
+        setupSidebarTabs();
+        buildMetroLine();
+        initMap();
+        loadUserProgress();
+        renderStagesList();
+    });
+    </script>
+</body>
+</html>

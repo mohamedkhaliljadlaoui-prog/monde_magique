@@ -1,0 +1,493 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ðŸŒ Tous les Ã‰tapes - Monde Magique</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/arabic.css">
+    <link rel="stylesheet" href="css/cartoon-theme.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(180deg, #0D0221 0%, #1A0033 40%, #0D0221 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: headerSlide 0.8s ease-out;
+        }
+
+        @keyframes headerSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #2196F3 0%, #9C27B0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .stat {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
+            border: 2px solid rgba(33, 150, 243, 0.2);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2196F3;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .stages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .stage-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 35px rgba(33, 150, 243, 0.15);
+            border: 2px solid rgba(33, 150, 243, 0.1);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+            animation: cardAppear 0.6s ease-out backwards;
+        }
+
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .stage-card:nth-child(1) { animation-delay: 0.1s; }
+        .stage-card:nth-child(2) { animation-delay: 0.2s; }
+        .stage-card:nth-child(3) { animation-delay: 0.3s; }
+        .stage-card:nth-child(4) { animation-delay: 0.4s; }
+        .stage-card:nth-child(5) { animation-delay: 0.5s; }
+        .stage-card:nth-child(6) { animation-delay: 0.6s; }
+        .stage-card:nth-child(7) { animation-delay: 0.7s; }
+        .stage-card:nth-child(8) { animation-delay: 0.8s; }
+        .stage-card:nth-child(9) { animation-delay: 0.9s; }
+        .stage-card:nth-child(10) { animation-delay: 1s; }
+
+        .stage-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .stage-card:hover {
+            transform: translateY(-15px) scale(1.05);
+            box-shadow: 0 20px 50px rgba(33, 150, 243, 0.3);
+            border-color: rgba(33, 150, 243, 0.4);
+        }
+
+        .stage-card:active {
+            transform: translateY(-10px) scale(1.02);
+        }
+
+        .stage-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #2196F3 0%, #9C27B0 100%);
+            color: white;
+            border-radius: 50%;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .stage-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #2196F3;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stage-description {
+            color: #666;
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stage-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .info-item {
+            background: linear-gradient(135deg, #E3F2FD 0%, #f0f9ff 100%);
+            padding: 12px 15px;
+            border-radius: 10px;
+            border-left: 4px solid #2196F3;
+            text-align: center;
+        }
+
+        .info-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2196F3;
+        }
+
+        .info-label {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .stage-btn {
+            width: 100%;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #2196F3 0%, #9C27B0 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.25);
+            position: relative;
+            z-index: 1;
+        }
+
+        .stage-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(33, 150, 243, 0.35);
+        }
+
+        .stage-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #2196F3 0%, #9C27B0 100%);
+            width: 0%;
+            animation: fillProgress 3s ease-out;
+            z-index: 100;
+        }
+
+        @keyframes fillProgress {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8787 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 30px;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .stages-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-bar {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body class="cartoon-theme">
+    <div class="progress-bar"></div>
+    
+    <div class="container">
+        <button class="back-btn" onclick="window.location.href='dashboard.html'">
+            <i class="fas fa-arrow-left"></i> Retour au Dashboard
+        </button>
+
+        <div class="header">
+            <h1>ðŸŒ Tous les Ã‰tapes de ton Aventure</h1>
+            <p>Choisis une Ã©tape et commence Ã  explorer le monde magique!</p>
+            
+            <div class="stats-bar">
+                <div class="stat">
+                    <div class="stat-value">10</div>
+                    <div class="stat-label">ðŸŒ Ã‰tapes Ã  DÃ©couvrir</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">70</div>
+                    <div class="stat-label">ðŸŽ¯ Stations Totales</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">âˆž</div>
+                    <div class="stat-label">ðŸŽ“ Choses Ã  Apprendre</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stages-grid" id="stages-grid">
+            <!-- Les stages seront gÃ©nÃ©rÃ©s ici -->
+        </div>
+    </div>
+
+    <script>
+        // DonnÃ©es des stages
+        const STAGES_DATA = {
+            tunisia: {
+                id: 1,
+                name: 'ØªÙˆÙ†Ø³',
+                icon: 'ðŸ‡¹ðŸ‡³',
+                desc: 'DÃ©couvre la Tunisie, ton point de dÃ©part!',
+                description: 'Ø§ÙƒØªØ´Ù ØªÙˆÙ†Ø³ Ø§Ù„Ø®Ø¶Ø±Ø§Ø¡ØŒ Ø¨Ù„Ø¯ Ø§Ù„Ø­Ø¶Ø§Ø±Ø§Øª ÙˆØ§Ù„ØªØ§Ø±ÙŠØ® Ø§Ù„Ø¹Ø±ÙŠÙ‚. Ø§Ø³ØªÙƒØ´Ù Ù…Ø¹Ø§Ù„Ù…Ù‡Ø§ Ø§Ù„Ø£Ø«Ø±ÙŠØ© ÙˆØ´ÙˆØ§Ø·Ø¦Ù‡Ø§ Ø§Ù„Ø¬Ù…ÙŠÙ„Ø©.',
+                rewards: { coins: 100, diamonds: 5, xp: 500 }
+            },
+            maghreb: {
+                id: 2,
+                name: 'Ø§Ù„Ù…ØºØ±Ø¨ Ø§Ù„Ø¹Ø±Ø¨ÙŠ',
+                icon: 'ðŸŒ',
+                desc: 'Explore l\'Afrique du Nord magique!',
+                description: 'Ø§Ø³ØªÙƒØ´Ù Ø¯ÙˆÙ„ Ø§Ù„Ù…ØºØ±Ø¨ Ø§Ù„Ø¹Ø±Ø¨ÙŠ Ø§Ù„Ø®Ù…Ø³Ø©: ØªÙˆÙ†Ø³ØŒ Ø§Ù„Ø¬Ø²Ø§Ø¦Ø±ØŒ Ø§Ù„Ù…ØºØ±Ø¨ØŒ Ù„ÙŠØ¨ÙŠØ§ ÙˆÙ…ÙˆØ±ÙŠØªØ§Ù†ÙŠØ§.',
+                rewards: { coins: 150, diamonds: 8, xp: 750 }
+            },
+            africa: {
+                id: 3,
+                name: 'Ø£ÙØ±ÙŠÙ‚ÙŠØ§',
+                icon: 'ðŸ¦',
+                desc: 'Plonge dans la beautÃ© du continent noir!',
+                description: 'Ø§ÙƒØªØ´Ù Ø§Ù„Ù‚Ø§Ø±Ø© Ø§Ù„Ø£ÙØ±ÙŠÙ‚ÙŠØ© Ø¨ØªÙ†ÙˆØ¹Ù‡Ø§ Ø§Ù„Ø«Ù‚Ø§ÙÙŠ ÙˆØ§Ù„Ø·Ø¨ÙŠØ¹ÙŠ Ø§Ù„ØºÙ†ÙŠ.',
+                rewards: { coins: 200, diamonds: 10, xp: 1000 }
+            },
+            europe: {
+                id: 4,
+                name: 'Ø£ÙˆØ±ÙˆØ¨Ø§',
+                icon: 'ðŸ‡ªðŸ‡º',
+                desc: 'Visite les chÃ¢teaux et villes historiques!',
+                description: 'Ø§Ø³ØªÙƒØ´Ù Ø§Ù„Ù‚Ø§Ø±Ø© Ø§Ù„Ø£ÙˆØ±ÙˆØ¨ÙŠØ© Ø¨ØªØ§Ø±ÙŠØ®Ù‡Ø§ Ø§Ù„Ø¹Ø±ÙŠÙ‚ ÙˆØ­Ø¶Ø§Ø±Ø§ØªÙ‡Ø§ Ø§Ù„Ù…ØªÙ†ÙˆØ¹Ø©.',
+                rewards: { coins: 250, diamonds: 12, xp: 1250 }
+            },
+            asia: {
+                id: 5,
+                name: 'Ø¢Ø³ÙŠØ§',
+                icon: 'ðŸ—¾',
+                desc: 'DÃ©couvre la plus grande continents!',
+                description: 'Ø§ÙƒØªØ´Ù Ø¢Ø³ÙŠØ§ØŒ Ø£ÙƒØ¨Ø± Ù‚Ø§Ø±Ø© ÙÙŠ Ø§Ù„Ø¹Ø§Ù„Ù… Ø¨Ø«Ù‚Ø§ÙØ§ØªÙ‡Ø§ Ø§Ù„Ù…ØªÙ†ÙˆØ¹Ø©.',
+                rewards: { coins: 300, diamonds: 15, xp: 1500 }
+            },
+            namerica: {
+                id: 6,
+                name: 'Ø£Ù…Ø±ÙŠÙƒØ§ Ø§Ù„Ø´Ù…Ø§Ù„ÙŠØ©',
+                icon: 'ðŸ—½',
+                desc: 'Explore les paysages grandioses!',
+                description: 'Ø§Ø³ØªÙƒØ´Ù Ø£Ù…Ø±ÙŠÙƒØ§ Ø§Ù„Ø´Ù…Ø§Ù„ÙŠØ© Ù…Ø¹ Ù…Ù†Ø§Ø¸Ø±Ù‡Ø§ Ø§Ù„Ø·Ø¨ÙŠØ¹ÙŠØ© Ø§Ù„Ø±Ø§Ø¦Ø¹Ø©.',
+                rewards: { coins: 300, diamonds: 15, xp: 1500 }
+            },
+            samerica: {
+                id: 7,
+                name: 'Ø£Ù…Ø±ÙŠÙƒØ§ Ø§Ù„Ø¬Ù†ÙˆØ¨ÙŠØ©',
+                icon: 'ðŸŒ´',
+                desc: 'Explore la jungle et les civilisations!',
+                description: 'Ø§Ø³ØªÙƒØ´Ù Ø£Ù…Ø±ÙŠÙƒØ§ Ø§Ù„Ø¬Ù†ÙˆØ¨ÙŠØ© Ø¨Ø¬Ù†ØªÙ‡Ø§ ÙˆØ«Ù‚Ø§ÙØªÙ‡Ø§ Ø§Ù„ÙØ±ÙŠØ¯Ø©.',
+                rewards: { coins: 300, diamonds: 15, xp: 1500 }
+            },
+            oceania: {
+                id: 8,
+                name: 'Ø£ÙˆÙ‚ÙŠØ§Ù†ÙˆØ³ÙŠØ§',
+                icon: 'ðŸï¸',
+                desc: 'DÃ©couvre les Ã®les paradisiaques!',
+                description: 'Ø§Ø³ØªÙƒØ´Ù Ø£ÙˆÙ‚ÙŠØ§Ù†ÙˆØ³ÙŠØ§ ÙˆØ¬Ø²Ø±Ù‡Ø§ Ø§Ù„Ø³Ø§Ø­Ø±Ø©.',
+                rewards: { coins: 300, diamonds: 15, xp: 1500 }
+            },
+            poles: {
+                id: 9,
+                name: 'Ø§Ù„Ù‚Ø·Ø¨ÙŠÙ†',
+                icon: 'â„ï¸',
+                desc: 'Visite les rÃ©gions glaciales mystÃ©rieuses!',
+                description: 'Ø§Ø³ØªÙƒØ´Ù Ø§Ù„Ù‚Ø·Ø¨ÙŠÙ† Ø¨Ø·Ø¨ÙŠØ¹ØªÙ‡Ù…Ø§ Ø§Ù„Ø®Ø§ØµØ© ÙˆØ§Ù„ÙØ±ÙŠØ¯Ø©.',
+                rewards: { coins: 300, diamonds: 15, xp: 1500 }
+            },
+            world: {
+                id: 10,
+                name: 'Ø§Ù„Ø¹Ø§Ù„Ù… ÙƒØ§Ù…Ù„Ø§Ù‹',
+                icon: 'ðŸŒŽ',
+                desc: 'CÃ©lÃ¨bre ton tour du monde complet!',
+                description: 'Ø§Ø³ØªÙƒØ´Ø§Ù Ø§Ù„Ø¹Ø§Ù„Ù… ÙƒØ§Ù…Ù„Ø§Ù‹ ÙˆØ§Ù„Ø§Ø­ØªÙØ§Ù„ Ø¨Ø¥Ù†Ø¬Ø§Ø²Ùƒ!',
+                rewards: { coins: 500, diamonds: 50, xp: 5000 }
+            }
+        };
+
+        // GÃ©nÃ©rer les cartes
+        function renderStages() {
+            const grid = document.getElementById('stages-grid');
+            grid.innerHTML = Object.entries(STAGES_DATA).map(([key, stage]) => `
+                <div class="stage-card" onclick="startStage('${key}')">
+                    <div class="stage-number">${stage.icon}</div>
+                    <div class="stage-title">
+                        <span>#${stage.id}</span> ${stage.name}
+                    </div>
+                    <div class="stage-description">${stage.desc}</div>
+                    
+                    <div class="stage-info">
+                        <div class="info-item">
+                            <div class="info-value">ðŸª™${stage.rewards.coins}</div>
+                            <div class="info-label">PiÃ¨ces</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-value">ðŸ’Ž${stage.rewards.diamonds}</div>
+                            <div class="info-label">Diamants</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-value">â­${stage.rewards.xp}</div>
+                            <div class="info-label">XP</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-value">ðŸŽ¯7</div>
+                            <div class="info-label">Stations</div>
+                        </div>
+                    </div>
+                    
+                    <button class="stage-btn">
+                        <i class="fas fa-play-circle"></i> Commencer
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // DÃ©marrer un stage
+        function startStage(stageKey) {
+            const stagePages = {
+                tunisia: 'stage-1-tunisia.html',
+                maghreb: 'stage-2-maghreb.html',
+                africa: 'stage-3-africa.html',
+                europe: 'stage-4-europe.html',
+                asia: 'stage-5-asia.html',
+                namerica: 'stage-6-namerica.html',
+                samerica: 'stage-7-samerica.html',
+                oceania: 'stage-8-oceania.html',
+                poles: 'stage-9-poles.html',
+                world: 'stage-10-world.html'
+            };
+
+            const targetPage = stagePages[stageKey];
+            if (targetPage) {
+                window.location.href = targetPage;
+            }
+        }
+
+        // Initialiser au chargement
+        document.addEventListener('DOMContentLoaded', renderStages);
+    </script>
+    
+    <!-- Footer -->
+    <div style="text-align: center; padding: 20px; background: rgba(0,0,0,0.05); margin-top: 20px; font-size: 0.9em; opacity: 0.7;">
+        <p>Created by nourchen mehrez - wiem salhi</p>
+    </div>
+</body>
+</html>
+

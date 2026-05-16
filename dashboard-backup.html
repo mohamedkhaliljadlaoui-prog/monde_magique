@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌍 خريطة العالم التفاعلية - Monde Magique</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/arabic.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            margin: 0;
+        }
+        
+        .logo-icon {
+            font-size: 2rem;
+        }
+        
+        .nav-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .stage-selector {
+            padding: 10px 15px;
+            border: 2px solid white;
+            border-radius: 8px;
+            font-size: 1rem;
+            min-width: 250px;
+            background: rgba(255,255,255,0.9);
+        }
+        
+        .action-btn {
+            padding: 10px 20px;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .main-container {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 100px);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 350px;
+            background: linear-gradient(180deg, #fff 0%, #f8f9fa 100%);
+            border-left: 5px solid #ff6b6b;
+            box-shadow: 5px 0 20px rgba(0,0,0,0.2);
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        
+        .sidebar-header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8787 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 3px solid #ff5252;
+        }
+        
+        .sidebar-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .user-progress {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        
+        .progress-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            font-size: 0.9rem;
+        }
+        
+        .stages-container {
+            padding: 20px;
+        }
+        
+        .stage-card {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 5px solid #667eea;
+        }
+        
+        .stage-card:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .stage-card.active {
+            border-left-color: #2ecc71;
+            background: #f0fff4;
+        }
+        
+        .stage-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .stage-desc {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        
+        .stage-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            transition: all 0.3s;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stage-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .stage-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .stage-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+        }
+        
+        .map-container {
+            flex: 3;
+            position: relative;
+        }
+        
+        #world-map {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .info-panel {
+            flex: 1;
+            min-width: 350px;
+            background: white;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .info-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .guide-container {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-right: 4px solid #e74c3c;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .guide-avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+        
+        .guide-text {
+            flex: 1;
+            font-style: italic;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+        
+        .info-stage-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+        
+        .info-stage-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+        }
+        
+        .stage-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        
+        .stage-info-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .stage-description {
+            color: #7f8c8d;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+        
+        .stage-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-box {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .stat-box strong {
+            display: block;
+            color: #667eea;
+            font-size: 0.9rem;
+        }
+        
+        .explore-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .explore-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .coordinates-display {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .zoom-buttons {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .custom-zoom-btn {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #333;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        
+        .custom-zoom-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.1);
+            border-color: #667eea;
+        }
+        
+        /* Guide au coin de la carte + véhicule animé */
+        .corner-guide {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 1100;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            pointer-events: none;
+        }
+        .globe-spin {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #a0c4ff 0%, #5e81ff 60%, #3b5bdb 100%);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            opacity: 0.9;
+        }
+        .globe-spin.active {
+            animation: spin 1.2s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .moving-vehicle {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transform: translate(-50%, -50%);
+            z-index: 1100;
+            pointer-events: none;
+        }
+        .moving-vehicle.vehicle-wiggle {
+            animation: wiggle 0.4s ease-in-out infinite;
+        }
+        @keyframes wiggle {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            25% { transform: translate(-50%, -50%) rotate(2deg); }
+            50% { transform: translate(-50%, -50%) rotate(0deg); }
+            75% { transform: translate(-50%, -50%) rotate(-2deg); }
+            100% { transform: translate(-50%, -50%) rotate(0deg); }
+        }
+        .moving-vehicle.vehicle-bounce {
+            animation: bounce 0.5s ease-out;
+        }
+        @keyframes bounce {
+            0% { transform: translate(-50%, -60%) scale(0.9); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1.0); }
+        }
+        
+        /* Style de mise en évidence des zones */
+        @keyframes zonePulse {
+            0% { fill-opacity: 0.25; }
+            50% { fill-opacity: 0.45; }
+            100% { fill-opacity: 0.25; }
+        }
+        .zone-pulse {
+            animation: zonePulse 1.6s ease-in-out 2;
+        }
+        
+        /* Trace animée entre positions */
+        path.trace-line {
+            stroke: #ff4757;
+            stroke-width: 4;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        
+        /* Chatbot Styles */
+        #chatbot-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.5);
+            z-index: 9999;
+            transition: all 0.3s;
+            animation: chatbotPulse 2s infinite;
+        }
+        
+        @keyframes chatbotPulse {
+            0%, 100% { box-shadow: 0 5px 20px rgba(102, 126, 234, 0.5); }
+            50% { box-shadow: 0 5px 30px rgba(102, 126, 234, 0.8); }
+        }
+        
+        #chatbot-toggle:hover {
+            transform: scale(1.1) rotate(10deg);
+        }
+        
+        #chatbot-toggle i {
+            font-size: 1.8rem;
+            color: white;
+        }
+        
+        #chatbot-container {
+            position: fixed;
+            bottom: 90px;
+            left: 20px;
+            width: 380px;
+            max-height: 550px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            display: none;
+            flex-direction: column;
+            z-index: 9998;
+            animation: slideInUp 0.3s;
+        }
+        
+        @keyframes slideInUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        #chatbot-container.active {
+            display: flex;
+        }
+        
+        .chatbot-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chatbot-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+        
+        .chatbot-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .chatbot-close:hover {
+            transform: rotate(90deg);
+        }
+        
+        #chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            max-height: 350px;
+            background: #f8f9fa;
+        }
+        
+        #chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        #chat-messages::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 3px;
+        }
+        
+        .chat-message {
+            margin-bottom: 12px;
+            animation: messageSlide 0.3s;
+        }
+        
+        @keyframes messageSlide {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .chat-message.user {
+            text-align: right;
+        }
+        
+        .chat-message.bot {
+            text-align: left;
+        }
+        
+        .chat-message div {
+            display: inline-block;
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 75%;
+            word-wrap: break-word;
+        }
+        
+        .chat-message.user div {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .chat-message.bot div {
+            background: white;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .quick-questions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 10px 15px;
+            background: white;
+        }
+        
+        .quick-question-btn {
+            background: #f0f0f0;
+            border: 2px solid #667eea;
+            padding: 8px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            color: #667eea;
+        }
+        
+        .quick-question-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        #chat-form {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #e0e0e0;
+            background: white;
+            border-radius: 0 0 20px 20px;
+        }
+        
+        #chat-form input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            outline: none;
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        #chat-form input:focus {
+            border-color: #667eea;
+        }
+        
+        #chat-form button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin-left: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        #chat-form button:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Game Iframe Modal */
+        .game-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .game-modal.active {
+            display: flex;
+        }
+        
+        .game-modal-content {
+            width: 95%;
+            height: 95%;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+        }
+        
+        .game-modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .game-modal-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+        }
+        
+        .game-close-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .game-close-btn:hover {
+            transform: rotate(90deg) scale(1.1);
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .game-iframe {
+            width: 100%;
+            height: calc(100% - 60px);
+            border: none;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            border-left: 5px solid #667eea;
+            transform: translateX(400px);
+            transition: transform 0.3s;
+            z-index: 10002;
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .toast.success {
+            border-left-color: #2ecc71;
+        }
+        
+        .country-label {
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 5px 10px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+            color: #2c3e50;
+        }
+        
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .map-container {
+                height: 500px;
+            }
+            
+            .info-panel, .sidebar {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-globe-africa logo-icon"></i>
+            <h1>🌍 خريطة العالم السحرية</h1>
+        </div>
+        <div class="nav-controls">
+            <select class="stage-selector" id="stage-selector">
+                <option value="">اختر مرحلة...</option>
+                <option value="tunisia">🇹🇳 المرحلة 1: تونس</option>
+                <option value="maghreb">🌍 المرحلة 2: المغرب العربي</option>
+                <option value="africa">🦁 المرحلة 3: أفريقيا</option>
+                <option value="europe">🇪🇺 المرحلة 4: أوروبا</option>
+                <option value="asia">🗾 المرحلة 5: آسيا</option>
+                <option value="namerica">🇺🇸 المرحلة 6: أمريكا الشمالية</option>
+                <option value="samerica">🇧🇷 المرحلة 7: أمريكا الجنوبية</option>
+                <option value="oceania">🇦🇺 المرحلة 8: أوقيانوسيا</option>
+                <option value="poles">❄️ المرحلة 9: القطبين</option>
+                <option value="world">🏆 المرحلة 10: جولة العالم</option>
+            </select>
+            <button class="action-btn" onclick="window.location.href='index-new.html'">
+                <i class="fas fa-home"></i> الرئيسية
+            </button>
+            <button class="action-btn" onclick="window.location.href='profile.html'">
+                <i class="fas fa-user"></i> الملف الشخصي
+            </button>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>📚 المراحل التعليمية</h2>
+                <div class="user-progress">
+                    <div class="progress-item">
+                        <span>المستوى:</span>
+                        <span id="user-level">1</span>
+                    </div>
+                    <div class="progress-item">
+                        <span>XP:</span>
+                        <span id="user-xp">0</span>
+                    </div>
+                    <div class="progress-item">
+                        <span>💰 العملات:</span>
+                        <span id="user-coins">0</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stages-container" id="stages-container">
+                <!-- Stages will be loaded here -->
+            </div>
+        </div>
+        
+        <div class="map-container">
+            <div id="world-map"></div>
+            
+            <!-- Guide au coin de la carte + véhicule animé -->
+            <div class="corner-guide" id="corner-guide">
+                <div class="globe-spin" id="globe-spin"></div>
+            </div>
+            <div class="moving-vehicle" id="moving-vehicle" style="left: 60px; top: 60px;">🚂</div>
+            
+            <!-- Boutons de zoom personnalisés -->
+            <div class="zoom-buttons">
+                <button class="custom-zoom-btn" id="zoom-world" title="العالم">
+                    <i class="fas fa-globe"></i>
+                </button>
+                <button class="custom-zoom-btn" id="zoom-tunisia" title="تونس">
+                    🇹🇳
+                </button>
+                <button class="custom-zoom-btn" id="zoom-africa" title="أفريقيا">
+                    🦁
+                </button>
+                <button class="custom-zoom-btn" id="zoom-europe" title="أوروبا">
+                    🇪🇺
+                </button>
+                <button class="custom-zoom-btn" id="zoom-asia" title="آسيا">
+                    🗾
+                </button>
+            </div>
+            
+            <!-- Affichage des coordonnées -->
+            <div class="coordinates-display" id="coordinates">
+                Lat: 0.0000, Lng: 0.0000, Zoom: 2
+            </div>
+        </div>
+        
+        <div class="info-panel">
+            <div class="info-header">
+                <i class="fas fa-info-circle"></i>
+                <h3>معلومات المرحلة</h3>
+            </div>
+            
+            <div class="guide-container">
+                <div class="guide-avatar">
+                    <i class="fas fa-user-astronaut"></i>
+                </div>
+                <div class="guide-text" id="guide-message">
+                    مرحباً! أنا مرشدك في رحلة استكشاف العالم. اختر مرحلة من القائمة أو انقر على الخريطة لبدء المغامرة التعليمية.
+                </div>
+            </div>
+            
+            <div id="stage-info">
+                <!-- Sera rempli dynamiquement -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Chatbot Toggle -->
+    <div id="chatbot-toggle" onclick="toggleChatbot()">
+        <i class="fas fa-robot"></i>
+    </div>
+    
+    <!-- Chatbot Container -->
+    <div id="chatbot-container">
+        <div class="chatbot-header">
+            <h3>🤖 مساعد المغامرات</h3>
+            <button class="chatbot-close" onclick="toggleChatbot()">×</button>
+        </div>
+        <div id="chat-messages">
+            <div class="chat-message bot">
+                <div>مرحباً! أنا مساعدك الذكي. اسألني عن أي مرحلة أو مساعدة! 🌟</div>
+            </div>
+        </div>
+        <div class="quick-questions">
+            <button class="quick-question-btn" onclick="askQuickQuestion('ما هي المراحل المتاحة؟')">المراحل المتاحة</button>
+            <button class="quick-question-btn" onclick="askQuickQuestion('كيف ألعب؟')">كيف ألعب؟</button>
+            <button class="quick-question-btn" onclick="askQuickQuestion('أخبرني عن تونس')">عن تونس</button>
+            <button class="quick-question-btn" onclick="askQuickQuestion('كم نقاطي؟')">نقاطي</button>
+        </div>
+        <form id="chat-form" onsubmit="sendChatMessage(event)">
+            <input type="text" id="chat-input" placeholder="اكتب سؤالك هنا..." autocomplete="off">
+            <button type="submit">📤</button>
+        </form>
+    </div>
+    
+    <!-- Game Modal -->
+    <div class="game-modal" id="game-modal">
+        <div class="game-modal-content">
+            <div class="game-modal-header">
+                <h3 id="game-modal-title">🎮 لعبة المغامرة</h3>
+                <button class="game-close-btn" onclick="closeGameModal()">×</button>
+            </div>
+            <iframe id="game-iframe" class="game-iframe" src=""></iframe>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span id="toast-message"></span>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        let map;
+        let currentMarker = null;
+        let zoneLayerGroup;
+        let traceLayerGroup;
+        let isAnimating = false;
+        let markers = {};
+        
+        // Données des 10 stages
+        const STAGES_DATA = {
+            tunisia: {
+                id: 1,
+                name: 'تونس',
+                icon: '🇹🇳',
+                nameAr: 'تونس',
+                desc: 'ابدأ من الوطن',
+                coordinates: [34.0, 9.0],
+                zoom: 7,
+                color: '#2ecc71',
+                description: 'اكتشف تونس الخضراء، بلد الحضارات والتاريخ العريق. استكشف معالمها الأثرية وشواطئها الجميلة.',
+                capital: 'تونس العاصمة',
+                population: '12 مليون',
+                stations: 7,
+                rewards: { coins: 100, diamonds: 5, xp: 500 }
+            },
+            maghreb: {
+                id: 2,
+                name: 'المغرب العربي',
+                icon: '🌍',
+                nameAr: 'المغرب العربي',
+                desc: 'اكتشف شمال أفريقيا',
+                coordinates: [28.0, 2.0],
+                zoom: 5,
+                color: '#f39c12',
+                description: 'استكشف دول المغرب العربي الخمسة: تونس، الجزائر، المغرب، ليبيا وموريتانيا.',
+                capital: 'متعددة',
+                population: '100 مليون',
+                stations: 7,
+                rewards: { coins: 150, diamonds: 8, xp: 750 }
+            },
+            africa: {
+                id: 3,
+                name: 'أفريقيا',
+                icon: '🦁',
+                nameAr: 'أفريقيا',
+                desc: 'رحلة في القارة السمراء',
+                coordinates: [0.0, 20.0],
+                zoom: 4,
+                color: '#e74c3c',
+                description: 'اكتشف القارة الأفريقية بتنوعها الثقافي والطبيعي الغني.',
+                capital: 'متعددة',
+                population: '1.3 مليار',
+                stations: 7,
+                rewards: { coins: 200, diamonds: 10, xp: 1000 }
+            },
+            europe: {
+                id: 4,
+                name: 'أوروبا',
+                icon: '🇪🇺',
+                nameAr: 'أوروبا',
+                desc: 'اكتشف القارة العجوز',
+                coordinates: [50.0, 10.0],
+                zoom: 4,
+                color: '#3498db',
+                description: 'استكشف القارة الأوروبية بتاريخها العريق وحضاراتها المتنوعة.',
+                capital: 'متعددة',
+                population: '750 مليون',
+                stations: 7,
+                rewards: { coins: 250, diamonds: 12, xp: 1250 }
+            },
+            asia: {
+                id: 5,
+                name: 'آسيا',
+                icon: '🗾',
+                nameAr: 'آسيا',
+                desc: 'أكبر قارات العالم',
+                coordinates: [35.0, 105.0],
+                zoom: 3,
+                color: '#9b59b6',
+                description: 'اكتشف آسيا، أكبر قارة في العالم بثقافاتها المتنوعة.',
+                capital: 'متعددة',
+                population: '4.6 مليار',
+                stations: 7,
+                rewards: { coins: 300, diamonds: 15, xp: 1500 }
+            },
+            namerica: {
+                id: 6,
+                name: 'أمريكا الشمالية',
+                icon: '🇺🇸',
+                nameAr: 'أمريكا الشمالية',
+                desc: 'العالم الجديد الشمالي',
+                coordinates: [40.0, -100.0],
+                zoom: 3,
+                color: '#e67e22',
+                description: 'استكشف أمريكا الشمالية بمعالمها الطبيعية الخلابة.',
+                capital: 'متعددة',
+                population: '580 مليون',
+                stations: 7,
+                rewards: { coins: 350, diamonds: 18, xp: 1750 }
+            },
+            samerica: {
+                id: 7,
+                name: 'أمريكا الجنوبية',
+                icon: '🇧🇷',
+                nameAr: 'أمريكا الجنوبية',
+                desc: 'الأمازون والأنديز',
+                coordinates: [-15.0, -60.0],
+                zoom: 3,
+                color: '#1abc9c',
+                description: 'اكتشف أمريكا الجنوبية وغابات الأمازون المطيرة.',
+                capital: 'متعددة',
+                population: '430 مليون',
+                stations: 7,
+                rewards: { coins: 400, diamonds: 20, xp: 2000 }
+            },
+            oceania: {
+                id: 8,
+                name: 'أوقيانوسيا',
+                icon: '🏝️',
+                nameAr: 'أوقيانوسيا',
+                desc: 'جزر المحيط الهادئ',
+                coordinates: [-25.0, 135.0],
+                zoom: 4,
+                color: '#16a085',
+                description: 'استكشف أستراليا والجزر الجميلة في المحيط الهادئ.',
+                capital: 'كانبرا',
+                population: '42 مليون',
+                stations: 7,
+                rewards: { coins: 450, diamonds: 22, xp: 2250 }
+            },
+            poles: {
+                id: 9,
+                name: 'القطبان',
+                icon: '🐧',
+                nameAr: 'القطبان',
+                desc: 'عالم الثلج والجليد',
+                coordinates: [70.0, 0.0],
+                zoom: 3,
+                color: '#ecf0f1',
+                description: 'اكتشف القطب الشمالي والقطب الجنوبي وظواهرهما الطبيعية.',
+                capital: 'لا يوجد',
+                population: 'غير مأهول',
+                stations: 7,
+                rewards: { coins: 500, diamonds: 25, xp: 2500 }
+            },
+            world: {
+                id: 10,
+                name: 'جولة حول العالم',
+                icon: '🌎',
+                nameAr: 'العالم',
+                desc: 'المرحلة النهائية',
+                coordinates: [20.0, 0.0],
+                zoom: 2,
+                color: '#34495e',
+                description: 'المرحلة النهائية! اختبار شامل لكل ما تعلمته في رحلتك حول العالم.',
+                capital: 'العالم',
+                population: '8 مليار',
+                stations: 7,
+                rewards: { coins: 1000, diamonds: 50, xp: 5000 }
+            }
+        };
+        
+        // Polygones colorés pour chaque pays/région - Style Cartoon
+        const STAGE_ZONES = {
+            tunisia: {
+                // Tunisie - Vert vif
+                countries: [
+                    { name: 'تونس', shape: [[37.4, 7.5], [37.4, 11.6], [30.3, 11.6], [30.3, 7.5]], color: '#2ecc71' }
+                ],
+                style: { color: '#27ae60', weight: 4, fillColor: '#2ecc71', fillOpacity: 0.85, dashArray: '10, 5' }
+            },
+            maghreb: {
+                // Maghreb - Couleurs variées par pays
+                countries: [
+                    { name: 'تونس', shape: [[37.4, 7.5], [37.4, 11.6], [30.3, 11.6], [30.3, 7.5]], color: '#2ecc71' },
+                    { name: 'الجزائر', shape: [[37.0, -8.7], [37.0, 12.0], [19.0, 12.0], [19.0, -8.7]], color: '#f39c12' },
+                    { name: 'المغرب', shape: [[36.0, -17.0], [36.0, -1.0], [21.0, -1.0], [21.0, -17.0]], color: '#e74c3c' },
+                    { name: 'ليبيا', shape: [[33.2, 9.4], [33.2, 25.2], [20.0, 25.2], [20.0, 9.4]], color: '#f1c40f' },
+                    { name: 'موريتانيا', shape: [[27.0, -17.0], [27.0, -4.8], [14.7, -4.8], [14.7, -17.0]], color: '#3498db' }
+                ],
+                style: { color: '#d35400', weight: 4, fillOpacity: 0.85, dashArray: '10, 5' }
+            },
+            africa: {
+                // Afrique - Rainbow colors
+                countries: [
+                    { name: 'شمال أفريقيا', shape: [[37.0, -17.0], [37.0, 51.0], [15.0, 51.0], [15.0, -17.0]], color: '#e74c3c' },
+                    { name: 'غرب أفريقيا', shape: [[18.0, -17.0], [18.0, 16.0], [5.0, 16.0], [5.0, -17.0]], color: '#f39c12' },
+                    { name: 'شرق أفريقيا', shape: [[18.0, 22.0], [18.0, 51.0], [-12.0, 51.0], [-12.0, 22.0]], color: '#9b59b6' },
+                    { name: 'وسط أفريقيا', shape: [[13.0, 8.0], [13.0, 30.0], [-12.0, 30.0], [-12.0, 8.0]], color: '#27ae60' },
+                    { name: 'جنوب أفريقيا', shape: [[-12.0, 10.0], [-12.0, 41.0], [-35.0, 41.0], [-35.0, 10.0]], color: '#3498db' }
+                ],
+                style: { weight: 4, fillOpacity: 0.85, dashArray: '10, 5' }
+            },
+            europe: {
+                // Europe - Bleu variations
+                countries: [
+                    { name: 'أوروبا الغربية', shape: [[51.0, -10.0], [51.0, 7.0], [42.0, 7.0], [42.0, -10.0]], color: '#3498db' },
+                    { name: 'أوروبا الشرقية', shape: [[60.0, 13.0], [60.0, 40.0], [44.0, 40.0], [44.0, 13.0]], color: '#9b59b6' },
+                    { name: 'أوروبا الشمالية', shape: [[71.0, -25.0], [71.0, 31.0], [54.0, 31.0], [54.0, -25.0]], color: '#1abc9c' },
+                    { name: 'أوروبا الجنوبية', shape: [[46.0, -9.0], [46.0, 29.0], [36.0, 29.0], [36.0, -9.0]], color: '#e67e22' }
+                ],
+                style: { weight: 4, fillOpacity: 0.85, dashArray: '10, 5' }
+            },
+            asia: {
+                // Asie - Couleurs variées
+                countries: [
+                    { name: 'غرب آسيا', shape: [[43.0, 26.0], [43.0, 63.0], [12.0, 63.0], [12.0, 26.0]], color: '#e74c3c' },
+                    { name: 'آسيا الوسطى', shape: [[56.0, 46.0], [56.0, 87.0], [35.0, 87.0], [35.0, 46.0]], color: '#f39c12' },
+                    { name: 'جنوب آسيا', shape: [[37.0, 60.0], [37.0, 97.0], [6.0, 97.0], [6.0, 60.0]], color: '#27ae60' },
+                    { name: 'شرق آسيا', shape: [[53.0, 73.0], [53.0, 146.0], [18.0, 146.0], [18.0, 73.0]], color: '#3498db' },
+                    { name: 'جنوب شرق آسيا', shape: [[28.0, 92.0], [28.0, 141.0], [-11.0, 141.0], [-11.0, 92.0]], color: '#9b59b6' }
+                ],
+                style: { weight: 4, fillOpacity: 0.85, dashArray: '10, 5' }
+            },
+            namerica: {
+                // Amérique du Nord
+                countries: [
+                    { name: 'كندا', shape: [[84.0, -141.0], [84.0, -52.0], [41.7, -52.0], [41.7, -141.0]], color: '#e74c3c' },
+                    { name: 'الولايات المتحدة', shape: [[49.0, -125.0], [49.0, -66.9], [24.5, -66.9], [24.5, -125.0]], color: '#3498db' },
+                    { name: 'المكسيك', shape: [[32.7, -117.1], [32.7, -86.7], [14.5, -86.7], [14.5, -117.1]], color: '#f39c12' },
+                    { name: 'أمريكا الوسطى', shape: [[18.5, -92.2], [18.5, -77.2], [7.2, -77.2], [7.2, -92.2]], color: '#2ecc71' }
+                ],
+                style: { weight: 4, fillOpacity: 0.85, dashArray: '10, 5' }
+            },
+            samerica: {
+                // Amérique du Sud
+                countries: [
+                    { name: 'البرازيل', shape: [[5.3, -73.9], [5.3, -34.8], [-33.7, -34.8], [-33.7, -73.9]], color: '#27ae60' },
+                    { name: 'الأرجنتين', shape: [[-21.8, -73.6], [-21.8, -53.6], [-55.0, -53.6], [-55.0, -73.6]], color: '#3498db' },
+                    { name: 'كولومبيا', shape: [[13.4, -79.0], [13.4, -66.9], [-4.2, -66.9], [-4.2, -79.0]], color: '#f39c12' },
+                    { name: 'بيرو', shape: [[-0.0, -81.3], [-0.0, -68.7], [-18.3, -68.7], [-18.3, -81.3]], color: '#e74c3c' },
+                    { name: 'تشيلي', shape: [[-17.5, -75.6], [-17.5, -66.4], [-56.0, -66.4], [-56.0, -75.6]], color: '#9b59b6' }
+                ],
+                style: { weight: 4, fillOpacity: 0.85, dashArray: '10, 5' }
+            },
+            oceania: {
+                // Océanie
+                countries: [
+                    { name: 'أستراليا', shape: [[-10.0, 112.9], [-10.0, 154.0], [-44.0, 154.0], [-44.0, 112.9]], color: '#e74c3c' },
+                    { name: 'نيوزيلندا', shape: [[-34.4, 166.4], [-34.4, 178.6], [-47.3, 178.6], [-47.3, 166.4]], color: '#3498db' },
+                    { name: 'بابوا غينيا الجديدة', shape: [[-1.0, 141.0], [-1.0, 156.0], [-12.0, 156.0], [-12.0, 141.0]], color: '#27ae60' }
+                ],
+                style: { weight: 4, fillOpacity: 0.85, dashArray: '10, 5' }
+            },
+            poles: {
+                shapeNorth: [
+                    [90.0, -180.0], [90.0, 180.0], [66.0, 180.0], [66.0, -180.0]
+                ],
+                shapeSouth: [
+                    [-60.0, -180.0], [-60.0, 180.0], [-90.0, 180.0], [-90.0, -180.0]
+                ],
+                style: { color: '#ecf0f1', weight: 4, fillColor: '#ecf0f1', fillOpacity: 0.7, dashArray: '10, 5' }
+            },
+            world: {
+                shape: [
+                    [90.0, -180.0], [90.0, 180.0], [-90.0, 180.0], [-90.0, -180.0]
+                ],
+                style: { color: '#34495e', weight: 2, fillColor: '#34495e', fillOpacity: 0.15 }
+            }
+        };
+        
+        // Initialiser la carte
+        function initMap() {
+            map = L.map('world-map', {
+                center: [20, 0],
+                zoom: 2,
+                minZoom: 2,
+                maxZoom: 6
+            }).setView([20.0, 0.0], 2);
+            
+            // OpenStreetMap - Carte claire avec TOUS les pays et régions
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap',
+                maxZoom: 19
+            }).addTo(map);
+            
+            L.control.locate({
+                position: 'topleft',
+                strings: { title: "موقعي" }
+            }).addTo(map);
+            
+            L.control.scale({ position: 'bottomleft' }).addTo(map);
+            
+            // Layers pour zones et traces
+            zoneLayerGroup = L.layerGroup().addTo(map);
+            traceLayerGroup = L.layerGroup().addTo(map);
+            
+            // Ajouter les marqueurs pour chaque stage
+            Object.keys(STAGES_DATA).forEach(key => {
+                const stage = STAGES_DATA[key];
+                const marker = L.circleMarker(stage.coordinates, {
+                    radius: 12,
+                    fillColor: stage.color,
+                    color: '#fff',
+                    weight: 3,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                }).addTo(map);
+                
+                marker.bindPopup(`
+                    <div style="text-align: center;">
+                        <div style="font-size: 2em; margin-bottom: 5px;">${stage.icon}</div>
+                        <strong style="font-size: 1.1em;">${stage.name}</strong><br>
+                        <small>المرحلة ${stage.id}</small><br>
+                        <button onclick="selectStage('${key}')" 
+                                style="margin-top: 10px; padding: 8px 16px; background: linear-gradient(135deg, #667eea, #764ba2); 
+                                       color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                            استكشف
+                        </button>
+                    </div>
+                `);
+                
+                markers[key] = marker;
+            });
+            
+            // Mettre à jour les coordonnées
+            map.on('mousemove', function(e) {
+                updateCoordinates(e.latlng);
+            });
+            
+            map.on('moveend', function() {
+                const center = map.getCenter();
+                const zoom = map.getZoom();
+                document.getElementById('coordinates').innerHTML = 
+                    `Lat: ${center.lat.toFixed(4)}, Lng: ${center.lng.toFixed(4)}, Zoom: ${zoom}`;
+            });
+            
+            initButtons();
+        }
+        
+        // Initialiser les boutons
+        function initButtons() {
+            document.getElementById('zoom-world').addEventListener('click', () => {
+                clearOverlays();
+                map.flyTo([20.0, 0.0], 2, { duration: 1.0, easeLinearity: 0.25 });
+                updateGuideMessage('مرحباً بك في خريطة العالم! اختر مرحلة للبدء.');
+                clearStageInfo();
+            });
+            
+            document.getElementById('zoom-tunisia').addEventListener('click', () => {
+                selectStage('tunisia');
+            });
+            
+            document.getElementById('zoom-africa').addEventListener('click', () => {
+                selectStage('africa');
+            });
+            
+            document.getElementById('zoom-europe').addEventListener('click', () => {
+                selectStage('europe');
+            });
+            
+            document.getElementById('zoom-asia').addEventListener('click', () => {
+                selectStage('asia');
+            });
+            
+            document.getElementById('stage-selector').addEventListener('change', function(e) {
+                if (e.target.value) {
+                    selectStage(e.target.value);
+                }
+            });
+        }
+        
+        // Load user progress
+        function loadUserProgress() {
+            const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
+            document.getElementById('user-level').textContent = userData.level || 1;
+            document.getElementById('user-xp').textContent = userData.xp || 0;
+            document.getElementById('user-coins').textContent = userData.coins || 0;
+        }
+        
+        // Render stages list
+        function renderStagesList() {
+            const container = document.getElementById('stages-container');
+            const stagesArray = Object.values(STAGES_DATA);
+            container.innerHTML = stagesArray.map((stage, index) => `
+                <div class="stage-card" onclick="selectStageFromSidebar('${Object.keys(STAGES_DATA)[index]}')">
+                    <div class="stage-title">${stage.id}. ${stage.icon} ${stage.name}</div>
+                    <div class="stage-desc">${stage.desc}</div>
+                    <button class="stage-btn" onclick="event.stopPropagation(); startStage('${Object.keys(STAGES_DATA)[index]}')">
+                        <span>ابدأ الآن 🚀</span>
+                    </button>
+                </div>
+            `).join('');
+        }
+        
+        // Sélectionner un stage depuis la sidebar
+        function selectStageFromSidebar(stageKey) {
+            document.querySelectorAll('.stage-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            event.target.closest('.stage-card')?.classList.add('active');
+            selectStage(stageKey);
+        }
+        
+        // Sélectionner un stage
+        function selectStage(stageKey) {
+            const stage = STAGES_DATA[stageKey];
+            if (!stage || isAnimating) return;
+
+            isAnimating = true;
+            document.getElementById('stage-selector').value = stageKey;
+
+            // 1) Faire tourner le globe dans le coin
+            const globe = document.getElementById('globe-spin');
+            globe.classList.add('active');
+
+            // 2) Tracer une ligne animée du centre courant vers la destination
+            drawAnimatedTrace(map.getCenter(), L.latLng(stage.coordinates[0], stage.coordinates[1]), 1400);
+
+            // 3) Animer le véhicule vers la zone
+            animateVehicleTo(stage.coordinates, 1400, () => {
+                // 4) FlyTo pour un zoom + déplacement fluide
+                map.flyTo(stage.coordinates, stage.zoom, { duration: 1.1, easeLinearity: 0.2 });
+                map.once('moveend', () => {
+                    // 5) Colorer la zone et afficher infos
+                    highlightZone(stageKey);
+                    updateGuideMessage(`مرحباً بك في ${stage.name}! هذه هي المرحلة ${stage.id} من رحلتك التعليمية.`);
+                    displayStageInfo(stage, stageKey);
+                    bounceVehicle();
+                    globe.classList.remove('active');
+                    isAnimating = false;
+                    
+                    // Open popup
+                    setTimeout(() => {
+                        markers[stageKey].openPopup();
+                    }, 200);
+                });
+            });
+        }
+        
+        // Afficher les informations du stage
+        function displayStageInfo(stage, stageKey) {
+            const infoDiv = document.getElementById('stage-info');
+            infoDiv.innerHTML = `
+                <div class="info-stage-card">
+                    <div class="stage-icon">${stage.icon}</div>
+                    <div class="stage-info-title">المرحلة ${stage.id}: ${stage.name}</div>
+                    <div class="stage-description">${stage.description}</div>
+                    
+                    <div class="stage-stats">
+                        <div class="stat-box">
+                            <strong>🪙 العملات</strong>
+                            ${stage.rewards.coins}
+                        </div>
+                        <div class="stat-box">
+                            <strong>💎 الماس</strong>
+                            ${stage.rewards.diamonds}
+                        </div>
+                        <div class="stat-box">
+                            <strong>⭐ XP</strong>
+                            ${stage.rewards.xp}
+                        </div>
+                        <div class="stat-box">
+                            <strong>🎯 المحطات</strong>
+                            ${stage.stations}
+                        </div>
+                    </div>
+                    
+                    <button class="explore-btn" onclick="startStage('${stageKey}')">
+                        <i class="fas fa-rocket"></i> ابدأ المرحلة
+                    </button>
+                </div>
+            `;
+        }
+        
+        // Démarrer un stage - Open game in iframe
+        function startStage(stageKey) {
+            const stage = STAGES_DATA[stageKey];
+            if (stage) {
+                showToast(`جاري تحميل لعبة ${stage.nameAr}...`, 'success');
+                openGameModal(stageKey, stage.nameAr);
+            }
+        }
+        
+        // Open game in iframe modal
+        function openGameModal(stageId, stageName) {
+            const modal = document.getElementById('game-modal');
+            const iframe = document.getElementById('game-iframe');
+            const title = document.getElementById('game-modal-title');
+            
+            iframe.src = 'jeux.html?stage=' + stageId;
+            title.textContent = `🎮 لعبة ${stageName}`;
+            
+            modal.classList.add('active');
+        }
+        
+        // Close game modal
+        function closeGameModal() {
+            const modal = document.getElementById('game-modal');
+            const iframe = document.getElementById('game-iframe');
+            
+            modal.classList.remove('active');
+            iframe.src = '';
+        }
+        
+        // Mettre à jour le message du guide
+        function updateGuideMessage(message) {
+            document.getElementById('guide-message').textContent = message;
+        }
+        
+        // Effacer les informations du stage
+        function clearStageInfo() {
+            document.getElementById('stage-info').innerHTML = '';
+            document.getElementById('stage-selector').value = '';
+        }
+        
+        // Mettre à jour les coordonnées
+        function updateCoordinates(latlng) {
+            const zoom = map.getZoom();
+            document.getElementById('coordinates').innerHTML = 
+                `Lat: ${latlng.lat.toFixed(4)}, Lng: ${latlng.lng.toFixed(4)}, Zoom: ${zoom}`;
+        }
+        
+        // Effacer zones et traces
+        function clearOverlays() {
+            zoneLayerGroup && zoneLayerGroup.clearLayers();
+            traceLayerGroup && traceLayerGroup.clearLayers();
+        }
+        
+        // Animer le véhicule (emoji) du point actuel vers la destination avec wiggle
+        function animateVehicleTo(targetLatLng, duration = 1500, onDone) {
+            const vehicle = document.getElementById('moving-vehicle');
+            const startLatLng = map.getCenter();
+            const startTime = performance.now();
+            vehicle.classList.add('vehicle-wiggle');
+            
+            function frame(now) {
+                const t = Math.min(1, (now - startTime) / duration);
+                const ease = t * (2 - t); // easeOutQuad
+                const lat = startLatLng.lat + (targetLatLng[0] - startLatLng.lat) * ease;
+                const lng = startLatLng.lng + (targetLatLng[1] - startLatLng.lng) * ease;
+                const p = map.latLngToContainerPoint([lat, lng]);
+                vehicle.style.left = `${p.x}px`;
+                vehicle.style.top = `${p.y}px`;
+                if (t < 1) {
+                    requestAnimationFrame(frame);
+                } else {
+                    vehicle.classList.remove('vehicle-wiggle');
+                    if (typeof onDone === 'function') onDone();
+                }
+            }
+            requestAnimationFrame(frame);
+        }
+        
+        // Petit rebond à l'arrivée
+        function bounceVehicle() {
+            const vehicle = document.getElementById('moving-vehicle');
+            vehicle.classList.remove('vehicle-bounce');
+            void vehicle.offsetWidth;
+            vehicle.classList.add('vehicle-bounce');
+            setTimeout(() => vehicle.classList.remove('vehicle-bounce'), 520);
+        }
+        
+        // Tracer une ligne animée du point A vers B
+        function drawAnimatedTrace(startLatLng, endLatLng, duration = 1400) {
+            traceLayerGroup.clearLayers();
+            const poly = L.polyline([startLatLng], { className: 'trace-line' }).addTo(traceLayerGroup);
+            const start = performance.now();
+            
+            function step(now) {
+                const t = Math.min(1, (now - start) / duration);
+                const ease = t * (2 - t);
+                const lat = startLatLng.lat + (endLatLng.lat - startLatLng.lat) * ease;
+                const lng = startLatLng.lng + (endLatLng.lng - startLatLng.lng) * ease;
+                poly.setLatLngs([startLatLng, [lat, lng]]);
+                if (t < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    poly.setLatLngs([startLatLng, endLatLng]);
+                }
+            }
+            requestAnimationFrame(step);
+        }
+        
+        // Colorer la zone du stage avec plusieurs pays
+        function highlightZone(stageKey) {
+            zoneLayerGroup.clearLayers();
+            const z = STAGE_ZONES[stageKey];
+            if (!z) return;
+            
+            if (stageKey === 'poles') {
+                const north = L.polygon(z.shapeNorth, z.style);
+                const south = L.polygon(z.shapeSouth, z.style);
+                north.addTo(zoneLayerGroup);
+                south.addTo(zoneLayerGroup);
+                north.getElement()?.classList.add('zone-pulse');
+                south.getElement()?.classList.add('zone-pulse');
+            } else if (z.countries) {
+                // Dessiner chaque pays avec sa couleur
+                z.countries.forEach(country => {
+                    const style = { ...z.style, fillColor: country.color, color: country.color };
+                    const poly = L.polygon(country.shape, style).addTo(zoneLayerGroup);
+                    poly.bindTooltip(country.name, { permanent: false, direction: 'center', className: 'country-label' });
+                    poly.getElement()?.classList.add('zone-pulse');
+                });
+            } else {
+                const poly = L.polygon(z.shape, z.style).addTo(zoneLayerGroup);
+                poly.getElement()?.classList.add('zone-pulse');
+            }
+        }
+        
+        // Show toast
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            toastMessage.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Chatbot Functions
+        function toggleChatbot() {
+            const chatbot = document.getElementById('chatbot-container');
+            chatbot.classList.toggle('active');
+            
+            if (chatbot.classList.contains('active')) {
+                document.getElementById('chat-input').focus();
+            }
+        }
+        
+        function sendChatMessage(event) {
+            event.preventDefault();
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addChatMessage(message, 'user');
+            input.value = '';
+            
+            setTimeout(() => {
+                const response = getChatbotResponse(message);
+                addChatMessage(response, 'bot');
+            }, 500);
+        }
+        
+        function askQuickQuestion(question) {
+            document.getElementById('chat-input').value = question;
+            sendChatMessage(new Event('submit'));
+        }
+        
+        function addChatMessage(text, sender) {
+            const messagesContainer = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${sender}`;
+            messageDiv.innerHTML = `<div>${text}</div>`;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function getChatbotResponse(message) {
+            const msgLower = message.toLowerCase();
+            
+            // Stage info
+            const stageInfo = {
+                'tunisia': 'تونس 🇹🇳 هي المرحلة الأولى! ستتعلم عن الحضارة القرطاجية، الصحراء، وجمال تونس. مناسبة للأعمار 6-12 سنة.',
+                'maghreb': 'المغرب العربي 🌍 يضم تونس، الجزائر، المغرب، ليبيا وموريتانيا. مرحلة مليئة بالمعرفة! للأعمار 7-13 سنة.',
+                'africa': 'أفريقيا 🦁 القارة السمراء! ستكتشف الحيوانات البرية، الصحاري، والغابات الاستوائية. للأعمار 8-14 سنة.',
+                'europe': 'أوروبا 🇪🇺 قارة التاريخ والفن! ستزور باريس، روما، برشلونة وأكثر. للأعمار 9-15 سنة.',
+                'asia': 'آسيا 🗾 أكبر قارة! ستتعرف على الصين، اليابان، الهند والثقافات الآسيوية. للأعمار 9-15 سنة.',
+                'namerica': 'أمريكا الشمالية 🇺🇸: كندا، الولايات المتحدة، والمكسيك. مغامرة رائعة! للأعمار 10-16 سنة.',
+                'samerica': 'أمريكا الجنوبية 🇧🇷: غابات الأمازون، جبال الأنديز، والثقافة اللاتينية! للأعمار 10-16 سنة.',
+                'oceania': 'أوقيانوسيا 🏝️: أستراليا، نيوزيلندا، والجزر الاستوائية الجميلة! للأعمار 8-14 سنة.',
+                'poles': 'القطبان 🐧: عالم الثلج والجليد! ستلتقي بالبطاريق والدببة القطبية! للأعمار 7-13 سنة.',
+                'world': 'جولة حول العالم 🌎! المرحلة النهائية حيث ستختبر معرفتك بكل القارات! للأعمار 11-17 سنة.'
+            };
+            
+            // Check for stage names
+            for (const [key, info] of Object.entries(stageInfo)) {
+                if (msgLower.includes(key) || msgLower.includes(STAGES_DATA[key]?.nameAr || '')) {
+                    return info;
+                }
+            }
+            
+            // General responses
+            if (msgLower.includes('مرحلة') || msgLower.includes('stage') || msgLower.includes('متاحة')) {
+                return `لدينا ${Object.keys(STAGES_DATA).length} مراحل مثيرة! 🗺️\n\n1️⃣ تونس (6-12 سنة)\n2️⃣ المغرب العربي (7-13)\n3️⃣ أفريقيا (8-14)\n4️⃣ أوروبا (9-15)\n5️⃣ آسيا (9-15)\n6️⃣ أمريكا الشمالية (10-16)\n7️⃣ أمريكا الجنوبية (10-16)\n8️⃣ أوقيانوسيا (8-14)\n9️⃣ القطبان (7-13)\n🔟 العالم (11-17)`;
+            }
+            
+            if (msgLower.includes('لعب') || msgLower.includes('play') || msgLower.includes('كيف')) {
+                return 'كيف تلعب؟ 🎮\n\n1. اختر مرحلة من الخريطة أو القائمة\n2. اضغط "ابدأ الآن" 🚀\n3. أجب على الأسئلة بالكتابة أو الصوت 🎤\n4. اجمع النقاط والعملات! 💰\n\nكل سؤال صحيح = نقاط وعملات!';
+            }
+            
+            if (msgLower.includes('نقاط') || msgLower.includes('score') || msgLower.includes('coins') || msgLower.includes('كم')) {
+                const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
+                return `📊 إحصائياتك:\n\n💰 العملات: ${userData.coins || 0}\n⭐ XP: ${userData.xp || 0}\n🎯 المستوى: ${userData.level || 1}\n\nاستمر في اللعب لتجمع المزيد!`;
+            }
+            
+            if (msgLower.includes('مرحبا') || msgLower.includes('hello') || msgLower.includes('hi') || msgLower.includes('السلام')) {
+                return 'مرحباً بك! 👋 أنا مساعدك الذكي. كيف يمكنني مساعدتك اليوم؟\n\n• اسألني عن أي مرحلة 🗺️\n• تعرف على كيفية اللعب 🎮\n• تحقق من نقاطك 💰';
+            }
+            
+            // Default response
+            return 'سؤال رائع! 🤔\n\nيمكنني مساعدتك في:\n\n✅ معلومات عن المراحل\n✅ كيفية اللعب\n✅ الأعمار المناسبة\n✅ نقاطك وإحصائياتك\n\nجرب الأسئلة السريعة أعلاه!';
+        }
+        
+        // Close modals with Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeGameModal();
+                if (document.getElementById('chatbot-container').classList.contains('active')) {
+                    toggleChatbot();
+                }
+            }
+        });
+        
+        // Rendre les fonctions accessibles globalement
+        window.selectStage = selectStage;
+        window.startStage = startStage;
+        window.toggleChatbot = toggleChatbot;
+        window.sendChatMessage = sendChatMessage;
+        window.askQuickQuestion = askQuickQuestion;
+        window.closeGameModal = closeGameModal;
+        
+        // Initialiser au chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            initMap();
+            loadUserProgress();
+            renderStagesList();
+        });
+    </script>
+</body>
+</html>

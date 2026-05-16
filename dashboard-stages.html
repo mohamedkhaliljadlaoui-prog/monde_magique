@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 منصة معالم ماجيك - لعبة الجغرافيا</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root{--candy-red:#E91E63;--candy-orange:#FF9800;--candy-yellow:#FFD54F;--candy-green:#26C281;--candy-teal:#00BCD4;--candy-blue:#2196F3;--candy-purple:#9C27B0;--candy-pink:#EC407A;--bg-deep:#0D0221;--bg-mid:#1A0033;--bg-card:#2B0A54;--text-light:#FFFFFF;--text-muted:rgba(255,255,255,0.65)}
+        *{margin:0;padding:0;box-sizing:border-box}html,body{height:100%;font-family:'Nunito',sans-serif;background:linear-gradient(135deg,var(--bg-deep) 0%,var(--bg-mid) 100%);color:var(--text-light);overflow-x:hidden}
+        body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 15% 20%,#FF336622 0%,transparent 40%),radial-gradient(circle at 85% 70%,#00AAFF22 0%,transparent 40%);pointer-events:none;z-index:0}
+        .container{max-width:1400px;margin:0 auto;padding:40px 20px;position:relative;z-index:1}
+        .header{text-align:center;margin-bottom:60px;text-shadow:0 2px 8px rgba(0,0,0,0.3)}
+        .header h1{font-size:3rem;color:var(--candy-yellow);margin-bottom:10px;animation:slideIn 0.6s ease-out;text-shadow:0 4px 15px rgba(255,215,0,0.3)}
+        .header .icon{font-size:4rem;display:inline-block;margin:0 10px;animation:bounce 1s ease-in-out infinite}
+        .header p{font-size:1.3rem;color:var(--text-muted);margin-top:10px;animation:slideIn 0.8s ease-out}
+        .progress-bar-container{margin:40px 0;background:rgba(156,39,176,0.15);border-radius:50px;overflow:hidden;height:40px;border:3px solid var(--candy-purple)}
+        .progress-bar{background:linear-gradient(90deg,var(--candy-purple),var(--candy-blue),var(--candy-teal));height:100%;transition:width 0.6s ease-out;width:0%;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:1.1rem}
+        .stats{display:flex;justify-content:center;gap:40px;margin:40px 0;flex-wrap:wrap}
+        .stat-card{background:linear-gradient(135deg,var(--bg-card) 0%,var(--bg-mid) 100%);padding:25px 40px;border-radius:15px;border:2px solid var(--candy-yellow);text-align:center;box-shadow:0 4px 20px rgba(156,39,176,0.3);animation:scaleIn 0.5s ease-out;transition:all 0.3s}
+        .stat-card:hover{transform:translateY(-5px);box-shadow:0 8px 30px rgba(156,39,176,0.5)}
+        .stat-card .value{font-size:2.5rem;color:var(--candy-yellow);font-weight:700;margin-bottom:10px}
+        .stat-card .label{color:var(--text-muted);font-size:1rem}
+        .stages-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:25px;margin-top:50px;animation:slideIn 1s ease-out}
+        .stage-card{background:linear-gradient(135deg,var(--bg-card) 0%,var(--bg-mid) 100%);border-radius:20px;padding:30px;border:3px solid transparent;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden;box-shadow:0 8px 30px rgba(156,39,176,0.2);animation:slideUp 0.5s ease-out}
+        .stage-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(156,39,176,0.2),rgba(0,188,212,0.2));opacity:0;transition:opacity 0.3s}
+        .stage-card:hover::before{opacity:1}
+        .stage-card:hover{transform:translateY(-10px);border-color:var(--candy-yellow);box-shadow:0 12px 40px rgba(156,39,176,0.4)}
+        .stage-card.locked{opacity:0.6;cursor:not-allowed}
+        .stage-card.locked:hover{transform:none;border-color:transparent;box-shadow:0 8px 30px rgba(156,39,176,0.2)}
+        .stage-card .icon{font-size:4rem;margin-bottom:15px;display:block;text-align:center;animation:scaleIn 0.5s ease-out}
+        .stage-card h3{font-size:1.8rem;color:var(--candy-yellow);margin-bottom:10px;text-align:center}
+        .stage-card .subtitle{color:var(--text-muted);text-align:center;font-size:0.95rem;margin-bottom:20px}
+        .stage-card .progress{background:rgba(156,39,176,0.2);border-radius:10px;height:8px;margin:15px 0;overflow:hidden}
+        .stage-card .progress-fill{background:var(--candy-green);height:100%;width:0%;transition:width 0.3s}
+        .stage-card.completed .progress-fill{width:100%}
+        .stage-card .status{font-size:0.9rem;text-align:center;margin-top:15px;padding:10px;background:rgba(0,188,212,0.15);border-radius:8px;color:var(--text-light)}
+        .stage-card.completed .status{background:rgba(38,194,129,0.15);color:var(--candy-green)}
+        .stage-card.locked .status{background:rgba(233,30,99,0.15);color:var(--candy-red)}
+        .btn-play{background:linear-gradient(135deg,var(--candy-blue),var(--candy-teal));color:white;border:none;padding:12px 25px;border-radius:25px;font-weight:700;cursor:pointer;margin-top:15px;width:100%;transition:all 0.3s;font-size:1.1rem;display:flex;align-items:center;justify-content:center;gap:10px}
+        .btn-play:hover:not(:disabled){transform:scale(1.05);box-shadow:0 4px 15px rgba(0,188,212,0.4)}
+        .btn-play:disabled{opacity:0.5;cursor:not-allowed}
+        .lock-icon{position:absolute;top:15px;right:15px;font-size:2rem;color:var(--candy-red);display:none}
+        .stage-card.locked .lock-icon{display:block}
+        .check-icon{position:absolute;top:15px;left:15px;font-size:2rem;color:var(--candy-green);display:none}
+        .stage-card.completed .check-icon{display:block}
+        .highlight{color:var(--candy-yellow);font-weight:700}
+        @keyframes slideIn{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
+        @keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes scaleIn{from{opacity:0;transform:scale(0.8)}to{opacity:1;transform:scale(1)}}
+        @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+        .total-score{text-align:center;margin:40px 0;padding:30px;background:linear-gradient(135deg,rgba(38,194,129,0.15),rgba(76,175,80,0.1));border-radius:20px;border:3px solid var(--candy-green);animation:slideUp 0.6s ease-out}
+        .total-score h2{color:var(--candy-green);font-size:2rem;margin-bottom:15px}
+        .total-score .rewards{display:flex;justify-content:center;gap:30px;flex-wrap:wrap;margin-top:20px}
+        .total-score .reward-item{font-size:1.8rem;font-weight:700}
+        .total-score .reward-item span{color:var(--candy-yellow)}
+        @media(max-width:768px){.header h1{font-size:2rem}.header .icon{font-size:2.5rem}.stages-grid{grid-template-columns:1fr}.stat-card{padding:15px 25px}.stage-card{padding:20px}}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><span class="icon">🎮</span>منصة معالم ماجيك<span class="icon">🌍</span></h1>
+            <p>🚀 استكشف <span class="highlight">10 مراحل</span> رائعة وتعلم جغرافية تونس والعالم!</p>
+        </div>
+        
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar">0% ✓</div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="value" id="stagesCompletedCount">0</div>
+                <div class="label">المراحل المكملة</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="totalDiamonds">0</div>
+                <div class="label">💎 إجمالي الألماس</div>
+            </div>
+            <div class="stat-card">
+                <div class="value" id="totalCoins">0</div>
+                <div class="label">🪙 إجمالي العملات</div>
+            </div>
+        </div>
+
+        <div class="stages-grid" id="stagesContainer"></div>
+        
+        <div class="total-score">
+            <h2>🏆 إجمالي النقاط</h2>
+            <div class="rewards">
+                <div class="reward-item">⭐ <span id="totalStars">0</span> نجمة</div>
+                <div class="reward-item">💎 <span id="totalRewardDiamonds">0</span></div>
+                <div class="reward-item">🪙 <span id="totalRewardCoins">0</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const stages = [
+            {num:1,icon:'🗺️',file:'./stage-1-tunisia.html',title:'المجال الجغرافي',subtitle:'اكتشف المفاهيم الأساسية للمجالات الجغرافية والطبيعية'},
+            {num:2,icon:'🗺️',file:'./stage-2-maghreb.html',title:'المجال الجغرافي للمغرب العربي',subtitle:'اكتشف خصائص المجال الجغرافي للمغرب العربي'},
+            {num:3,icon:'🌍',file:'./stage-3-africa.html',title:'المجال الجغرافي للبلاد التونسية',subtitle:'اكتشف التفاصيل الجغرافية لتونس'},
+            {num:4,icon:'🏘️',file:'./stage-4-europe.html',title:'المشهد الريفي المحلي',subtitle:'اكتشف خصائص المشهد الريفي والبيئة الريفية'},
+            {num:5,icon:'🏙️',file:'./stage-5-asia.html',title:'المشهد الحضري',subtitle:'اكتشف خصائص المدن والمشاهد الحضرية'},
+            {num:6,icon:'🔄',file:'./stage-6-namerica.html',title:'العلاقة بين الريف و المدينة',subtitle:'اكتشف التفاعل بين المناطق الريفية والحضرية'},
+            {num:7,icon:'👥',file:'./stage-7-samerica.html',title:'البلاد التونسية:التوزع الجغرافي للسكان',subtitle:'اكتشف توزيع السكان في تونس'},
+            {num:8,icon:'🌾',file:'./stage-8-oceania.html',title:'التوزّع الفلاحي للبلاد التونسية',subtitle:'اكتشف التوزيع الجغرافي للنشاط الفلاحي'},
+            {num:9,icon:'🏭',file:'./stage-9-poles.html',title:'الصناعة في البلاد التونسية',subtitle:'اكتشف أهمية الصناعة والتوزيع الصناعي في تونس'},
+            {num:10,icon:'🤝',file:'./stage-10-world.html',title:'التجارة الخارجية التونسية',subtitle:'اكتشف الصادرات والواردات والميزان التجاري'}
+        ];
+
+        let stageProgress={};
+        let totalDiamonds=0,totalCoins=0,stagesCompleted=0;
+
+        function loadProgress(){const saved=localStorage.getItem('mondeMagiqueProgress');if(saved){const data=JSON.parse(saved);stageProgress=data.progress||{};totalDiamonds=data.totalDiamonds||0;totalCoins=data.totalCoins||0;stagesCompleted=Object.keys(stageProgress).filter(k=>stageProgress[k].completed).length}}
+
+        function saveProgress(){localStorage.setItem('mondeMagiqueProgress',JSON.stringify({progress:stageProgress,totalDiamonds,totalCoins}))}
+
+        function updateDashboard(){document.getElementById('stagesCompletedCount').textContent=stagesCompleted;document.getElementById('totalDiamonds').textContent=totalDiamonds;document.getElementById('totalCoins').textContent=totalCoins;document.getElementById('totalRewardDiamonds').textContent=totalDiamonds;document.getElementById('totalRewardCoins').textContent=totalCoins;document.getElementById('totalStars').textContent=stagesCompleted;const progress=Math.round(stagesCompleted/stages.length*100);document.getElementById('progressBar').style.width=progress+'%';document.getElementById('progressBar').textContent=progress+'% ✓'}
+
+        function renderStages(){const container=document.getElementById('stagesContainer');container.innerHTML='';stages.forEach((s,i)=>{const isCompleted=stageProgress[s.num]?.completed||false;const isLocked=i>0&&!stageProgress[stages[i-1].num]?.completed;const card=document.createElement('div');card.className='stage-card'+(isCompleted?' completed':'')+(isLocked?' locked':'');card.innerHTML=`
+            <div class="check-icon">✓</div>
+            <div class="lock-icon">🔒</div>
+            <span class="icon">${s.icon}</span>
+            <h3>#${s.num} ${s.title}</h3>
+            <p class="subtitle">${s.subtitle}</p>
+            <div class="progress"><div class="progress-fill" style="width:${isCompleted?'100':'0'}%"></div></div>
+            <div class="status">${isCompleted?'✓ مكتمل':isLocked?'🔒 مقفل':'🔓 متاح'}</div>
+            <button class="btn-play" onclick="playStage(${s.num})" ${isLocked?'disabled':''}>${isLocked?'🔒':'▶️'} ${isLocked?'مقفل':'ابدأ'}</button>
+        `;container.appendChild(card)});updateDashboard()}
+
+        function playStage(n){const stage=stages.find(s=>s.num===n);if(stage){window.location.href=stage.file}}
+
+        document.addEventListener('DOMContentLoaded',()=>{loadProgress();renderStages();window.addEventListener('focus',()=>{loadProgress();renderStages()})}); 
+    </script>
+</body>
+</html>

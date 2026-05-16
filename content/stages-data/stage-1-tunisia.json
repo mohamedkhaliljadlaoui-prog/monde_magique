@@ -1,0 +1,346 @@
+{
+  "stage": {
+    "id": 1,
+    "title_fr": "Découverte de la Tunisie",
+    "title_ar": "اكتشاف تونس",
+    "description_fr": "Explore notre beau pays, la Tunisie ! Découvre son histoire riche, sa culture vibrante et ses paysages magnifiques.",
+    "description_ar": "استكشف بلدنا الجميل، تونس! اكتشف تاريخها الغني، وثقافتها النابضة بالحياة، ومناظرها الطبيعية الرائعة.",
+    "region": "tunisia",
+    "difficulty": "easy",
+    "estimated_time": 45,
+    "unlock_requirements": [],
+    "theme_color": "#E13030",
+    "icon": "🇹🇳"
+  },
+  
+  "stations": [
+    {
+      "number": 1,
+      "type": "pdf",
+      "title_fr": "Introduction à la Tunisie",
+      "title_ar": "مقدمة عن تونس",
+      "content": {
+        "pdf_url": "assets/pdf/tunisia/introduction.pdf",
+        "pages": 15,
+        "reading_time": 10,
+        "key_points": [
+          "Géographie de la Tunisie",
+          "Histoire ancienne (Carthage)",
+          "Culture et traditions",
+          "Climat et environnement"
+        ]
+      },
+      "instructions_fr": "Lis attentivement ce document pour découvrir les bases sur la Tunisie.",
+      "instructions_ar": "اقرأ هذه الوثيقة بعناية لاكتشاف الأساسيات عن تونس."
+    },
+    
+    {
+      "number": 2,
+      "type": "video",
+      "title_fr": "Les Trésors de la Tunisie",
+      "title_ar": "كنوز تونس",
+      "content": {
+        "video_url": "assets/videos/tunisia/treasures.mp4",
+        "duration": 240,
+        "quiz_questions": [
+          {
+            "question": "Quelle est la capitale de la Tunisie ?",
+            "options": ["Tunis", "Sfax", "Sousse", "Gabès"],
+            "correct": 0,
+            "explanation": "Tunis est la capitale depuis le 12ème siècle."
+          },
+          {
+            "question": "Quel site historique est célèbre en Tunisie ?",
+            "options": ["Carthage", "Pompéi", "Acropole", "Machu Picchu"],
+            "correct": 0,
+            "explanation": "Carthage est un site archéologique classé au patrimoine de l'UNESCO."
+          }
+        ]
+      }
+    },
+    
+    {
+      "number": 3,
+      "type": "game",
+      "title_fr": "Associe les Monuments",
+      "title_ar": "ربط المعالم",
+      "content": {
+        "images": [
+          {
+            "id": "img1",
+            "url": "assets/images/stages/tunisia/mosquee-okba.jpg",
+            "correct_match": "match1"
+          },
+          {
+            "id": "img2",
+            "url": "assets/images/stages/tunisia/carthage.jpg",
+            "correct_match": "match2"
+          },
+          {
+            "id": "img3",
+            "url": "assets/images/stages/tunisia/sidi-bou-said.jpg",
+            "correct_match": "match3"
+          },
+          {
+            "id": "img4",
+            "url": "assets/images/stages/tunisia/amphitheatre-eljem.jpg",
+            "correct_match": "match4"
+          }
+        ],
+        "descriptions": [
+          {
+            "id": "match1",
+            "text": "Grande Mosquée de Kairouan - Une des plus anciennes mosquées d'Afrique",
+            "correct_match": "img1"
+          },
+          {
+            "id": "match2",
+            "text": "Site archéologique de Carthage - Ancienne cité punique",
+            "correct_match": "img2"
+          },
+          {
+            "id": "match3",
+            "text": "Sidi Bou Saïd - Village bleu et blanc au bord de la mer",
+            "correct_match": "img3"
+          },
+          {
+            "id": "match4",
+            "text": "Amphithéâtre d'El Jem - Troisième plus grand amphithéâtre romain",
+            "correct_match": "img4"
+          }
+        ]
+      }
+    },
+    
+    {
+      "number": 4,
+      "type": "quiz",
+      "title_fr": "Quiz Images - Régions Tunisiennes",
+      "title_ar": "اختبار الصور - مناطق تونسية",
+      "content": {
+        "questions": [
+          {
+            "question": "Quelle image représente la ville de Tozeur ?",
+            "image": "assets/images/stages/tunisia/tozeur.jpg",
+            "options": [
+              {
+                "image": "assets/images/stages/tunisia/tozeur-option1.jpg",
+                "text": "Tozeur - Ville des oasis",
+                "correct": true
+              },
+              {
+                "image": "assets/images/stages/tunisia/tabarka-option2.jpg",
+                "text": "Tabarka - Ville côtière",
+                "correct": false
+              },
+              {
+                "image": "assets/images/stages/tunisia/tataouine-option3.jpg",
+                "text": "Tataouine - Région des ksour",
+                "correct": false
+              },
+              {
+                "image": "assets/images/stages/tunisia/nabeul-option4.jpg",
+                "text": "Nabeul - Capitale de la poterie",
+                "correct": false
+              }
+            ],
+            "explanation": "Tozeur est célèbre pour ses palmeraies et son architecture en briques.",
+            "fun_fact": "Tozeur possède plus de 200 sources d'eau !"
+          },
+          {
+            "question": "Quelle est cette spécialité tunisienne ?",
+            "image": "assets/images/stages/tunisia/brik.jpg",
+            "options": [
+              {
+                "image": "assets/images/stages/tunisia/brik.jpg",
+                "text": "Brik à l'œuf",
+                "correct": true
+              },
+              {
+                "image": "assets/images/stages/tunisia/couscous.jpg",
+                "text": "Couscous",
+                "correct": false
+              },
+              {
+                "image": "assets/images/stages/tunisia/makroudh.jpg",
+                "text": "Makroudh",
+                "correct": false
+              },
+              {
+                "image": "assets/images/stages/tunisia/tajine.jpg",
+                "text": "Tajine tunisien",
+                "correct": false
+              }
+            ],
+            "explanation": "Le brik est une pâte feuilletée farcie, souvent avec un œuf.",
+            "fun_fact": "Il faut être rapide pour manger un brik sans se faire couler l'œuf sur le menton !"
+          }
+        ]
+      }
+    },
+    
+    {
+      "number": 5,
+      "type": "final_quiz",
+      "title_fr": "Quiz Final - Connaissances sur la Tunisie",
+      "title_ar": "الاختبار النهائي - المعرفة حول تونس",
+      "content": {
+        "questions": [
+          {
+            "id": "q1",
+            "question_fr": "Quelle mer borde la Tunisie ?",
+            "question_ar": "أي بحر يحد تونس؟",
+            "type": "text",
+            "options": [
+              {"id": "a", "text": "Méditerranée", "correct": true},
+              {"id": "b", "text": "Atlantique", "correct": false},
+              {"id": "c", "text": "Rouge", "correct": false},
+              {"id": "d", "text": "Noire", "correct": false}
+            ],
+            "explanation_fr": "La Tunisie est bordée par la mer Méditerranée au nord et à l'est.",
+            "explanation_ar": "تونس يحدها البحر الأبيض المتوسط من الشمال والشرق.",
+            "difficulty": 1
+          },
+          {
+            "id": "q2",
+            "question_fr": "Quelle est la langue officielle de la Tunisie ?",
+            "question_ar": "ما هي اللغة الرسمية لتونس؟",
+            "type": "text",
+            "options": [
+              {"id": "a", "text": "Arabe", "correct": true},
+              {"id": "b", "text": "Français", "correct": false},
+              {"id": "c", "text": "Berbère", "correct": false},
+              {"id": "d", "text": "Anglais", "correct": false}
+            ],
+            "explanation_fr": "L'arabe est la langue officielle, mais le français est largement utilisé.",
+            "explanation_ar": "العربية هي اللغة الرسمية، ولكن الفرنسية مستخدمة على نطاق واسع.",
+            "difficulty": 1
+          },
+          {
+            "id": "q3",
+            "question_fr": "Quelle monnaie utilise-t-on en Tunisie ?",
+            "question_ar": "ما هي العملة المستخدمة في تونس؟",
+            "type": "image",
+            "image_url": "assets/images/stages/tunisia/dinar.jpg",
+            "options": [
+              {"id": "a", "text": "Dinar tunisien", "correct": true},
+              {"id": "b", "text": "Dirham marocain", "correct": false},
+              {"id": "c", "text": "Euro", "correct": false},
+              {"id": "d", "text": "Dollar", "correct": false}
+            ],
+            "explanation_fr": "Le dinar tunisien (TND) est la monnaie officielle.",
+            "explanation_ar": "الدينار التونسي (TND) هو العملة الرسمية.",
+            "difficulty": 2
+          },
+          {
+            "id": "q4",
+            "question_fr": "Quel animal représente souvent la Tunisie ?",
+            "question_ar": "أي حيوان يمثل تونس غالبًا؟",
+            "type": "image",
+            "image_url": "assets/images/stages/tunisia/fennec.jpg",
+            "options": [
+              {"id": "a", "text": "Fennec", "correct": true},
+              {"id": "b", "text": "Lion", "correct": false},
+              {"id": "c", "text": "Gazelle", "correct": false},
+              {"id": "d", "text": "Chameau", "correct": false}
+            ],
+            "explanation_fr": "Le fennec, renard des sables aux grandes oreilles, est un symbole de la Tunisie.",
+            "explanation_ar": "الفنك، ثعلب الصحراء ذو الأذنين الكبيرتين، هو رمز لتونس.",
+            "difficulty": 3
+          },
+          {
+            "id": "q5",
+            "question_fr": "Quelle célèbre ville tunisienne est entièrement bleue et blanche ?",
+            "question_ar": "أي مدينة تونسية شهيرة زرقاء وبيضاء بالكامل؟",
+            "type": "text",
+            "options": [
+              {"id": "a", "text": "Sidi Bou Saïd", "correct": true},
+              {"id": "b", "text": "Hammamet", "correct": false},
+              {"id": "c", "text": "Monastir", "correct": false},
+              {"id": "d", "text": "Kairouan", "correct": false}
+            ],
+            "explanation_fr": "Sidi Bou Saïd est célèbre pour ses maisons blanches aux portes et volets bleus.",
+            "explanation_ar": "سيدي بوسعيد مشهورة ببيوتها البيضاء بأبواب وشبابيك زرقاء.",
+            "difficulty": 2
+          }
+        ],
+        "passing_score": 60,
+        "time_limit": 900
+      }
+    },
+    
+    {
+      "number": 6,
+      "type": "rewards",
+      "title_fr": "Récompenses - Stage Tunisie",
+      "title_ar": "المكافآت - مرحلة تونس",
+      "content": {
+        "base_rewards": {
+          "diamonds": 5,
+          "coins": 100,
+          "xp": 500
+        },
+        "bonus_multipliers": {
+          "perfect_score": 1.5,
+          "fast_completion": 1.2,
+          "no_hints": 1.1
+        },
+        "special_items": [
+          {
+            "name": "Badge Tunisie Expert",
+            "name_ar": "شارة خبير تونس",
+            "condition": "score >= 90",
+            "icon": "assets/images/achievements/badge-tunisia.png"
+          }
+        ]
+      }
+    },
+    
+    {
+      "number": 7,
+      "type": "chatbot",
+      "title_fr": "Pose tes Questions sur la Tunisie",
+      "title_ar": "اطرح أسئلتك عن تونس",
+      "content": {
+        "bot_personality": "enthusiastic_expert",
+        "knowledge_base": "tunisia_knowledge",
+        "suggested_questions": [
+          "Quels sont les plats typiques tunisiens ?",
+          "Quelle est la meilleure saison pour visiter la Tunisie ?",
+          "Raconte-moi une légende tunisienne",
+          "Quels animaux trouve-t-on dans le désert tunisien ?"
+        ],
+        "limits": {
+          "questions_per_session": 5,
+          "diamond_cost_extra": 1
+        }
+      }
+    }
+  ],
+  
+  "rewards": {
+    "completion": {
+      "diamonds": 5,
+      "coins": 100,
+      "xp": 500
+    },
+    "perfect_score": {
+      "bonus_diamonds": 10,
+      "special_item": "badge_tunisia_expert"
+    }
+  },
+  
+  "unlocks": {
+    "next_stage": 2,
+    "achievements": ["first_stage_complete", "tunisia_explorer"],
+    "content": ["maghreb_region_unlocked"]
+  },
+  
+  "metadata": {
+    "created": "2024-01-15",
+    "updated": "2024-01-15",
+    "version": "1.0",
+    "author": "Équipe Monde Magique",
+    "reviewers": ["pédagogue_1", "pédagogue_2"]
+  }
+}

@@ -1,0 +1,103 @@
+:root {
+    --cartoon-primary: #667eea;
+    --cartoon-secondary: #764ba2;
+    --cartoon-accent: #ff6b6b;
+    --cartoon-bg: #f7fbff;
+    --cartoon-card: #ffffff;
+    --cartoon-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+}
+
+.cartoon-theme {
+    background: linear-gradient(180deg, #f7fbff 0%, #eef7ff 45%, #f0f2f5 100%);
+    min-height: 100vh;
+}
+
+.cartoon-controls {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    z-index: 10050;
+    display: flex;
+    gap: 10px;
+}
+
+.cartoon-toggle {
+    background: #ffffff;
+    color: #2d2f38;
+    border: 1px solid rgba(45, 47, 56, 0.2);
+    border-radius: 12px;
+    padding: 6px 10px;
+    min-width: 90px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 0.85rem;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cartoon-toggle:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.16);
+}
+
+.cartoon-theme .stage-card,
+.cartoon-theme .stat-card,
+.cartoon-theme .achievement-badge,
+.cartoon-theme .station-item,
+.cartoon-theme .station-content {
+    border-radius: 18px;
+}
+
+.cartoon-theme.theme-night {
+    background: #0D0221;
+    color: #f7f2e8;
+}
+
+.cartoon-theme.theme-night a {
+    color: #ffd166;
+}
+
+.cartoon-theme.theme-night h1,
+.cartoon-theme.theme-night h2,
+.cartoon-theme.theme-night h3,
+.cartoon-theme.theme-night h4,
+.cartoon-theme.theme-night h5,
+.cartoon-theme.theme-night h6 {
+    color: #fff7e0;
+}
+
+.cartoon-theme.theme-night .cartoon-sky,
+.cartoon-theme.theme-night .profile-sky {
+    filter: hue-rotate(200deg) brightness(0.9);
+}
+
+.cartoon-theme.theme-night .cartoon-toggle {
+    background: #2f3954;
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.cartoon-theme.theme-night .stage-card,
+.cartoon-theme.theme-night .stat-card,
+.cartoon-theme.theme-night .achievement-badge,
+.cartoon-theme.theme-night .station-item,
+.cartoon-theme.theme-night .station-content {
+    background: #27324f;
+    color: #f7f2e8;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.35);
+}
+
+@media (max-width: 768px) {
+    .cartoon-controls {
+        top: 8px;
+        left: 50%;
+        right: auto;
+        bottom: auto;
+        transform: translateX(-50%);
+        flex-direction: row;
+    }
+}

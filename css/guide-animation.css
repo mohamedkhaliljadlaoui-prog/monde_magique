@@ -1,0 +1,263 @@
+/* Guide animé sur la carte */
+#animated-guide {
+    position: absolute;
+    width: 80px;
+    height: 120px;
+    z-index: 1500;
+    pointer-events: none;
+    transition: left 0.1s, top 0.1s;
+    transform-origin: center bottom;
+}
+
+.guide-character {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    animation: guideWalk 0.6s infinite alternate;
+}
+
+.guide-character.boy {
+    background-image: url('../assets/guides/boy-guide.png');
+}
+
+.guide-character.girl {
+    background-image: url('../assets/guides/girl-guide.png');
+}
+
+/* Animation de marche */
+@keyframes guideWalk {
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-5px) rotate(2deg);
+    }
+    50% {
+        transform: translateY(0) rotate(0deg);
+    }
+    75% {
+        transform: translateY(-5px) rotate(-2deg);
+    }
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+}
+
+/* Traces de pas */
+.footstep {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 215, 0, 0.7);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    transition: opacity 1s;
+}
+
+/* Véhicules du guide */
+.guide-vehicle {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.vehicle-bicycle {
+    width: 100px;
+    height: 60px;
+    background-image: url('../assets/vehicles/bicycle.png');
+    animation: pedalWheels 1s linear infinite;
+}
+
+.vehicle-scooter {
+    width: 120px;
+    height: 70px;
+    background-image: url('../assets/vehicles/scooter.png');
+    animation: scooterBounce 0.5s infinite alternate;
+}
+
+.vehicle-car {
+    width: 150px;
+    height: 80px;
+    background-image: url('../assets/vehicles/car.png');
+    animation: carBounce 0.8s infinite alternate;
+}
+
+.vehicle-train {
+    width: 200px;
+    height: 100px;
+    background-image: url('../assets/vehicles/train.png');
+    animation: trainMove 2s linear infinite;
+}
+
+.vehicle-plane {
+    width: 180px;
+    height: 90px;
+    background-image: url('../assets/vehicles/plane.png');
+    animation: planeFly 3s ease-in-out infinite;
+}
+
+/* Animations des véhicules */
+@keyframes pedalWheels {
+    from { transform: translateX(-50%) rotate(0deg); }
+    to { transform: translateX(-50%) rotate(360deg); }
+}
+
+@keyframes scooterBounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-5px); }
+}
+
+@keyframes carBounce {
+    0%, 100% { transform: translateX(-50%) translateY(0) rotate(0deg); }
+    25% { transform: translateX(-50%) translateY(-3px) rotate(1deg); }
+    75% { transform: translateX(-50%) translateY(-3px) rotate(-1deg); }
+}
+
+@keyframes trainMove {
+    0% { transform: translateX(-50%) translateY(0); }
+    25% { transform: translateX(-50%) translateY(-2px); }
+    50% { transform: translateX(-50%) translateY(0); }
+    75% { transform: translateX(-50%) translateY(2px); }
+    100% { transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes planeFly {
+    0%, 100% { 
+        transform: translateX(-50%) translateY(0) rotate(0deg); 
+    }
+    25% { 
+        transform: translateX(-50%) translateY(-10px) rotate(2deg); 
+    }
+    50% { 
+        transform: translateX(-50%) translateY(-20px) rotate(0deg); 
+    }
+    75% { 
+        transform: translateX(-50%) translateY(-10px) rotate(-2deg); 
+    }
+}
+
+/* Styles des cartes par région */
+.region-highlight {
+    stroke-dasharray: 10, 10;
+    animation: dash 20s linear infinite;
+}
+
+@keyframes dash {
+    to {
+        stroke-dashoffset: -1000;
+    }
+}
+
+/* Logo de région */
+.region-logo {
+    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+    animation: floatLogo 3s ease-in-out infinite;
+}
+
+@keyframes floatLogo {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Icônes de décoration */
+.decoration-icon {
+    filter: drop-shadow(0 3px 10px rgba(0,0,0,0.2));
+    transition: all 0.3s;
+}
+
+.decoration-icon:hover {
+    transform: scale(1.2);
+    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+}
+
+/* Popup des régions */
+.region-popup {
+    min-width: 200px;
+}
+
+.region-popup h3 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.region-popup p {
+    color: #7f8c8d;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.region-facts ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.region-facts li {
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 13px;
+}
+
+.region-facts li:last-child {
+    border-bottom: none;
+}
+
+/* Panneau d'information */
+#region-info.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.region-info-content h3 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.region-stats {
+    margin: 15px 0;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.stat-label {
+    color: #7f8c8d;
+    font-weight: 500;
+}
+
+.stat-value {
+    color: #2c3e50;
+    font-weight: bold;
+}
+
+.btn-start-stage {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 15px;
+}
+
+.btn-start-stage:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}

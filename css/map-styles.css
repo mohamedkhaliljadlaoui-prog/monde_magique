@@ -1,0 +1,284 @@
+/* ===================================
+   MAP-STYLES.CSS - Leaflet Customization
+   =================================== */
+
+/* Custom Leaflet Marker Styles */
+.custom-marker-icon {
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    width: 60px !important;
+    height: 60px !important;
+    border: 3px solid #667eea;
+    transition: all 0.3s ease;
+}
+
+.custom-marker-icon:hover {
+    transform: scale(1.2) rotate(10deg);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+}
+
+/* Stage Marker Types */
+.marker-tunisia {
+    border-color: #e74c3c;
+    background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+}
+
+.marker-maghreb {
+    border-color: #16a085;
+    background: linear-gradient(135deg, #55efc4, #00b894);
+}
+
+.marker-africa {
+    border-color: #f39c12;
+    background: linear-gradient(135deg, #fab1a0, #ff7675);
+}
+
+.marker-europe {
+    border-color: #3498db;
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+}
+
+.marker-asia {
+    border-color: #9b59b6;
+    background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+}
+
+.marker-namerica {
+    border-color: #e67e22;
+    background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+}
+
+.marker-samerica {
+    border-color: #27ae60;
+    background: linear-gradient(135deg, #55efc4, #00b894);
+}
+
+.marker-oceania {
+    border-color: #00cec9;
+    background: linear-gradient(135deg, #81ecec, #00b894);
+}
+
+.marker-poles {
+    border-color: #95afc0;
+    background: linear-gradient(135deg, #dfe6e9, #b2bec3);
+}
+
+.marker-world {
+    border-color: #d63031;
+    background: linear-gradient(135deg, #fd79a8, #e84393);
+}
+
+/* Locked/Completed States */
+.marker-locked {
+    opacity: 0.5;
+    filter: grayscale(100%);
+    cursor: not-allowed;
+}
+
+.marker-completed::after {
+    content: '✓';
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #4caf50;
+    color: white;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+    border: 2px solid white;
+}
+
+/* Custom Popup Styles */
+.leaflet-popup-content-wrapper {
+    border-radius: 15px;
+    padding: 0;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.leaflet-popup-content {
+    margin: 0;
+    padding: 20px;
+    font-family: 'Cairo', 'Segoe UI', sans-serif;
+}
+
+.stage-popup-content {
+    text-align: center;
+    min-width: 200px;
+}
+
+.stage-popup-icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.stage-popup-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.stage-popup-progress {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.stage-popup-btn {
+    width: 100%;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.stage-popup-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.stage-popup-btn:disabled {
+    background: #e0e0e0;
+    color: #999;
+    cursor: not-allowed;
+}
+
+/* Train Path Animation */
+.train-path {
+    stroke: #667eea;
+    stroke-width: 3;
+    stroke-dasharray: 10, 5;
+    animation: dashMove 2s linear infinite;
+}
+
+@keyframes dashMove {
+    to {
+        stroke-dashoffset: -15;
+    }
+}
+
+/* Regional Decorations */
+.region-decoration {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.3;
+    animation: float 3s ease-in-out infinite;
+}
+
+.decoration-tunisia {
+    width: 50px;
+    height: 50px;
+    background: url('../assets/images/ui/palmier.png') center/contain no-repeat;
+}
+
+.decoration-europe {
+    width: 60px;
+    height: 60px;
+    background: url('../assets/images/ui/eiffel.png') center/contain no-repeat;
+}
+
+/* Guide Movement on Map */
+.guide-on-map {
+    width: 80px;
+    height: 100px;
+    position: absolute;
+    z-index: 1000;
+    transition: all 2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.guide-walking {
+    animation: walk 0.5s steps(4) infinite;
+}
+
+@keyframes walk {
+    from { background-position-x: 0; }
+    to { background-position-x: -320px; }
+}
+
+/* Map Legend */
+.map-legend {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.legend-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.legend-icon.unlocked {
+    background: #4caf50;
+}
+
+.legend-icon.current {
+    background: #f39c12;
+}
+
+.legend-icon.locked {
+    background: #e0e0e0;
+}
+
+/* Zoom Controls Customization */
+.leaflet-control-zoom {
+    border: none !important;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2) !important;
+}
+
+.leaflet-control-zoom a {
+    border-radius: 8px !important;
+    font-size: 1.2rem !important;
+    font-weight: bold !important;
+}
+
+.leaflet-control-zoom a:first-child {
+    border-bottom: 1px solid #e0e0e0 !important;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .custom-marker-icon {
+        width: 45px !important;
+        height: 45px !important;
+        font-size: 1.5rem;
+    }
+    
+    .stage-popup-content {
+        min-width: 150px;
+    }
+    
+    .map-legend {
+        bottom: 10px;
+        right: 10px;
+        font-size: 0.8rem;
+        padding: 10px;
+    }
+}

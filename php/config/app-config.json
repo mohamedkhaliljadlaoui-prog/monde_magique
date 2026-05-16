@@ -1,0 +1,102 @@
+{
+  "app": {
+    "name": "Monde Magique",
+    "version": "1.0.0",
+    "environment": "production",
+    "debug": false,
+    "maintenance": false
+  },
+  
+  "api": {
+    "base_url": "https://api.monde-magique.com",
+    "timeout": 30000,
+    "retry_attempts": 3,
+    "cache_duration": 300
+  },
+  
+  "game": {
+    "total_stages": 10,
+    "stations_per_stage": 7,
+    "max_level": 100,
+    
+    "daily_limits": {
+      "chatbot_questions": 50,
+      "free_chatbot_per_stage": 5,
+      "max_play_time": 7200
+    },
+    
+    "rewards": {
+      "stage_completion": {
+        "base_diamonds": 5,
+        "base_coins": 100,
+        "base_xp": 500
+      },
+      "perfect_score_multiplier": 1.5,
+      "streak_bonus": 1.1
+    },
+    
+    "difficulty": {
+      "easy": [1, 2, 3],
+      "medium": [4, 5, 6],
+      "hard": [7, 8, 9],
+      "expert": [10]
+    }
+  },
+  
+  "ai": {
+    "provider": "openai",
+    "model": "gpt-4",
+    "api_key": "sk-...",
+    "max_tokens": 500,
+    "temperature": 0.7,
+    
+    "personalities": {
+      "friendly_guide": {
+        "system_prompt": "Tu es un guide éducatif amical pour enfants. Sois encourageant, simple et pédagogique.",
+        "response_style": "conversational"
+      },
+      "expert_teacher": {
+        "system_prompt": "Tu es un enseignant expert. Donne des réponses précises et éducatives.",
+        "response_style": "educational"
+      }
+    }
+  },
+  
+  "languages": {
+    "default": "fr",
+    "supported": ["fr", "ar"],
+    "rtl_languages": ["ar"]
+  },
+  
+  "features": {
+    "chatbot": true,
+    "voice_guidance": true,
+    "offline_mode": true,
+    "parent_dashboard": true,
+    "multiplayer": false,
+    "ar_mode": false,
+    "push_notifications": true
+  },
+  
+  "analytics": {
+    "enabled": true,
+    "provider": "google_analytics",
+    "tracking_id": "UA-XXXXX-Y",
+    "privacy_mode": true
+  },
+  
+  "security": {
+    "password_min_length": 8,
+    "session_duration": 86400,
+    "max_login_attempts": 5,
+    "encryption_key": "change_this_in_production",
+    "https_only": true
+  },
+  
+  "performance": {
+    "cache_static": true,
+    "compress_assets": true,
+    "lazy_load_images": true,
+    "minify_resources": true
+  }
+}

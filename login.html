@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monde Magique - Connexion</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/auth.css?v=20260205">
+    <link rel="stylesheet" href="css/cartoon-theme.css">
+    <link rel="stylesheet" href="css/train-animation.css">
+</head>
+<body class="auth-page cartoon-theme">
+    <div class="cartoon-controls">
+        <button class="cartoon-toggle" data-theme-toggle data-day-label="🌞 نهار" data-night-label="🌙 ليل">🌞 نهار</button>
+        <button class="cartoon-toggle" data-sound-toggle data-sound-on-label="🔊 صوت" data-sound-off-label="🔇 صامت">🔇 صامت</button>
+        <button class="cartoon-toggle" data-music-toggle data-music-on-label="🎵 موسيقى" data-music-off-label="🔇 موسيقى">🎵 موسيقى</button>
+    </div>
+    <div class="auth-bubbles">
+        <span class="bubble" style="top: 20%; left: 10%;"></span>
+        <span class="bubble b2" style="top: 35%; left: 18%;"></span>
+        <span class="bubble b3" style="top: 25%; right: 15%;"></span>
+        <span class="bubble" style="bottom: 20%; right: 10%;"></span>
+        <span class="bubble b2" style="bottom: 35%; left: 25%;"></span>
+    </div>
+    <div class="auth-stars">
+        <span style="top: 12%; left: 35%;">✨</span>
+        <span style="top: 22%; right: 22%;">⭐</span>
+        <span style="bottom: 18%; left: 12%;">✨</span>
+        <span style="bottom: 28%; right: 18%;">⭐</span>
+    </div>
+    <div class="auth-sun"></div>
+    <div class="auth-cloud"></div>
+    <div class="auth-cloud cloud-2"></div>
+    <div class="auth-bird">🕊️</div>
+    <div class="auth-bird bird-2">🐦</div>
+    <div class="auth-rainbow"></div>
+    <div class="auth-balloon"></div>
+    <div class="auth-balloon balloon-2"></div>
+    <div class="auth-plane">✈️</div>
+    <div class="auth-kite"></div>
+    <div class="auth-kite kite-2"></div>
+    <div class="auth-train-track"></div>
+    <div class="auth-train">
+        <span class="wheel"></span>
+        <span class="wheel"></span>
+        <span class="wheel"></span>
+    </div>
+    <div class="auth-hills">
+        <div class="auth-hill"></div>
+        <div class="auth-hill hill-2"></div>
+    </div>
+    <div class="auth-trees">
+        <div class="auth-tree"></div>
+        <div class="auth-tree tree-2"></div>
+        <div class="auth-tree tree-3"></div>
+    </div>
+
+    <!-- Conteneur principal -->
+    <div class="auth-container">
+        <div class="auth-panel">
+            <div class="logo-section">
+                <h1>🚂 Monde Magique</h1>
+                <p class="tagline">رحلة سحرية لاكتشاف العالم!</p>
+                <p class="tagline" style="opacity: 0.85;">Explore, Apprends, Grandis!</p>
+            </div>
+
+            <!-- Formulaire Login -->
+            <form id="loginForm" class="auth-form">
+                <h2>📍 Connexion à l'Aventure</h2>
+            
+            <div class="input-group">
+                <label for="username">👤 Nom d'Aventurier</label>
+                <input type="text" id="username" name="username" 
+                       placeholder="Entre ton nom magique" required 
+                       autocomplete="username" style="pointer-events: auto; opacity: 1;">
+            </div>
+
+            <div class="input-group">
+                <label for="password">🔒 Mot de Passe Secret</label>
+                <input type="password" id="password" name="password" 
+                       placeholder="Ta clé magique" required 
+                       autocomplete="current-password" style="pointer-events: auto; opacity: 1;">
+                <div class="password-toggle" style="cursor: pointer; pointer-events: auto;">👁️</div>
+            </div>
+
+            <div class="gender-selection">
+                <p>Je suis un(e) :</p>
+                <div class="gender-options">
+                    <label class="gender-option">
+                        <input type="radio" name="gender" value="boy" required>
+                        <div class="gender-icon">👦</div>
+                        <span>Garçon</span>
+                    </label>
+                    <label class="gender-option">
+                        <input type="radio" name="gender" value="girl" required>
+                        <div class="gender-icon">👧</div>
+                        <span>Fille</span>
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary" style="pointer-events: auto; cursor: pointer; opacity: 1;">
+                🚀 Démarrer l'Aventure
+            </button>
+
+                <div class="auth-links">
+                    <p>Nouvel aventurier ? 
+                       <a href="inscription.html">Inscris-toi ici</a>
+                    </p>
+                    <p><a href="#" class="forgot-password">Mot de passe oublié ?</a></p>
+                    <p>
+                        <a href="#">📘 Tutoriel</a> · 
+                        <a href="#">❓ FAQ</a> · 
+                        <a href="dashboard.html">🎮 Mode invité</a>
+                    </p>
+                    <p class="auth-parent-link">
+                        <a href="parent-login.html" class="auth-parent-btn">👪 دخول ولي الأمر</a>
+                    </p>
+                </div>
+            </form>
+
+            <!-- Indicateurs de progression -->
+            <div class="progress-indicators">
+                <div class="indicator">
+                    <span class="indicator-icon">🌍</span>
+                    <span class="indicator-text">10 Mondes à Découvrir</span>
+                </div>
+                <div class="indicator">
+                    <span class="indicator-icon">🎮</span>
+                    <span class="indicator-text">70 Jeux Éducatifs</span>
+                </div>
+                <div class="indicator">
+                    <span class="indicator-icon">🤖</span>
+                    <span class="indicator-text">Guide IA Personnel</span>
+                </div>
+            </div>
+        </div>
+        <div class="auth-illustration">
+            <div class="mascot" title="Mascotte">🦁</div>
+            <div class="mascot-bubble">مرحباً! جاهز للمغامرة؟ ✨</div>
+            <div style="font-size: 3rem;">🚂🌍</div>
+            <div style="font-weight: bold; color: #4a3d7a;">أصدقاء مستكشفون ينتظرونك!</div>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/train.js"></script>
+    <script>
+    // Handle login submit and gender selection
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('loginForm');
+        const toggle = document.querySelector('.password-toggle');
+        const passwordInput = document.getElementById('password');
+
+        if (toggle && passwordInput) {
+            toggle.addEventListener('click', () => {
+                passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+            });
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const genderEl = document.querySelector('input[name="gender"]:checked');
+            const gender = genderEl ? genderEl.value : 'boy';
+            
+            // Désactiver le bouton
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const btnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '⏳ جاري تسجيل الدخول...';
+            
+            console.log('🔐 Tentative de connexion:', { username, gender });
+
+            // In test mode: update local user and proceed
+            if (Auth.TEST_MODE) {
+                const user = Auth.getCurrentUser() || {};
+                user.username = username || user.username || 'TestUser';
+                user.gender = gender;
+                localStorage.setItem('user_data', JSON.stringify(user));
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            try {
+                const result = await Auth.login(username, password);
+                console.log('📥 Résultat login:', result);
+                
+                if (result.success) {
+                    // Persist selected gender if provided
+                    const user = result.user || {};
+                    user.gender = gender;
+                    localStorage.setItem('user_data', JSON.stringify(user));
+                    
+                    console.log('✅ Connexion réussie, redirection...');
+                    alert('✅ تم تسجيل الدخول بنجاح!');
+                    window.location.href = 'dashboard.html';
+                } else {
+                    console.error('❌ Erreur:', result.error);
+                    alert('❌ ' + (result.error || 'خطأ في تسجيل الدخول'));
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = btnText;
+                }
+            } catch (error) {
+                console.error('❌ Exception:', error);
+                alert('❌ خطأ في الاتصال بالخادم');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = btnText;
+            }
+        });
+    });
+    </script>
+    <script src="js/cartoon-theme.js"></script>
+    <script src="js/music-player.js?v=20260205"></script>
+    
+    <!-- ✨ Nouvelles fonctionnalités -->
+    <script src="js/assistant.js"></script>
+    <script src="js/resources.js"></script>
+    <script src="js/certificates.js"></script>
+    
+    <!-- Footer -->
+    <div style="text-align: center; padding: 20px; background: rgba(0,0,0,0.05); margin-top: 20px; font-size: 0.9em; opacity: 0.7;">
+        <p>Created by nourchen mehrez - wiem salhi</p>
+    </div>
+</body>
+</html>

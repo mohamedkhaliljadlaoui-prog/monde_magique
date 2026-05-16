@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المرحلة 1: تونس - Monde Magique</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/stages.css">
+    <link rel="stylesheet" href="../css/themes.css">
+    <link rel="stylesheet" href="../css/arabic.css">
+</head>
+<body class="theme-tunisia">
+    <div class="stage-container">
+        <header class="stage-header theme-pattern">
+            <button class="back-btn" onclick="window.location.href='../dashboard.html'">← العودة</button>
+            <div class="stage-title-container">
+                <h1 class="stage-title">🇹🇳 المرحلة 1: تونس</h1>
+                <p class="stage-subtitle">اكتشف تونس الخضراء</p>
+            </div>
+            <div class="stage-progress"><span id="stations-completed">0</span> / 7 محطات</div>
+        </header>
+        <nav class="stations-nav">
+            <div class="station-item" data-station="1"><div class="station-icon">📚</div><div class="station-name">قراءة PDF</div></div>
+            <div class="station-item" data-station="2"><div class="station-icon">🎬</div><div class="station-name">مشاهدة فيديو</div></div>
+            <div class="station-item" data-station="3"><div class="station-icon">🎮</div><div class="station-name">لعبة ربط</div></div>
+            <div class="station-item" data-station="4"><div class="station-icon">📷</div><div class="station-name">اختبار صور</div></div>
+            <div class="station-item" data-station="5"><div class="station-icon">📝</div><div class="station-name">اختبار نهائي</div></div>
+            <div class="station-item" data-station="6"><div class="station-icon">🎁</div><div class="station-name">مكافآت</div></div>
+            <div class="station-item" data-station="7"><div class="station-icon">🤖</div><div class="station-name">روبوت مساعد</div></div>
+        </nav>
+        <main class="station-content" id="station-content"></main>
+    </div>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/game-engine.js"></script>
+    <script src="../js/quiz-engine.js"></script>
+    <script src="../js/chatbot.js"></script>
+    <script src="../js/tts.js"></script>
+    <script>
+        const STAGE_ID = 1;
+        const STAGE_NAME = 'تونس';
+        document.addEventListener('DOMContentLoaded', () => {
+            GameEngine.initStage(STAGE_ID, STAGE_NAME);
+        });
+    </script>
+</body>
+</html>
+    
+    <!-- Contenu principal -->
+    <main class="stage-container">
+        <div class="station-content" id="station-content">
+            <!-- Le contenu de la station sera chargé dynamiquement ici -->
+            
+            <!-- Station 1: PDF -->
+            <div class="station-pdf" id="station-1" style="display: none;">
+                <div class="pdf-viewer-container">
+                    <div class="pdf-header">
+                        <h2>📚 Introduction à la Tunisie</h2>
+                        <p class="pdf-subtitle">Lis ce document pour découvrir les bases sur notre beau pays</p>
+                    </div>
+                    
+                    <div class="pdf-viewer">
+                        <iframe src="../assets/pdf/tunisia/introduction.pdf" 
+                                frameborder="0" 
+                                id="pdf-viewer"></iframe>
+                    </div>
+                    
+                    <div class="pdf-controls">
+                        <div class="pdf-info">
+                            <span class="page-info">Page <span id="current-page">1</span> sur <span id="total-pages">15</span></span>
+                            <span class="reading-time">⏱️ Temps estimé: 10 minutes</span>
+                        </div>
+                        
+                        <div class="pdf-actions">
+                            <button class="btn-pdf" onclick="previousPage()">
+                                ⬅️ Page précédente
+                            </button>
+                            <button class="btn-pdf" onclick="nextPage()">
+                                Page suivante ➡️
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="pdf-completion">
+                        <label class="completion-checkbox">
+                            <input type="checkbox" id="pdf-read-checkbox">
+                            <span>✅ J'ai lu et compris ce document</span>
+                        </label>
+                        
+                        <button class="btn-complete" onclick="completePDFStation()" disabled id="btn-complete-pdf">
+                            🚀 Continuer vers la prochaine station
+                        </button>
+                    </div>
+                    
+                    <div class="learning-tips">
+                        <h3>💡 Astuces d'apprentissage:</h3>
+                        <ul>
+                            <li>Prends des notes des faits intéressants</li>
+                            <li>Imagine-toi en voyage dans ce pays</li>
+                            <li>Prépare 2 questions pour le guide IA</li>
+                            <li>Regarde les images attentivement</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Station 2: Vidéo -->
+            <div class="station-video" id="station-2" style="display: none;">
+                <div class="video-station">
+                    <div class="video-header">
+                        <h2>🎬 Les Trésors de la Tunisie</h2>
+                        <p class="video-subtitle">Regarde cette vidéo pour découvrir les merveilles de la Tunisie</p>
+                    </div>
+                    
+                    <div class="video-player-container">
+                        <video class="video-player" 
+                               id="tunisia-video"
+                               controls
+                               poster="../assets/images/stages/tunisia/video-poster.jpg">
+                            <source src="../assets/videos/tunisia/treasures.mp4" type="video/mp4">
+                            Votre navigateur ne supporte pas la vidéo.
+                        </video>
+                        
+                        <div class="video-controls">
+                            <div class="video-progress">
+                                <div class="progress-bar" id="video-progress-bar"></div>
+                            </div>
+                            
+                            <div class="video-buttons">
+                                <button class="btn-video" onclick="togglePlay()" id="play-btn">
+                                    ⏵️ Lecture
+                                </button>
+                                <button class="btn-video" onclick="skipBack(10)">
+                                    ⏪ 10s
+                                </button>
+                                <button class="btn-video" onclick="skipForward(10)">
+                                    10s ⏩
+                                </button>
+                                <button class="btn-video" onclick="toggleMute()" id="mute-btn">
+                                    🔊 Son
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="video-quiz-popup" id="video-quiz" style="display: none;">
+                        <h3>🎯 Petit quiz de la vidéo:</h3>
+                        <div class="video-questions" id="video-questions">
+                            <!-- Questions chargées dynamiquement -->
+                        </div>
+                        
+                        <div class="quiz-controls">
+                            <button class="btn-submit" onclick="submitVideoQuiz()">
+                                ✅ Valider mes réponses
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="video-completion">
+                        <button class="btn-complete" onclick="completeVideoStation()" disabled id="btn-complete-video">
+                            🎬 J'ai regardé la vidéo et répondu au quiz
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Station 3: Jeu d'association -->
+            <div class="station-game" id="station-3" style="display: none;">
+                <div class="matching-game-container">
+                    <div class="game-instructions">
+                        <h3>🎮 Associe les Monuments aux Bonnes Descriptions !</h3>
+                        <p>Trouve les 4 paires correctes pour avancer. Clique sur une image, puis sur une description.</p>
+                    </div>
+                    
+                    <div class="matching-area">
+                        <div class="images-grid" id="images-grid">
+                            <!-- Images chargées dynamiquement -->
+                        </div>
+                        
+                        <div class="descriptions-grid" id="descriptions-grid">
+                            <!-- Descriptions chargées dynamiquement -->
+                        </div>
+                    </div>
+                    
+                    <div class="game-stats">
+                        <div class="stat">
+                            <span class="stat-label">Paires trouvées:</span>
+                            <span class="stat-value" id="matched-pairs">0/4</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Essais:</span>
+                            <span class="stat-value" id="attempts-count">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Temps:</span>
+                            <span class="stat-value" id="game-timer">00:00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="game-feedback" id="game-feedback"></div>
+                    
+                    <div class="game-help">
+                        <button class="btn-help" onclick="useHint()" id="hint-btn">
+                            💡 Demander un indice (3 restants)
+                        </button>
+                        <button class="btn-help" onclick="showSolution()" id="solution-btn">
+                            🔍 Voir la solution
+                        </button>
+                    </div>
+                    
+                    <div class="game-completion">
+                        <button class="btn-complete" onclick="completeGameStation()" disabled id="btn-complete-game">
+                            🎯 Passer au quiz images
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Station 4: Quiz Images -->
+            <div class="station-image-quiz" id="station-4" style="display: none;">
+                <div class="quiz-with-images">
+                    <div class="quiz-header">
+                        <h2>📷 Quiz Images - Régions Tunisiennes</h2>
+                        <div class="quiz-progress">
+                            <span class="progress-text">Question <span id="current-question">1</span>/5</span>
+                            <div class="progress-circle" id="quiz-progress-circle">0%</div>
+                        </div>
+                    </div>
+                    
+                    <div class="quiz-container" id="image-quiz-container">
+                        <!-- Contenu du quiz chargé dynamiquement -->
+                    </div>
+                    
+                    <div class="quiz-completion">
+                        <button class="btn-complete" onclick="completeImageQuizStation()" disabled id="btn-complete-image-quiz">
+                            📝 Passer au quiz final
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Station 5: Quiz Final -->
+            <div class="station-final-quiz" id="station-5" style="display: none;">
+                <div class="final-quiz-container">
+                    <div class="quiz-header-final">
+                        <h2>📝 Quiz Final - Connaissances sur la Tunisie</h2>
+                        <div class="quiz-stats-final">
+                            <div class="stat">
+                                <span class="stat-label">Score:</span>
+                                <span class="stat-value" id="final-score">0</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Temps:</span>
+                                <span class="stat-value" id="final-timer">15:00</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Questions:</span>
+                                <span class="stat-value">20</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="quiz-container" id="final-quiz-container">
+                        <!-- Quiz final chargé dynamiquement -->
+                    </div>
+                    
+                    <div class="quiz-instructions">
+                        <h3>💡 Instructions:</h3>
+                        <ul>
+                            <li>Tu as 15 minutes pour répondre à 20 questions</li>
+                            <li>Il te faut au moins 60% pour réussir le stage</li>
+                            <li>Utilise les touches 1-4 pour répondre rapidement</li>
+                            <li>Les questions avec images rapportent plus de points</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Station 6: Récompenses -->
+            <div class="station-rewards" id="station-6" style="display: none;">
+                <div class="rewards-container">
+                    <div class="rewards-celebration">
+                        <div class="confetti"></div>
+                        <h1 class="rewards-title">🎉 Félicitations !</h1>
+                        <p class="rewards-subtitle">Tu as complété le Stage 1: Découverte de la Tunisie</p>
+                    </div>
+                    
+                    <div class="rewards-earned" id="rewards-earned">
+                        <!-- Récompenses chargées dynamiquement -->
+                    </div>
+                    
+                    <div class="rewards-actions">
+                        <button class="btn-claim" onclick="claimRewards()" id="btn-claim">
+                            🎯 Récupérer mes récompenses
+                        </button>
+                        <button class="btn-share" onclick="shareAchievement()">
+                            📤 Partager mon succès
+                        </button>
+                        <button class="btn-continue" onclick="continueToNextStage()" id="btn-continue" style="display: none;">
+                            🚀 Continuer vers le Stage 2
+                        </button>
+                    </div>
+                    
+                    <div class="achievements-unlocked" id="achievements-unlocked">
+                        <!-- Succès débloqués -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Station 7: Chatbot -->
+            <div class="station-chatbot" id="station-7" style="display: none;">
+                <div class="chatbot-station">
+                    <div class="chatbot-header">
+                        <div class="chatbot-avatar">
+                            <img src="../assets/images/guides/boy/guide-boy-1.png" alt="Guide IA">
+                            <div class="chatbot-info">
+                                <h3>🤖 Guide IA - Questions sur la Tunisie</h3>
+                                <p>Pose tes questions, je suis là pour t'aider !</p>
+                            </div>
+                        </div>
+                        
+                        <div class="chatbot-limits">
+                            <span class="limits-text">Questions restantes: </span>
+                            <span class="limits-count" id="questions-left">5/5</span>
+                        </div>
+                    </div>
+                    
+                    <div class="chatbot-conversation" id="chat-conversation">
+                        <!-- Conversation chargée dynamiquement -->
+                        <div class="chat-message bot">
+                            <div class="message-avatar">
+                                <img src="../assets/images/guides/boy/guide-boy-1.png" alt="Guide">
+                            </div>
+                            <div class="message-content">
+                                <div class="message-text">
+                                    Salut ! Je suis ton guide IA pour le stage sur la Tunisie. 
+                                    Tu peux me poser n'importe quelle question sur la Tunisie !
+                                </div>
+                                <div class="message-time">Maintenant</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chatbot-input-area">
+                        <input type="text" 
+                               class="chatbot-input" 
+                               id="chat-input"
+                               placeholder="Pose ta question ici..."
+                               maxlength="200">
+                        <button class="btn-send" onclick="sendMessage()" id="btn-send">
+                            📤 Envoyer
+                        </button>
+                    </div>
+                    
+                    <div class="chatbot-suggestions">
+                        <p>Questions suggérées:</p>
+                        <div class="suggestion-chips" id="suggestion-chips">
+                            <button class="suggestion-chip" onclick="useSuggestion('Quels sont les plats typiques tunisiens ?')">
+                                Quels sont les plats typiques tunisiens ?
+                            </button>
+                            <button class="suggestion-chip" onclick="useSuggestion('Quelle est la meilleure saison pour visiter la Tunisie ?')">
+                                Quelle est la meilleure saison pour visiter la Tunisie ?
+                            </button>
+                            <button class="suggestion-chip" onclick="useSuggestion('Raconte-moi une légende tunisienne')">
+                                Raconte-moi une légende tunisienne
+                            </button>
+                            <button class="suggestion-chip" onclick="useSuggestion('Quels animaux trouve-t-on dans le désert tunisien ?')">
+                                Quels animaux trouve-t-on dans le désert tunisien ?
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="chatbot-completion">
+                        <button class="btn-complete" onclick="completeChatbotStation()" id="btn-complete-chatbot">
+                            ✅ J'ai posé mes questions, je continue
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Message de chargement -->
+            <div class="loading-station" id="loading-station">
+                <div class="loader">
+                    <div class="spinner"></div>
+                    <p>Chargement de la station...</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation bas de page -->
+        <footer class="stage-footer">
+            <button class="nav-btn prev-btn" onclick="previousStation()" id="btn-prev" disabled>
+                ⬅️ Station précédente
+            </button>
+            
+            <div class="station-info">
+                <h4 id="current-station-name">Station 1: Introduction à la Tunisie</h4>
+                <div class="station-status">
+                    <span class="status" id="station-status">⏳ En cours</span>
+                </div>
+            </div>
+            
+            <button class="nav-btn next-btn" onclick="nextStation()" id="btn-next">
+                Station suivante ➡️
+            </button>
+        </footer>
+    </main>
+    
+    <!-- Guide flottant -->
+    <div class="floating-guide" id="floating-guide">
+        <div class="guide-avatar" onclick="toggleGuideTips()">
+            <img src="../assets/images/guides/boy/guide-boy-1.png" alt="Guide Téo" id="guide-avatar">
+        </div>
+        <div class="guide-tips" id="guide-tips">
+            <p id="guide-message">Bienvenue en Tunisie ! Prêt à découvrir notre beau pays ?</p>
+            <div class="guide-actions">
+                <button onclick="nextGuideTip()">💡 Autre astuce</button>
+                <button onclick="speakGuideMessage()">🗣️ Écouter</button>
+                <button onclick="hideGuideTips()">❌ Cacher</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Resources overlay -->
+    <div class="resources-overlay" id="resources-overlay">
+        <div class="resources-panel">
+            <h3>📚 Ressources Utiles</h3>
+            <div class="resources-list">
+                <button class="resource-btn" onclick="openDictionary()">
+                    📖 Dictionnaire
+                </button>
+                <button class="resource-btn" onclick="openNotes()">
+                    📝 Mes Notes
+                </button>
+                <button class="resource-btn" onclick="openBookmarks()">
+                    🔖 Signets
+                </button>
+                <button class="resource-btn" onclick="openHelp()">
+                    ❓ Aide
+                </button>
+            </div>
+            <button class="btn-close-resources" onclick="closeResources()">
+                ✕ Fermer
+            </button>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="../js/stage-engine.js"></script>
+    <script src="../js/quiz-engine.js"></script>
+    <script src="../js/matching-game.js"></script>
+    <script src="../js/chatbot.js"></script>
+    <script src="../js/text-to-speech.js"></script>
+    
+    <script>
+        // Configuration du stage
+        const stageConfig = {
+            id: 1,
+            name: "Découverte de la Tunisie",
+            totalStations: 7,
+            currentStation: 1,
+            language: 'fr',
+            userId: localStorage.getItem('userId'),
+            progress: JSON.parse(localStorage.getItem('stage1_progress') || '{}')
+        };
+        
+        // Initialiser le stage
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeStage();
+        });
+        
+        async function initializeStage() {
+            // Afficher le chargement
+            showLoading(true);
+            
+            try {
+                // Charger les données du stage
+                const response = await fetch('../content/stages-data/stage-1-tunisia.json');
+                const stageData = await response.json();
+                
+                // Initialiser le moteur de stage
+                if (window.StageEngine) {
+                    window.stageEngine = new StageEngine(stageConfig, stageData);
+                    await stageEngine.init();
+                }
+                
+                // Initialiser les autres moteurs
+                initializeQuizEngine();
+                initializeMatchingGame();
+                initializeChatbot();
+                
+                // Construire la navigation
+                buildStationsNavigation(stageData.stations);
+                
+                // Charger la station actuelle
+                loadCurrentStation(stageConfig.currentStation);
+                
+                // Mettre à jour les stats
+                updateStageStats();
+                
+                // Démarrer le timer du stage
+                startStageTimer();
+                
+            } catch (error) {
+                console.error('Erreur initialisation stage:', error);
+                showError('Impossible de charger le stage. Veuillez réessayer.');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        // Fonctions de navigation
+        function previousStation() {
+            if (stageConfig.currentStation > 1) {
+                stageConfig.currentStation--;
+                loadCurrentStation(stageConfig.currentStation);
+                updateNavigation();
+            }
+        }
+        
+        function nextStation() {
+            if (stageConfig.currentStation < stageConfig.totalStations) {
+                // Vérifier si la station actuelle est complète
+                if (!isStationComplete(stageConfig.currentStation)) {
+                    showWarning('Veuillez compléter cette station avant de continuer.');
+                    return;
+                }
+                
+                stageConfig.currentStation++;
+                loadCurrentStation(stageConfig.currentStation);
+                updateNavigation();
+                
+                // Sauvegarder la progression
+                saveProgress();
+            }
+        }
+        
+        function goToStation(stationNumber) {
+            // Vérifier si la station est débloquée
+            if (!isStationUnlocked(stationNumber)) {
+                showWarning('Cette station n\'est pas encore débloquée.');
+                return;
+            }
+            
+            stageConfig.currentStation = stationNumber;
+            loadCurrentStation(stationNumber);
+            updateNavigation();
+        }
+        
+        // Fonctions utilitaires
+        function showLoading(show) {
+            const loading = document.getElementById('loading-station');
+            const content = document.getElementById('station-content');
+            
+            if (show) {
+                loading.style.display = 'flex';
+                content.style.opacity = '0.5';
+            } else {
+                loading.style.display = 'none';
+                content.style.opacity = '1';
+            }
+        }
+        
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.innerHTML = `
+                <span>⚠️ ${message}</span>
+                <button onclick="this.parentElement.remove()">×</button>
+            `;
+            
+            document.querySelector('.stage-container').prepend(errorDiv);
+        }
+        
+        function showWarning(message) {
+            const warningDiv = document.createElement('div');
+            warningDiv.className = 'warning-message';
+            warningDiv.innerHTML = `
+                <span>⚠️ ${message}</span>
+                <button onclick="this.parentElement.remove()">×</button>
+            `;
+            
+            document.querySelector('.stage-container').prepend(warningDiv);
+            
+            setTimeout(() => {
+                warningDiv.classList.add('fade-out');
+                setTimeout(() => warningDiv.remove(), 300);
+            }, 3000);
+        }
+        
+        function saveProgress() {
+            const progress = {
+                currentStation: stageConfig.currentStation,
+                completedStations: getCompletedStations(),
+                score: calculateTotalScore(),
+                timeSpent: getTimeSpent(),
+                lastUpdated: new Date().toISOString()
+            };
+            
+            localStorage.setItem(`stage${stageConfig.id}_progress`, JSON.stringify(progress));
+            
+            // Émettre un événement de sauvegarde
+            window.dispatchEvent(new CustomEvent('stageProgressSaved', {
+                detail: progress
+            }));
+        }
+        
+        // Fonctions pour les stations spécifiques
+        function completePDFStation() {
+            // Marquer comme complété
+            markStationComplete(1);
+            
+            // Afficher un message de succès
+            showSuccess('Bien joué ! Tu as bien lu le document.');
+            
+            // Activer le bouton suivant
+            document.getElementById('btn-next').disabled = false;
+        }
+        
+        // Plus de fonctions spécifiques...
+        
+        // Exposer les fonctions globalement
+        window.previousStation = previousStation;
+        window.nextStation = nextStation;
+        window.goToStation = goToStation;
+        window.completePDFStation = completePDFStation;
+        // ... autres fonctions
+    </script>
+    
+    <!-- Footer -->
+    <div style="text-align: center; padding: 20px; background: rgba(0,0,0,0.05); margin-top: 20px; font-size: 0.9em; opacity: 0.7;">
+        <p>Created by nourchen mehrez - wiem salhi</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,563 @@
+/* 🎨 Animations Cartoon & Effets Visuels - Monde Magique */
+
+/* ===== ANIMATIONS DU TRAIN MAGIQUE ===== */
+
+@keyframes trainMove {
+    0%, 100% { transform: translateX(0) rotate(0deg); }
+    25% { transform: translateX(5px) rotate(1deg); }
+    75% { transform: translateX(-5px) rotate(-1deg); }
+}
+
+@keyframes trainSmoke {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateY(-50px) scale(1.5);
+        opacity: 0;
+    }
+}
+
+@keyframes trainLights {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+.train-animated {
+    animation: trainMove 3s ease-in-out infinite;
+    position: relative;
+}
+
+.train-smoke {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(200,200,200,0) 70%);
+    border-radius: 50%;
+    animation: trainSmoke 2s ease-out infinite;
+}
+
+.train-lights {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #f39c12;
+    border-radius: 50%;
+    animation: trainLights 1s ease-in-out infinite;
+    box-shadow: 0 0 20px #f39c12;
+}
+
+/* ===== CARTES ANIMÉES ===== */
+
+@keyframes mapPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes flagWave {
+    0%, 100% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: scale(0.3) translateY(-100px);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.country-zone:hover {
+    animation: mapPulse 0.6s ease-in-out;
+    cursor: pointer;
+    filter: brightness(1.2);
+}
+
+.flag-icon {
+    display: inline-block;
+    animation: flagWave 2s ease-in-out infinite;
+    transform-origin: left center;
+}
+
+/* ===== EFFETS MÉTÉO ===== */
+
+@keyframes snowfall {
+    0% {
+        transform: translateY(-10px) translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) translateX(50px);
+        opacity: 0.3;
+    }
+}
+
+@keyframes rainDrop {
+    0% {
+        transform: translateY(-10px);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh);
+        opacity: 0;
+    }
+}
+
+@keyframes sandBlow {
+    0%, 100% {
+        transform: translateX(-5px) rotate(0deg);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translateX(50px) rotate(180deg);
+        opacity: 0.3;
+    }
+}
+
+.weather-snow {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background: white;
+    border-radius: 50%;
+    animation: snowfall linear infinite;
+}
+
+.weather-rain {
+    position: absolute;
+    width: 2px;
+    height: 15px;
+    background: linear-gradient(transparent, rgba(150, 200, 255, 0.8));
+    animation: rainDrop linear infinite;
+}
+
+.weather-sand {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: rgba(244, 164, 96, 0.7);
+    border-radius: 50%;
+    animation: sandBlow 4s ease-in-out infinite;
+}
+
+/* ===== BADGES & RÉCOMPENSES ===== */
+
+@keyframes badgeGlow {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(241, 196, 15, 1), 0 0 50px rgba(241, 196, 15, 0.5);
+    }
+}
+
+@keyframes starTwinkle {
+    0%, 100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2) rotate(180deg);
+        opacity: 0.7;
+    }
+}
+
+@keyframes coinSpin {
+    0% { transform: rotateY(0deg); }
+    100% { transform: rotateY(360deg); }
+}
+
+.badge-icon {
+    animation: badgeGlow 2s ease-in-out infinite;
+    display: inline-block;
+}
+
+.star-icon {
+    animation: starTwinkle 1.5s ease-in-out infinite;
+    display: inline-block;
+}
+
+.coin-animated {
+    animation: coinSpin 2s linear infinite;
+    display: inline-block;
+}
+
+/* ===== CONFETTI ===== */
+
+@keyframes confettiFall {
+    0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    z-index: 9999;
+    animation: confettiFall linear;
+    pointer-events: none;
+}
+
+/* ===== TRANSITIONS DE PAGES ===== */
+
+@keyframes pageSlideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes pageSlideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
+
+@keyframes cloudFloat {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(30px);
+    }
+}
+
+.page-transition {
+    animation: pageSlideIn 0.5s ease-out;
+}
+
+.cloud-decoration {
+    position: absolute;
+    animation: cloudFloat 6s ease-in-out infinite;
+    opacity: 0.3;
+}
+
+/* ===== GUIDE VIRTUEL ===== */
+
+@keyframes guideWave {
+    0%, 100% {
+        transform: rotate(-10deg);
+    }
+    50% {
+        transform: rotate(10deg);
+    }
+}
+
+@keyframes guideBounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes guideGlow {
+    0%, 100% {
+        filter: drop-shadow(0 0 5px rgba(52, 152, 219, 0.5));
+    }
+    50% {
+        filter: drop-shadow(0 0 20px rgba(52, 152, 219, 1));
+    }
+}
+
+.guide-character {
+    animation: guideBounce 2s ease-in-out infinite, guideGlow 3s ease-in-out infinite;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.guide-character:hover {
+    transform: scale(1.1);
+}
+
+.guide-hand {
+    animation: guideWave 1s ease-in-out infinite;
+    transform-origin: bottom center;
+}
+
+/* ===== MISSIONS & QUÊTES ===== */
+
+@keyframes missionPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.7);
+    }
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 0 20px 10px rgba(52, 152, 219, 0);
+    }
+}
+
+@keyframes progressFill {
+    from {
+        width: 0%;
+    }
+}
+
+.mission-card {
+    animation: bounceIn 0.6s ease-out;
+    transition: all 0.3s;
+}
+
+.mission-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.mission-card.active {
+    animation: missionPulse 2s ease-in-out infinite;
+}
+
+.progress-fill {
+    animation: progressFill 1s ease-out;
+    background: linear-gradient(90deg, #3498db, #2ecc71);
+    transition: width 0.5s ease-out;
+}
+
+/* ===== BOUTONS CARTOON ===== */
+
+@keyframes buttonPop {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.95);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes buttonShine {
+    0% {
+        background-position: -100% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.btn-cartoon {
+    position: relative;
+    overflow: hidden;
+    border-radius: 25px;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: all 0.3s;
+}
+
+.btn-cartoon:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+}
+
+.btn-cartoon:active {
+    animation: buttonPop 0.3s ease-out;
+}
+
+.btn-cartoon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: buttonShine 3s infinite;
+}
+
+/* ===== TOOLTIPS CARTOON ===== */
+
+@keyframes tooltipFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tooltip-cartoon {
+    position: absolute;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 15px;
+    font-size: 14px;
+    white-space: nowrap;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    animation: tooltipFadeIn 0.3s ease-out;
+    z-index: 1000;
+}
+
+.tooltip-cartoon::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #764ba2;
+}
+
+/* ===== LOADING CARTOON ===== */
+
+@keyframes loadingSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes loadingBounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+.loading-cartoon {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-dot {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    animation: loadingBounce 1s ease-in-out infinite;
+}
+
+.loading-dot:nth-child(1) {
+    background: #3498db;
+    animation-delay: 0s;
+}
+
+.loading-dot:nth-child(2) {
+    background: #2ecc71;
+    animation-delay: 0.2s;
+}
+
+.loading-dot:nth-child(3) {
+    background: #f39c12;
+    animation-delay: 0.4s;
+}
+
+/* ===== CÉLÉBRATION ===== */
+
+@keyframes celebrationBurst {
+    0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(3) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.celebration-effect {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 100px;
+    animation: celebrationBurst 1s ease-out;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+/* ===== MODAL BADGES ===== */
+
+.badge-unlock-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.badge-unlock-content {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 40px;
+    border-radius: 30px;
+    text-align: center;
+    color: white;
+    max-width: 500px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+.badge-unlock-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.1;
+}
+
+.badge-unlock-bg.common { background: radial-gradient(circle, #95a5a6 0%, transparent 70%); }
+.badge-unlock-bg.uncommon { background: radial-gradient(circle, #3498db 0%, transparent 70%); }
+.badge-unlock-bg.rare { background: radial-gradient(circle, #9b59b6 0%, transparent 70%); }
+.badge-unlock-bg.epic { background: radial-gradient(circle, #e74c3c 0%, transparent 70%); }
+.badge-unlock-bg.legendary { background: radial-gradient(circle, #f39c12 0%, transparent 70%); }
+
+.badge-icon-large {
+    font-size: 120px;
+    margin: 20px 0;
+    animation: starTwinkle 2s ease-in-out infinite;
+    text-shadow: 0 0 30px currentColor;
+}
+
+/* ===== RESPONSIVITÉ ===== */
+
+@media (max-width: 768px) {
+    .badge-icon-large {
+        font-size: 80px;
+    }
+    
+    .celebration-effect {
+        font-size: 60px;
+    }
+}

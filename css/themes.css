@@ -1,0 +1,244 @@
+/* ===================================
+   THEMES.CSS - Regional Color Themes
+   =================================== */
+
+/* Base Theme Variables */
+:root {
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+    --success-color: #4caf50;
+    --warning-color: #f39c12;
+    --danger-color: #e74c3c;
+    --info-color: #3498db;
+}
+
+/* Tunisia Theme */
+.theme-tunisia {
+    --primary-color: #e74c3c;
+    --secondary-color: #c0392b;
+    --accent-color: #f39c12;
+    --bg-gradient: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+}
+
+.theme-tunisia .stage-header {
+    background: var(--bg-gradient);
+}
+
+.theme-tunisia .btn-primary {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+}
+
+.theme-tunisia .progress-bar-fill {
+    background: linear-gradient(90deg, #e74c3c, #f39c12);
+}
+
+/* Maghreb Theme */
+.theme-maghreb {
+    --primary-color: #16a085;
+    --secondary-color: #27ae60;
+    --accent-color: #f1c40f;
+    --bg-gradient: linear-gradient(135deg, #55efc4 0%, #00b894 100%);
+}
+
+.theme-maghreb .stage-header {
+    background: var(--bg-gradient);
+}
+
+.theme-maghreb .btn-primary {
+    background: linear-gradient(135deg, #16a085 0%, #27ae60 100%);
+}
+
+/* Africa Theme */
+.theme-africa {
+    --primary-color: #f39c12;
+    --secondary-color: #e67e22;
+    --accent-color: #d35400;
+    --bg-gradient: linear-gradient(135deg, #fab1a0 0%, #ff7675 100%);
+}
+
+.theme-africa .stage-header {
+    background: var(--bg-gradient);
+}
+
+.theme-africa .btn-primary {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+}
+
+/* Europe Theme */
+.theme-europe {
+    --primary-color: #3498db;
+    --secondary-color: #2980b9;
+    --accent-color: #e74c3c;
+    --bg-gradient: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+}
+
+.theme-europe .stage-header {
+    background: var(--bg-gradient);
+}
+
+.theme-europe .btn-primary {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+}
+
+/* Asia Theme */
+.theme-asia {
+    --primary-color: #9b59b6;
+    --secondary-color: #8e44ad;
+    --accent-color: #e74c3c;
+    --bg-gradient: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+}
+
+.theme-asia .stage-header {
+    background: var(--bg-gradient);
+}
+
+.theme-asia .btn-primary {
+    background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+}
+
+/* North America Theme */
+.theme-namerica {
+    --primary-color: #e67e22;
+    --secondary-color: #d35400;
+    --accent-color: #3498db;
+    --bg-gradient: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+}
+
+.theme-namerica .stage-header {
+    background: var(--bg-gradient);
+}
+
+.theme-namerica .btn-primary {
+    background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+}
+
+/* South America Theme */
+.theme-samerica {
+    --primary-color: #27ae60;
+    --secondary-color: #229954;
+    --accent-color: #f39c12;
+    --bg-gradient: linear-gradient(135deg, #55efc4 0%, #00b894 100%);
+}
+
+.theme-samerica .stage-header {
+    background: var(--bg-gradient);
+}
+
+.theme-samerica .btn-primary {
+    background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+}
+
+/* Oceania Theme */
+.theme-oceania {
+    --primary-color: #00cec9;
+    --secondary-color: #00b894;
+    --accent-color: #fdcb6e;
+    --bg-gradient: linear-gradient(135deg, #81ecec 0%, #00b894 100%);
+}
+
+.theme-oceania .stage-header {
+    background: var(--bg-gradient);
+}
+
+.theme-oceania .btn-primary {
+    background: linear-gradient(135deg, #00cec9 0%, #00b894 100%);
+}
+
+/* Poles Theme */
+.theme-poles {
+    --primary-color: #95afc0;
+    --secondary-color: #747d8c;
+    --accent-color: #74b9ff;
+    --bg-gradient: linear-gradient(135deg, #dfe6e9 0%, #b2bec3 100%);
+}
+
+.theme-poles .stage-header {
+    background: var(--bg-gradient);
+}
+
+.theme-poles .btn-primary {
+    background: linear-gradient(135deg, #95afc0 0%, #747d8c 100%);
+}
+
+/* World Tour Theme */
+.theme-world {
+    --primary-color: #d63031;
+    --secondary-color: #e84393;
+    --accent-color: #fdcb6e;
+    --bg-gradient: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+}
+
+.theme-world .stage-header {
+    background: var(--bg-gradient);
+}
+
+.theme-world .btn-primary {
+    background: linear-gradient(135deg, #d63031 0%, #e84393 100%);
+}
+
+/* Theme Application Classes */
+.stage-container {
+    transition: all 0.5s ease;
+}
+
+.stage-header {
+    padding: 30px;
+    color: white;
+    text-align: center;
+    border-radius: 15px 15px 0 0;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.stage-title {
+    font-size: 2rem;
+    margin: 0;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.stage-subtitle {
+    font-size: 1.1rem;
+    margin-top: 10px;
+    opacity: 0.9;
+}
+
+/* Animated Background Patterns */
+.theme-pattern {
+    position: relative;
+    overflow: hidden;
+}
+
+.theme-pattern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.1;
+    background-repeat: repeat;
+    animation: patternMove 30s linear infinite;
+}
+
+@keyframes patternMove {
+    from { background-position: 0 0; }
+    to { background-position: 100px 100px; }
+}
+
+.theme-tunisia.theme-pattern::before {
+    background-image: url('../assets/images/patterns/tunisia-pattern.svg');
+}
+
+.theme-maghreb.theme-pattern::before {
+    background-image: url('../assets/images/patterns/maghreb-pattern.svg');
+}
+
+/* Responsive Theme Adjustments */
+@media (max-width: 768px) {
+    .stage-title {
+        font-size: 1.5rem;
+    }
+    
+    .stage-subtitle {
+        font-size: 0.9rem;
+    }
+}
