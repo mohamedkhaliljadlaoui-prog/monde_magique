@@ -128,11 +128,26 @@
         </div>
     </div>
     <script>
-        let currentStep=1;const totalSteps=6;const selectedAnswers={};const answeredQuestions={q1:0,q2:0,q3:0,q4:0,q5:0};const correctAnswers={q1:'أ',q2:'ب',q3:'ب',q4:'ب',q5:'أ'};const gameState={diamonds:150,coins:750,qcmScore:0,stageNum:4};
+        let currentStep=1;const totalSteps=6;let maxUnlockedStep=1;const selectedAnswers={};const answeredQuestions={q1:0,q2:0,q3:0,q4:0,q5:0};const correctAnswers={q1:'أ',q2:'ب',q3:'ب',q4:'ب',q5:'أ'};const gameState={diamonds:150,coins:750,qcmScore:0,stageNum:4};
         
-        function goToStep(s){if(s>=1&&s<=totalSteps){if(s===6&&currentStep===5&&gameState.qcmScore<80){alert('يجب تحقيق 80% في الاختبار أولاً!');return}currentStep=s;updateUI()}}
+        function loadStageProgress(){try{const raw=localStorage.getItem('mondeMagiqueProgress');if(!raw)return;const data=JSON.parse(raw);const entry=(data&&data.progress)?(data.progress[gameState.stageNum]||data.progress[String(gameState.stageNum)]):null;if(!entry)return;if(typeof entry.currentStep==='number')currentStep=Math.max(1,Math.min(totalSteps,entry.currentStep));if(typeof entry.maxUnlockedStep==='number')maxUnlockedStep=Math.max(1,Math.min(totalSteps,entry.maxUnlockedStep));if(typeof entry.qcmScore==='number')gameState.qcmScore=entry.qcmScore;if(maxUnlockedStep<currentStep)maxUnlockedStep=currentStep}catch(e){}}
+
+        function enforceStageUnlocked(){
+            if(gameState.stageNum<=1)return;
+            try{
+                const raw=localStorage.getItem('mondeMagiqueProgress');
+                const data=raw?JSON.parse(raw):null;
+                const prevNum=gameState.stageNum-1;
+                const prev=(data&&data.progress)?(data.progress[prevNum]||data.progress[String(prevNum)]):null;
+                if(prev&&prev.completed)return;
+            }catch(e){}
+            alert('🔒 هذه المرحلة مقفلة. أكمل المرحلة السابقة أولاً!');
+            window.location.href='dashboard-stages.html';
+        }
+
+        function goToStep(s){if(!(s>=1&&s<=totalSteps))return;if(s>maxUnlockedStep){alert('أكمل الخطوات بالترتيب أولاً!');return}if(s===6&&gameState.qcmScore<80){alert('يجب تحقيق 80% في الاختبار أولاً!');return}currentStep=s;updateUI()}
         
-        function nextStep(){if(currentStep===5){const correct=Object.values(answeredQuestions).filter(x=>x===1).length;const score=Math.round(correct/5*100);gameState.qcmScore=score;document.getElementById('qcm-score').innerHTML=`<strong>النتيجة: ${score}%</strong>`;document.getElementById('qcm-score').style.display='block';if(score<80){document.getElementById('qcm-warning').classList.add('show');return}else{document.getElementById('qcm-warning').classList.remove('show')}}if(currentStep<totalSteps){currentStep++;updateUI()}else if(currentStep===totalSteps){evaluateEssay()}}
+        function nextStep(){if(currentStep===5){const correct=Object.values(answeredQuestions).filter(x=>x===1).length;const score=Math.round(correct/5*100);gameState.qcmScore=score;document.getElementById('qcm-score').innerHTML=`<strong>النتيجة: ${score}%</strong>`;document.getElementById('qcm-score').style.display='block';if(score<80){document.getElementById('qcm-warning').classList.add('show');return}else{document.getElementById('qcm-warning').classList.remove('show')}}if(currentStep<totalSteps){const next=currentStep+1;maxUnlockedStep=Math.max(maxUnlockedStep,next);currentStep=next;updateUI()}else if(currentStep===totalSteps){evaluateEssay()}}
         
         function previousStep(){if(currentStep>1){currentStep--;updateUI()}}
         
@@ -144,13 +159,13 @@
         
         function retryQuestion(q){const c=document.querySelector(`[data-question="${q}"]`);c.classList.remove('correct','incorrect');c.querySelectorAll('.option-btn').forEach(b=>{b.classList.remove('selected','disabled','correct-answer','wrong-answer')});c.querySelector('.verify-btn').disabled=false;c.querySelector('.verify-btn').textContent='✓ تحقق';c.querySelector('.answer-explanation').classList.remove('show');const retryBtn=c.querySelector('.retry-btn');if(retryBtn)retryBtn.remove();selectedAnswers[q]=null;answeredQuestions[q]=0}
         
-        function evaluateEssay(){const e=document.getElementById('student-essay').value.trim();if(!e){alert('اكتب فقرة!');return}const w=e.split(/\s+/).length;const s=Math.min(100,Math.max(50,w*2));const d=Math.floor(s/10)*15;const coins=Math.floor(s/5)*20;let nextBtn="🏠العودة";let nextFile="dashboard-stages.html";if(gameState.stageNum<10){nextBtn="➡️ المرحلة التالية";nextFile="stage-5-asia.html"}const h=`<h2>✅تم!</h2><div class="reward">⭐${s}%</div><div class="reward">💎+${d}</div><div class="reward">🪙+${coins}</div><p style="margin-top:20px;color:var(--text-light)">احسنت!</p>`;document.getElementById('evaluation-area').innerHTML=h;document.getElementById('evaluation-area').style.display='block';gameState.diamonds+=d;gameState.coins+=coins;updateResources();document.getElementById('nextBtn').textContent=nextBtn;document.getElementById('nextBtn').onclick=()=>{let progress=JSON.parse(localStorage.getItem('mondeMagiqueProgress')||'{"progress":{},"totalDiamonds":0,"totalCoins":0}');progress.progress[gameState.stageNum]={completed:true,diamonds:gameState.diamonds,coins:gameState.coins,qcmScore:gameState.qcmScore};progress.totalDiamonds+=gameState.diamonds-150;progress.totalCoins+=gameState.coins-750;localStorage.setItem('mondeMagiqueProgress',JSON.stringify(progress));window.location.href=nextFile}}
+        function evaluateEssay(){const e=document.getElementById('student-essay').value.trim();if(!e){alert('اكتب فقرة!');return}const w=e.split(/\s+/).length;const s=Math.min(100,Math.max(50,w*2));const d=Math.floor(s/10)*15;const coins=Math.floor(s/5)*20;let nextBtn="🏠العودة";let nextFile="dashboard-stages.html";if(gameState.stageNum<10){nextBtn="➡️ المرحلة التالية";nextFile="stage-5-asia.html"}const h=`<h2>✅تم!</h2><div class="reward">⭐${s}%</div><div class="reward">💎+${d}</div><div class="reward">🪙+${coins}</div><p style="margin-top:20px;color:var(--text-light)">احسنت!</p>`;document.getElementById('evaluation-area').innerHTML=h;document.getElementById('evaluation-area').style.display='block';gameState.diamonds+=d;gameState.coins+=coins;updateResources();document.getElementById('nextBtn').textContent=nextBtn;document.getElementById('nextBtn').onclick=()=>{let progress=JSON.parse(localStorage.getItem('mondeMagiqueProgress')||'{"progress":{},"totalDiamonds":0,"totalCoins":0}');progress.progress[gameState.stageNum]={completed:true,diamonds:gameState.diamonds,coins:gameState.coins,qcmScore:gameState.qcmScore,currentStep:totalSteps,maxUnlockedStep:totalSteps};progress.totalDiamonds+=gameState.diamonds-150;progress.totalCoins+=gameState.coins-750;localStorage.setItem('mondeMagiqueProgress',JSON.stringify(progress));window.location.href=nextFile}}
         
         function updateResources(){document.getElementById('diamonds-count').textContent=gameState.diamonds;document.getElementById('coins-count').textContent=gameState.coins;saveProgress()}
         
-        function saveProgress(){let progress=JSON.parse(localStorage.getItem('mondeMagiqueProgress')||'{"progress":{},"totalDiamonds":0,"totalCoins":0}');progress.progress[4]={completed:false,diamonds:gameState.diamonds,coins:gameState.coins,qcmScore:gameState.qcmScore};progress.totalDiamonds+=gameState.diamonds-150;progress.totalCoins+=gameState.coins-750;localStorage.setItem('mondeMagiqueProgress',JSON.stringify(progress))}
+        function saveProgress(){let progress=JSON.parse(localStorage.getItem('mondeMagiqueProgress')||'{"progress":{},"totalDiamonds":0,"totalCoins":0}');const existing=progress.progress?.[gameState.stageNum]||progress.progress?.[String(gameState.stageNum)];const keepCompleted=!!(existing&&existing.completed);progress.progress[gameState.stageNum]={completed:keepCompleted,diamonds:gameState.diamonds,coins:gameState.coins,qcmScore:gameState.qcmScore,currentStep:currentStep,maxUnlockedStep:maxUnlockedStep};progress.totalDiamonds+=gameState.diamonds-150;progress.totalCoins+=gameState.coins-750;localStorage.setItem('mondeMagiqueProgress',JSON.stringify(progress))}
         
-        document.addEventListener('DOMContentLoaded',()=>{updateUI();updateResources()});
+        document.addEventListener('DOMContentLoaded',()=>{enforceStageUnlocked();loadStageProgress();updateUI();updateResources()});
     </script>
 </body>
 </html>

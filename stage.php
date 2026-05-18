@@ -20,6 +20,19 @@ if ($stageNum < 1 || $stageNum > 10) {
     exit;
 }
 
+// Bloquer l'accès si l'étape précédente n'est pas complétée
+$userId = (int)$_SESSION['user_id'];
+if ($stageNum > 1) {
+    $prevStage = $stageNum - 1;
+    $prevResult = $conn->query("SELECT completed FROM progress WHERE user_id=$userId AND stage_num=$prevStage LIMIT 1");
+    $prev = $prevResult ? $prevResult->fetch_assoc() : null;
+    $prevCompleted = $prev && intval($prev['completed'] ?? 0) === 1;
+    if (!$prevCompleted) {
+        header('Location: dashboard-stages.php');
+        exit;
+    }
+}
+
 // Mapper les stages aux fichiers HTML
 $stageFiles = [
     1 => 'stage-1-tunisia.html',
@@ -55,7 +68,7 @@ $rewards = $rewardsResult->fetch_assoc();
 // Préparer les données JSON
 $gameState = json_encode([
     'stageNum' => $stageNum,
-    'currentStep' => $progress['current_step'] ?? 1,
+    'currentStep' => $progress['last_step'] ?? 1,
     'qcmScore' => $progress['qcm_score'] ?? 0,
     'diamonds' => $rewards['total_diamonds'] ?? 0,
     'coins' => $rewards['total_coins'] ?? 0,

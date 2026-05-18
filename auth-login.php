@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'register') {
         $username = $_POST['username'] ?? '';
         $email = $_POST['email'] ?? '';
+        $parent_email = $_POST['parent_email'] ?? '';
         $password = $_POST['password'] ?? '';
         $confirm_password = $_POST['confirm_password'] ?? '';
         
@@ -41,15 +42,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // تشفير كلمة المرور
                 $hashed_password = password_hash($password, PASSWORD_BCRYPT);
                 
+                $parent_email_safe = $conn->real_escape_string(trim($parent_email));
+                $parent_email_value = !empty($parent_email_safe) ? "'$parent_email_safe'" : 'NULL';
+
                 // إنشاء حساب جديد
-                $insert = $conn->query("INSERT INTO users (username, email, password, created_at) VALUES ('$username', '$email', '$hashed_password', NOW())");
+                $insert = $conn->query("INSERT INTO users (username, email, parent_email, password, created_at) VALUES ('$username', '$email', $parent_email_value, '$hashed_password', NOW())");
                 
                 if ($insert) {
                     $user_id = $conn->insert_id;
                     
                     // إنشاء مدخلات التقدم لكل مرحلة
                     for ($i = 1; $i <= 10; $i++) {
-                        $conn->query("INSERT INTO progress (user_id, stage_num, completed, qcm_score, essay_score, diamonds, coins, current_step, updated_at) VALUES ($user_id, $i, 0, 0, 0, 0, 0, 0, NOW())");
+                        $conn->query("INSERT INTO progress (user_id, stage_num, completed, qcm_score, essay_score, diamonds, coins, last_step, updated_at) VALUES ($user_id, $i, 0, 0, 0, 0, 0, 1, NOW())");
                     }
                     
                     // إنشاء مدخل المكافآت
@@ -415,6 +419,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label for="registerEmail">📧 البريد الإلكتروني</label>
                     <input type="email" id="registerEmail" placeholder="your@email.com" required>
                 </div>
+
+                <div class="form-group">
+                    <label for="registerParentEmail">👪 بريد وليّ الأمر (اختياري)</label>
+                    <input type="email" id="registerParentEmail" placeholder="parent@email.com">
+                </div>
                 
                 <div class="form-group">
                     <label for="registerPassword">🔐 كلمة المرور</label>
@@ -499,6 +508,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         function handleRegister() {
             const username = document.getElementById('registerUsername').value;
             const email = document.getElementById('registerEmail').value;
+            const parentEmail = document.getElementById('registerParentEmail').value;
             const password = document.getElementById('registerPassword').value;
             const confirmPassword = document.getElementById('registerConfirmPassword').value;
             
@@ -516,6 +526,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             formData.append('action', 'register');
             formData.append('username', username);
             formData.append('email', email);
+            formData.append('parent_email', parentEmail);
             formData.append('password', password);
             formData.append('confirm_password', confirmPassword);
             

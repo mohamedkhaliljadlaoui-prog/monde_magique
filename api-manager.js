@@ -17,8 +17,9 @@ class APIDataManager {
                 credentials: 'include'
             });
             const data = await response.json();
-            
-            if (data.authenticated) {
+
+            const isAuthed = (data && (data.authenticated === true || data.logged_in === true));
+            if (isAuthed) {
                 this.userId = data.user_id;
             } else {
                 // Rediriger vers login si pas authentifié

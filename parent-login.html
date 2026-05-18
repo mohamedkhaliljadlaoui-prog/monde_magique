@@ -123,14 +123,23 @@
                 }
                 errorEl.style.display = 'none';
 
-                fetch('php/api/parent.php', {
+                fetch('php/api/parent.php?action=parentLogin', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'parentLogin', email, password })
+                    body: JSON.stringify({ email, password })
                 })
-                    .then((res) => res.json())
-                    .then((data) => {
-                        if (data.success) {
+                    .then(async (res) => {
+                        const text = await res.text();
+                        let data;
+                        try {
+                            data = JSON.parse(text);
+                        } catch (e) {
+                            throw new Error(text || 'Réponse non-JSON');
+                        }
+                        return { res, data };
+                    })
+                    .then(({ res, data }) => {
+                        if (data && data.success) {
                             localStorage.setItem('parentEmail', email);
                             if (data.child && data.child.id) {
                                 localStorage.setItem('parentChildId', String(data.child.id));
@@ -143,11 +152,17 @@
                             return;
                         }
 
-                        errorEl.textContent = data.message || 'Identifiants incorrects';
+                        errorEl.textContent = data.error || data.message || 'Identifiants incorrects';
                         errorEl.style.display = 'block';
                     })
-                    .catch(() => {
-                        errorEl.textContent = 'Erreur de connexion au serveur';
+                    .catch((err) => {
+                        let msg = 'Erreur de connexion au serveur';
+                        if (err && err.message) {
+                            console.error('Parent login error:', err.message);
+                            // Afficher une version courte à l’écran
+                            msg = err.message.length > 180 ? (err.message.slice(0, 180) + '…') : err.message;
+                        }
+                        errorEl.textContent = msg;
                         errorEl.style.display = 'block';
                     });
             });

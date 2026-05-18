@@ -8,8 +8,41 @@ define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_NAME', 'mondo_magique');
 
-// Connexion à la base de données
-$conn = new mysqli(DB_HOST, DB_USER, DB_PASS);
+// Optionnel: port MySQL (utile si XAMPP utilise 3307/3308)
+if (!defined('DB_PORT')) {
+    $envPort = getenv('DB_PORT');
+    define('DB_PORT', $envPort ? (int)$envPort : 3306);
+}
+
+// Connexion à la base de données (sans warnings qui cassent le JSON)
+mysqli_report(MYSQLI_REPORT_OFF);
+
+$conn = null;
+$portsToTry = array_values(array_unique([DB_PORT, 3306, 3307, 3308]));
+foreach ($portsToTry as $tryPort) {
+    $tmp = @new mysqli(DB_HOST, DB_USER, DB_PASS, '', (int)$tryPort);
+    if ($tmp && empty($tmp->connect_error)) {
+        $conn = $tmp;
+        break;
+    }
+}
+
+if (!$conn || !empty($conn->connect_error)) {
+    $msg = 'Impossible de se connecter à la base de données';
+    $details = $conn ? $conn->connect_error : 'mysqli connection failed';
+    http_response_code(500);
+    // Ne pas dépendre des headers JSON ici: renvoyer du JSON propre
+    echo json_encode([
+        'success' => false,
+        'error' => $msg,
+        'details' => $details,
+        'host' => DB_HOST,
+        'user' => DB_USER,
+        'db' => DB_NAME,
+        'ports_tried' => $portsToTry,
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
+}
 
 // Si la base de données n'existe pas, la créer
 $sql_create_db = "CREATE DATABASE IF NOT EXISTS " . DB_NAME;
@@ -27,9 +60,10 @@ $tables_sql = [
         id INT PRIMARY KEY AUTO_INCREMENT,
         username VARCHAR(50) UNIQUE NOT NULL,
         email VARCHAR(100) UNIQUE NOT NULL,
+        parent_email VARCHAR(100) NULL,
         password VARCHAR(255) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        last_login TIMESTAMP
+        last_login TIMESTAMP NULL DEFAULT NULL
     )",
     
     // Table de la progression des stages
@@ -99,19 +133,28 @@ foreach ($tables_sql as $sql) {
     }
 }
 
+// Migrations légères (ajout de colonnes manquantes)
+$colCheck = $conn->query("SHOW COLUMNS FROM users LIKE 'parent_email'");
+if ($colCheck && $colCheck->num_rows === 0) {
+    $conn->query("ALTER TABLE users ADD COLUMN parent_email VARCHAR(100) NULL AFTER email");
+}
+
 // Définir le timezone
 date_default_timezone_set('UTC');
 
-// Headers pour JSON
-header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+// Headers JSON/CORS seulement pour les endpoints API
+$script = basename($_SERVER['SCRIPT_NAME'] ?? '');
+$isApi = in_array($script, ['auth.php', 'progress_api.php', 'parent_api.php'], true);
+if ($isApi) {
+    header('Content-Type: application/json; charset=utf-8');
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type');
 
-// Gérer les requêtes OPTIONS
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
+    if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
+        http_response_code(200);
+        exit();
+    }
 }
 
 ?>

@@ -13,7 +13,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user_id = $_SESSION['user_id'];
-$action = $_GET['action'] ?? '';
+$action = $_REQUEST['action'] ?? ($_GET['action'] ?? '');
 $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($action) {
@@ -68,14 +68,26 @@ switch ($action) {
     
     default:
         http_response_code(400);
-        echo json_encode(['error' => 'Action non reconnue']);
+        echo json_encode(['success' => false, 'error' => 'Action non reconnue']);
+}
+
+function get_request_data() {
+    if (!empty($_POST)) {
+        return $_POST;
+    }
+    $raw = file_get_contents('php://input');
+    if (!$raw) {
+        return [];
+    }
+    $decoded = json_decode($raw, true);
+    return is_array($decoded) ? $decoded : [];
 }
 
 // ===== FONCTION: SAUVEGARDER PROGRESSION =====
 function save_progress() {
     global $conn, $user_id;
     
-    $data = json_decode(file_get_contents('php://input'), true);
+    $data = get_request_data();
     $stage_num = intval($data['stage_num'] ?? 0);
     $current_step = intval($data['current_step'] ?? 1);
     $qcm_score = intval($data['qcm_score'] ?? 0);
@@ -84,7 +96,7 @@ function save_progress() {
     
     if ($stage_num < 1 || $stage_num > 10) {
         http_response_code(400);
-        return echo_json(['error' => 'Stage invalide']);
+        return echo_json(['success' => false, 'error' => 'Stage invalide']);
     }
     
     // Mettre à jour la progression
@@ -97,10 +109,10 @@ function save_progress() {
             WHERE user_id=$user_id AND stage_num=$stage_num";
     
     if ($conn->query($sql)) {
-        echo_json(['success' => 'Progression sauvegardée']);
+        echo_json(['success' => true, 'message' => 'Progression sauvegardée']);
     } else {
         http_response_code(500);
-        echo_json(['error' => 'Erreur sauvegarde: ' . $conn->error]);
+        echo_json(['success' => false, 'error' => 'Erreur sauvegarde: ' . $conn->error]);
     }
 }
 
@@ -112,17 +124,19 @@ function load_progress() {
     
     if ($stage_num < 1 || $stage_num > 10) {
         http_response_code(400);
-        return echo_json(['error' => 'Stage invalide']);
+        return echo_json(['success' => false, 'error' => 'Stage invalide']);
     }
     
     $result = $conn->query("SELECT * FROM progress WHERE user_id=$user_id AND stage_num=$stage_num");
     $progress = $result->fetch_assoc();
     
     if ($progress) {
-        echo_json($progress);
+        // Normaliser le nom attendu par le front
+        $progress['current_step'] = intval($progress['last_step'] ?? 1);
+        echo_json(['success' => true, 'data' => $progress]);
     } else {
         http_response_code(404);
-        echo_json(['error' => 'Progression non trouvée']);
+        echo_json(['success' => false, 'error' => 'Progression non trouvée']);
     }
 }
 
@@ -134,23 +148,31 @@ function load_all_progress() {
     $progress = [];
     
     while ($row = $result->fetch_assoc()) {
+        $row['current_step'] = intval($row['last_step'] ?? 1);
         $progress[$row['stage_num']] = $row;
     }
     
-    echo_json($progress);
+    echo_json(['success' => true, 'data' => $progress]);
 }
 
 // ===== FONCTION: SAUVEGARDER RÉPONSES QCM =====
 function save_qcm() {
     global $conn, $user_id;
     
-    $data = json_decode(file_get_contents('php://input'), true);
+    $data = get_request_data();
     $stage_num = intval($data['stage_num'] ?? 0);
-    $answers = $data['answers'] ?? [];
+    $answers = $data['answers'] ?? null;
+    if (!is_array($answers)) {
+        // Support FormData: q1..q5
+        $answers = [];
+        for ($i = 1; $i <= 5; $i++) {
+            $answers["q$i"] = strval($data["q$i"] ?? $data["q{$i}_answer"] ?? '');
+        }
+    }
     
     if ($stage_num < 1 || $stage_num > 10) {
         http_response_code(400);
-        return echo_json(['error' => 'Stage invalide']);
+        return echo_json(['success' => false, 'error' => 'Stage invalide']);
     }
     
     // Préparer les réponses et vérifications
@@ -160,37 +182,66 @@ function save_qcm() {
     for ($i = 1; $i <= 5; $i++) {
         $answer = $answers["q$i"] ?? '';
         $is_correct = ($answer === $correct_answers["q$i"]);
-        $q_data["q$i"] = "'$answer'";
-        $q_data["q${i}_correct"] = $is_correct ? 'TRUE' : 'FALSE';
+        $q_data["q${i}_answer"] = $answer;
+        $q_data["q${i}_correct"] = $is_correct ? 1 : 0;
     }
-    
-    $set_clause = "q1_answer=" . $q_data['q1'] . ",
-                   q2_answer=" . $q_data['q2'] . ",
-                   q3_answer=" . $q_data['q3'] . ",
-                   q4_answer=" . $q_data['q4'] . ",
-                   q5_answer=" . $q_data['q5'] . ",
-                   q1_correct=" . $q_data['q1_correct'] . ",
-                   q2_correct=" . $q_data['q2_correct'] . ",
-                   q3_correct=" . $q_data['q3_correct'] . ",
-                   q4_correct=" . $q_data['q4_correct'] . ",
-                   q5_correct=" . $q_data['q5_correct'];
-    
-    $sql = "INSERT INTO qcm_answers (user_id, stage_num, $set_clause)
-            VALUES ($user_id, $stage_num, $set_clause)
-            ON DUPLICATE KEY UPDATE $set_clause";
-    
-    if ($conn->query($sql)) {
+
+    $sql = "INSERT INTO qcm_answers (
+                user_id, stage_num,
+                q1_answer, q2_answer, q3_answer, q4_answer, q5_answer,
+                q1_correct, q2_correct, q3_correct, q4_correct, q5_correct
+            ) VALUES (
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+            ) ON DUPLICATE KEY UPDATE
+                q1_answer=VALUES(q1_answer),
+                q2_answer=VALUES(q2_answer),
+                q3_answer=VALUES(q3_answer),
+                q4_answer=VALUES(q4_answer),
+                q5_answer=VALUES(q5_answer),
+                q1_correct=VALUES(q1_correct),
+                q2_correct=VALUES(q2_correct),
+                q3_correct=VALUES(q3_correct),
+                q4_correct=VALUES(q4_correct),
+                q5_correct=VALUES(q5_correct)";
+
+    $stmt = $conn->prepare($sql);
+    if ($stmt) {
+        $stmt->bind_param(
+            'iisssssiiiii',
+            $user_id,
+            $stage_num,
+            $q_data['q1_answer'],
+            $q_data['q2_answer'],
+            $q_data['q3_answer'],
+            $q_data['q4_answer'],
+            $q_data['q5_answer'],
+            $q_data['q1_correct'],
+            $q_data['q2_correct'],
+            $q_data['q3_correct'],
+            $q_data['q4_correct'],
+            $q_data['q5_correct']
+        );
+        $ok = $stmt->execute();
+        $stmt->close();
+    } else {
+        $ok = false;
+    }
+
+    if ($ok) {
         // Calculer le score
         $correct = 0;
         for ($i = 1; $i <= 5; $i++) {
-            if ($q_data["q${i}_correct"] === 'TRUE') $correct++;
+            if (intval($q_data["q${i}_correct"]) === 1) $correct++;
         }
         $score = round(($correct / 5) * 100);
-        
-        echo_json(['success' => 'QCM sauvegardé', 'score' => $score]);
+
+        // Optionnel: stocker le score aussi dans progress
+        $conn->query("UPDATE progress SET qcm_score=$score, updated_at=NOW() WHERE user_id=$user_id AND stage_num=$stage_num");
+
+        echo_json(['success' => true, 'message' => 'QCM sauvegardé', 'score' => $score]);
     } else {
         http_response_code(500);
-        echo_json(['error' => 'Erreur sauvegarde QCM: ' . $conn->error]);
+        echo_json(['success' => false, 'error' => 'Erreur sauvegarde QCM: ' . $conn->error]);
     }
 }
 
@@ -198,14 +249,14 @@ function save_qcm() {
 function save_essay() {
     global $conn, $user_id;
     
-    $data = json_decode(file_get_contents('php://input'), true);
+    $data = get_request_data();
     $stage_num = intval($data['stage_num'] ?? 0);
     $content = $conn->real_escape_string($data['content'] ?? '');
     $word_count = intval($data['word_count'] ?? 0);
     
     if ($stage_num < 1 || $stage_num > 10) {
         http_response_code(400);
-        return echo_json(['error' => 'Stage invalide']);
+        return echo_json(['success' => false, 'error' => 'Stage invalide']);
     }
     
     // Calculer le score basé sur le nombre de mots
@@ -219,10 +270,10 @@ function save_essay() {
             score=$score";
     
     if ($conn->query($sql)) {
-        echo_json(['success' => 'Essai sauvegardé', 'score' => $score]);
+        echo_json(['success' => true, 'message' => 'Essai sauvegardé', 'score' => $score]);
     } else {
         http_response_code(500);
-        echo_json(['error' => 'Erreur sauvegarde essai: ' . $conn->error]);
+        echo_json(['success' => false, 'error' => 'Erreur sauvegarde essai: ' . $conn->error]);
     }
 }
 
@@ -230,14 +281,14 @@ function save_essay() {
 function complete_stage() {
     global $conn, $user_id;
     
-    $data = json_decode(file_get_contents('php://input'), true);
+    $data = get_request_data();
     $stage_num = intval($data['stage_num'] ?? 0);
     $diamonds = intval($data['diamonds'] ?? 0);
     $coins = intval($data['coins'] ?? 0);
     
     if ($stage_num < 1 || $stage_num > 10) {
         http_response_code(400);
-        return echo_json(['error' => 'Stage invalide']);
+        return echo_json(['success' => false, 'error' => 'Stage invalide']);
     }
     
     // Marquer le stage comme complété
@@ -252,7 +303,7 @@ function complete_stage() {
         // Déverrouiller le stage suivant s'il existe
         if ($stage_num < 10) {
             $next_stage = $stage_num + 1;
-            $init_next = "UPDATE progress SET current_step=0 WHERE user_id=$user_id AND stage_num=$next_stage";
+            $init_next = "UPDATE progress SET last_step=1 WHERE user_id=$user_id AND stage_num=$next_stage";
             $conn->query($init_next);
         }
         
@@ -270,10 +321,10 @@ function complete_stage() {
         
         $conn->query($sql_rewards);
         
-        echo_json(['success' => 'Stage complété', 'next_stage' => ($stage_num < 10 ? $stage_num + 1 : null)]);
+        echo_json(['success' => true, 'message' => 'Stage complété', 'next_stage' => ($stage_num < 10 ? $stage_num + 1 : null)]);
     } else {
         http_response_code(500);
-        echo_json(['error' => 'Erreur: ' . $conn->error]);
+        echo_json(['success' => false, 'error' => 'Erreur: ' . $conn->error]);
     }
 }
 
@@ -284,7 +335,7 @@ function get_rewards() {
     $result = $conn->query("SELECT * FROM rewards WHERE user_id=$user_id");
     $rewards = $result->fetch_assoc();
     
-    echo_json($rewards);
+    echo_json(['success' => true, 'data' => $rewards]);
 }
 
 // ===== FONCTION: OBTENIR LES BONNES RÉPONSES =====

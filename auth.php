@@ -49,6 +49,7 @@ function register() {
     $data = json_decode(file_get_contents('php://input'), true);
     $username = $conn->real_escape_string($data['username'] ?? '');
     $email = $conn->real_escape_string($data['email'] ?? '');
+    $parent_email = $conn->real_escape_string($data['parent_email'] ?? '');
     $password = $data['password'] ?? '';
     $password_confirm = $data['password_confirm'] ?? '';
     
@@ -77,7 +78,8 @@ function register() {
     
     // Créer l'utilisateur
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-    $sql = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$hashed_password')";
+    $parent_email_value = !empty($parent_email) ? "'$parent_email'" : 'NULL';
+    $sql = "INSERT INTO users (username, email, parent_email, password) VALUES ('$username', '$email', $parent_email_value, '$hashed_password')";
     
     if ($conn->query($sql)) {
         $user_id = $conn->insert_id;
@@ -153,9 +155,14 @@ function logout() {
 // ===== FONCTION CHECK_SESSION =====
 function check_session() {
     if (isset($_SESSION['user_id'])) {
-        echo_json(['logged_in' => true, 'user_id' => $_SESSION['user_id'], 'username' => $_SESSION['username']]);
+        echo_json([
+            'authenticated' => true,
+            'logged_in' => true,
+            'user_id' => $_SESSION['user_id'],
+            'username' => $_SESSION['username']
+        ]);
     } else {
-        echo_json(['logged_in' => false]);
+        echo_json(['authenticated' => false, 'logged_in' => false]);
     }
 }
 

@@ -1,0 +1,1292 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Monde Magique — Guide de cours</title>
+  <style>
+    :root {
+      --text: #111;
+      --muted: #444;
+      --bg: #fff;
+      --border: #ddd;
+    }
+    html, body { background: var(--bg); color: var(--text); }
+    body { font-family: Arial, "Segoe UI", Tahoma, sans-serif; line-height: 1.45; margin: 0; }
+    .page { max-width: 900px; margin: 0 auto; padding: 32px 20px; }
+    h1 { font-size: 28px; margin: 18px 0 10px; border-bottom: 2px solid var(--border); padding-bottom: 6px; }
+    h2 { font-size: 22px; margin: 18px 0 8px; }
+    h3 { font-size: 18px; margin: 14px 0 6px; color: var(--muted); }
+    p { margin: 6px 0; white-space: pre-wrap; }
+    .bullet { margin: 4px 0; padding-left: 14px; white-space: pre-wrap; }
+    hr { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+    .spacer { height: 6px; }
+    pre.code {
+      border: 1px solid var(--border);
+      background: #fafafa;
+      padding: 10px 12px;
+      overflow-x: auto;
+      white-space: pre;
+      direction: ltr;
+    }
+    pre.code code { font-family: Consolas, "Courier New", monospace; font-size: 12px; }
+
+    @media print {
+      .page { padding: 0; }
+      a { color: inherit; text-decoration: none; }
+      h1, h2, h3 { break-after: avoid; }
+      pre { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+<hr />
+<p dir="ltr">title: &quot;Monde Magique — Guide de cours (débutants)&quot;</p>
+<p dir="ltr">author: &quot;Support pédagogique&quot;</p>
+<p dir="ltr">date: &quot;Mai 2026&quot;</p>
+<p dir="ltr">lang: fr</p>
+<hr />
+<div class="spacer"></div>
+<h1>Monde Magique — Guide de cours (débutants)</h1>
+<div class="spacer"></div>
+<p dir="ltr">Ce document explique **pas à pas** comment fonctionne le site/jeu **Monde Magique**, avec des **détails**, des **exemples**, et des **exercices**.</p>
+<div class="spacer"></div>
+<p dir="ltr">Objectif: permettre à un élève débutant de comprendre un projet web complet (front + back + base de données) et de pouvoir l’installer, le tester, le modifier.</p>
+<div class="spacer"></div>
+<p dir="ltr">&gt; Projet dans ce workspace: `c:/xampppp/htdocs/monde-magique/`</p>
+<div class="spacer"></div>
+<h2>نسخة سهلة للطلاب (شرح بالعربية — مستوى مبتدئ جدًا)</h2>
+<div class="spacer"></div>
+<p dir="rtl">إذا كان الطالب لا يعرف شيئًا عن البرمجة، اتّبع هذا المسار أولًا:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="rtl">1. شغّل XAMPP.</div>
+<div class="bullet" dir="rtl">2. اضغط **Start** على **Apache** و **MySQL**.</div>
+<div class="bullet" dir="rtl">3. افتح المتصفح واكتب:</div>
+<div class="bullet" dir="ltr">• `http://localhost/monde-magique/`</div>
+<div class="bullet" dir="rtl">4. افتح صفحة التسجيل/الدخول (حسب النسخة):</div>
+<div class="bullet" dir="rtl">• `auth-login.php` أو صفحات `login.html` / `inscription.html`</div>
+<div class="bullet" dir="rtl">5. سجّل حساب جديد ثم ادخل.</div>
+<div class="bullet" dir="rtl">6. بعد الدخول ستصل إلى لوحة المراحل (Dashboard).</div>
+<div class="bullet" dir="rtl">7. اختر المرحلة 1 ثم اضغط ابدأ.</div>
+<div class="bullet" dir="rtl">8. أثناء اللعب، عندما تضغط “التالي”، الموقع يحفظ تقدمك تلقائيًا في قاعدة البيانات.</div>
+<div class="bullet" dir="rtl">9. أغلق المتصفح وافتحه مرة أخرى ثم ادخل: ستجد تقدمك محفوظًا.</div>
+<div class="bullet" dir="rtl">10. إذا ظهر خطأ: افتح (F12) ثم **Console** و **Network** لترى المشكلة.</div>
+<div class="spacer"></div>
+<p dir="rtl">مصطلحات سهلة:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="rtl">• المتصفح (Browser) = Chrome/Edge.</div>
+<div class="bullet" dir="rtl">• السيرفر (Server) = Apache داخل XAMPP.</div>
+<div class="bullet" dir="rtl">• قاعدة البيانات (Database) = MySQL داخل XAMPP.</div>
+<div class="spacer"></div>
+<h2>Table des matières</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">1. Introduction et objectifs</div>
+<div class="bullet" dir="ltr">2. Pré-requis (XAMPP, navigateur, VS Code)</div>
+<div class="bullet" dir="ltr">3. Installation locale pas à pas</div>
+<div class="bullet" dir="ltr">4. Tour guidé du projet (fichiers et dossiers)</div>
+<div class="bullet" dir="ltr">5. Concepts web indispensables (HTTP, sessions, JSON)</div>
+<div class="bullet" dir="ltr">6. Authentification (inscription/connexion)</div>
+<div class="bullet" dir="ltr">7. Base de données (version simple et version complète)</div>
+<div class="bullet" dir="ltr">8. API de progression (sauvegarde/chargement)</div>
+<div class="bullet" dir="ltr">9. Dashboard (affichage des stages)</div>
+<div class="bullet" dir="ltr">10. Stage wrapper (injection JS et restauration d’état)</div>
+<div class="bullet" dir="ltr">11. JavaScript: `APIDataManager` et appels `fetch`</div>
+<div class="bullet" dir="ltr">12. Données: progression, QCM, essai, récompenses</div>
+<div class="bullet" dir="ltr">13. Debugging (erreurs fréquentes + solutions)</div>
+<div class="bullet" dir="ltr">14. Sécurité (bonnes pratiques)</div>
+<div class="bullet" dir="ltr">15. Extensions: ajouter un stage, un quiz, une récompense</div>
+<div class="bullet" dir="ltr">16. Série de TP (exercices guidés)</div>
+<div class="bullet" dir="ltr">17. Glossaire</div>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>1) Introduction</h1>
+<div class="spacer"></div>
+<p dir="ltr">**Monde Magique** est une plateforme de jeu éducatif. L’enfant se connecte, accède à un tableau de bord (dashboard), puis joue des **stages** (étapes). Chaque stage contient des **stations** (quiz, jeu, contenu) et le système sauvegarde:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• la progression (ex: étape courante),</div>
+<div class="bullet" dir="ltr">• le score de QCM,</div>
+<div class="bullet" dir="ltr">• les essais (texte),</div>
+<div class="bullet" dir="ltr">• les récompenses (coins/diamants).</div>
+<div class="spacer"></div>
+<p dir="ltr">Le projet est **bilingue** (FR/AR) et plusieurs pages sont en arabe (RTL).</p>
+<div class="spacer"></div>
+<h2>شرح بالعربية (ما هو Monde Magique؟)</h2>
+<div class="spacer"></div>
+<p dir="rtl">**Monde Magique** هو موقع/لعبة تعليمية.</p>
+<div class="spacer"></div>
+<div class="bullet" dir="rtl">• الطفل يسجّل/يدخل للحساب.</div>
+<div class="bullet" dir="rtl">• يرى لوحة فيها مراحل (Stages).</div>
+<div class="bullet" dir="rtl">• يدخل مرحلة، يلعب ويجيب على أسئلة (QCM) ويكتب نص (Essai) أحيانًا.</div>
+<div class="bullet" dir="rtl">• يحصل على مكافآت: عملات (Coins) وألماس (Diamonds).</div>
+<div class="bullet" dir="rtl">• كل شيء يتم حفظه في قاعدة البيانات، يعني لا يضيع التقدم.</div>
+<div class="spacer"></div>
+<h2>1.1 Ce qu’on va apprendre</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• Comment un site web est structuré (HTML/CSS/JS + PHP + MySQL)</div>
+<div class="bullet" dir="ltr">• Comment un navigateur parle au serveur (requêtes HTTP)</div>
+<div class="bullet" dir="ltr">• Comment gérer une connexion utilisateur (sessions PHP)</div>
+<div class="bullet" dir="ltr">• Comment stocker des données (base MySQL)</div>
+<div class="bullet" dir="ltr">• Comment faire une API simple (endpoints PHP)</div>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>2) Pré-requis</h1>
+<div class="spacer"></div>
+<h2>2.1 Logiciels</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• Windows</div>
+<div class="bullet" dir="ltr">• XAMPP (Apache + MySQL)</div>
+<div class="bullet" dir="ltr">• VS Code</div>
+<div class="bullet" dir="ltr">• Un navigateur (Chrome/Edge)</div>
+<div class="spacer"></div>
+<h2>شرح بالعربية (المتطلبات)</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• Windows</div>
+<div class="bullet" dir="rtl">• برنامج XAMPP (يحتوي Apache + MySQL)</div>
+<div class="bullet" dir="rtl">• VS Code (لفتح الملفات والتعديل)</div>
+<div class="bullet" dir="rtl">• متصفح (Chrome أو Edge)</div>
+<div class="spacer"></div>
+<h2>2.2 Vocabulaire minimum</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• **Frontend**: tout ce qui est exécuté dans le navigateur (HTML/CSS/JS).</div>
+<div class="bullet" dir="ltr">• **Backend**: code côté serveur (ici PHP).</div>
+<div class="bullet" dir="ltr">• **API**: un script qui reçoit des paramètres et renvoie des données JSON.</div>
+<div class="bullet" dir="ltr">• **Session**: mémoire côté serveur pour savoir qui est connecté.</div>
+<div class="spacer"></div>
+<h3>شرح بالعربية (مصطلحات)</h3>
+<div class="spacer"></div>
+<div class="bullet" dir="rtl">• **Frontend (واجهة)**: ما تراه في المتصفح (HTML/CSS/JS).</div>
+<div class="bullet" dir="rtl">• **Backend (خلفية)**: كود يعمل على السيرفر (PHP).</div>
+<div class="bullet" dir="rtl">• **API**: صفحة PHP تستقبل طلب وترجع جواب JSON.</div>
+<div class="bullet" dir="rtl">• **Session (جلسة)**: طريقة يعرف بها السيرفر أن المستخدم “داخل” حسابه.</div>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>3) Installation locale pas à pas (XAMPP)</h1>
+<div class="spacer"></div>
+<h2>3.1 Démarrer Apache et MySQL</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">1. Ouvrir XAMPP Control Panel</div>
+<div class="bullet" dir="ltr">2. Cliquer sur **Start** pour **Apache**</div>
+<div class="bullet" dir="ltr">3. Cliquer sur **Start** pour **MySQL**</div>
+<div class="spacer"></div>
+<h2>شرح بالعربية (التشغيل خطوة بخطوة)</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="rtl">1. افتح XAMPP Control Panel.</div>
+<div class="bullet" dir="rtl">2. اضغط Start على Apache.</div>
+<div class="bullet" dir="rtl">3. اضغط Start على MySQL.</div>
+<div class="bullet" dir="rtl">4. افتح المتصفح واكتب:</div>
+<div class="bullet" dir="ltr">• `http://localhost/monde-magique/`</div>
+<div class="bullet" dir="rtl">5. إذا لم تفتح الصفحة، تأكد أن Apache يعمل (لون أخضر) وأن المنفذ 80 غير محجوز.</div>
+<div class="spacer"></div>
+<h2>3.2 URL de test</h2>
+<div class="spacer"></div>
+<p dir="ltr">Dans le navigateur:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `http://localhost/monde-magique/`</div>
+<div class="spacer"></div>
+<h2>3.3 Vérifier la base</h2>
+<div class="spacer"></div>
+<p dir="ltr">Le projet peut créer automatiquement une base simple (selon `config.php`).</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• Base simple: `mondo_magique` (auto-création)</div>
+<div class="spacer"></div>
+<p dir="ltr">Il existe aussi un fichier SQL complet:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `database/COMPLETE_DATABASE.sql` (base riche: `monde_magique`)</div>
+<div class="spacer"></div>
+<p dir="ltr">Dans ce guide, on explique **les deux**.</p>
+<div class="spacer"></div>
+<h3>Option A (débutants) — base simple auto-créée</h3>
+<div class="spacer"></div>
+<p dir="ltr">Ouvrir:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `http://localhost/monde-magique/test-database.php` (si vous l’utilisez)</div>
+<div class="bullet" dir="ltr">• puis s’inscrire / se connecter.</div>
+<div class="spacer"></div>
+<h3>Option B (avancé) — importer la base complète</h3>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">1. Ouvrir `http://localhost/phpmyadmin`</div>
+<div class="bullet" dir="ltr">2. Importer le fichier `database/COMPLETE_DATABASE.sql`</div>
+<div class="bullet" dir="ltr">3. Vérifier que la base `monde_magique` existe</div>
+<div class="spacer"></div>
+<p dir="ltr">&gt; Attention: le code PHP principal utilise `mondo_magique`. Si vous importez `monde_magique`, il faudra soit adapter `config.php`, soit garder les deux bases.</p>
+<div class="spacer"></div>
+<h3>شرح بالعربية (ملاحظة مهمة عن قاعدة البيانات)</h3>
+<div class="spacer"></div>
+<p dir="rtl">يوجد اسمان لقواعد البيانات في المشروع:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="rtl">• قاعدة بسيطة اسمها: `mondo_magique` (ينشئها `config.php` تلقائيًا)</div>
+<div class="bullet" dir="rtl">• قاعدة كاملة اسمها: `monde_magique` (تأتي من ملف SQL كامل)</div>
+<div class="spacer"></div>
+<p dir="rtl">للدراسة للمبتدئين: استعمل القاعدة البسيطة أولًا لأنها تعمل بسرعة.</p>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>4) Tour guidé du projet (fichiers importants)</h1>
+<div class="spacer"></div>
+<p dir="ltr">Voici les fichiers essentiels:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `index.html`: page d’accueil</div>
+<div class="bullet" dir="ltr">• `login.html` / `inscription.html`: pages front (selon version)</div>
+<div class="bullet" dir="ltr">• `auth-login.php`: page login/inscription (version PHP intégrée)</div>
+<div class="bullet" dir="ltr">• `auth.php`: API d’authentification</div>
+<div class="bullet" dir="ltr">• `config.php`: connexion DB + création de tables (version simple)</div>
+<div class="bullet" dir="ltr">• `dashboard-stages.php`: tableau de bord des stages</div>
+<div class="bullet" dir="ltr">• `stage.php`: wrapper qui sert `stage-*.html` et injecte `api-manager.js`</div>
+<div class="bullet" dir="ltr">• `api-manager.js`: gestionnaire des appels API (JS)</div>
+<div class="bullet" dir="ltr">• `progress_api.php`: API progression (sauvegarde, QCM, essai)</div>
+<div class="bullet" dir="ltr">• `database/COMPLETE_DATABASE.sql`: schéma complet (production)</div>
+<div class="spacer"></div>
+<p dir="ltr">Dossiers fréquents:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `assets/`, `css/`, `js/`: ressources</div>
+<div class="bullet" dir="ltr">• `stages/` ou `stage-*.html`: contenus des stages</div>
+<div class="spacer"></div>
+<h2>شرح بالعربية (ملفات مهمة جدًا)</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="rtl">• `index.html`: الصفحة الرئيسية.</div>
+<div class="bullet" dir="rtl">• `auth-login.php`: صفحة الدخول/التسجيل (PHP).</div>
+<div class="bullet" dir="rtl">• `auth.php`: API للدخول/التسجيل والجلسات.</div>
+<div class="bullet" dir="rtl">• `config.php`: اتصال قاعدة البيانات وإنشاء الجداول (نسخة بسيطة).</div>
+<div class="bullet" dir="rtl">• `dashboard-stages.php`: لوحة المراحل.</div>
+<div class="bullet" dir="rtl">• `stage.php`: يفتح ملف المرحلة ويضيف كود الحفظ.</div>
+<div class="bullet" dir="rtl">• `api-manager.js`: كود JavaScript الذي يرسل البيانات إلى الـ API.</div>
+<div class="bullet" dir="rtl">• `progress_api.php`: API لحفظ/تحميل التقدم ونتائج الأسئلة.</div>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>5) Concepts web indispensables</h1>
+<div class="spacer"></div>
+<h2>5.1 HTTP en 2 minutes</h2>
+<div class="spacer"></div>
+<p dir="ltr">Le navigateur envoie une requête:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• GET (récupérer une page ou des données)</div>
+<div class="bullet" dir="ltr">• POST (envoyer des données)</div>
+<div class="spacer"></div>
+<p dir="ltr">Exemples:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `GET /monde-magique/dashboard-stages.php`</div>
+<div class="bullet" dir="ltr">• `POST /monde-magique/auth.php?action=login`</div>
+<div class="spacer"></div>
+<h2>شرح بالعربية (فكرة GET و POST)</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="rtl">• **GET** يعني: “أعطني بيانات/صفحة”.</div>
+<div class="bullet" dir="rtl">• **POST** يعني: “سأرسل لك بيانات لتحفظها”.</div>
+<div class="spacer"></div>
+<p dir="rtl">مثال:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="rtl">• GET لفتح لوحة المراحل.</div>
+<div class="bullet" dir="rtl">• POST عند إرسال اسم المستخدم وكلمة السر.</div>
+<div class="spacer"></div>
+<h2>5.2 JSON</h2>
+<div class="spacer"></div>
+<p dir="ltr">Le JSON est un format texte pour envoyer des données:</p>
+<div class="spacer"></div>
+<pre class="code"><code class="language-json">
+{
+  &quot;success&quot;: true,
+  &quot;user_id&quot;: 12,
+  &quot;username&quot;: &quot;demo&quot;
+}
+</code></pre>
+<div class="spacer"></div>
+<h2>شرح بالعربية (ما هو JSON؟)</h2>
+<div class="spacer"></div>
+<p dir="rtl">JSON هو شكل منظم لإرسال البيانات بين المتصفح والسيرفر.</p>
+<div class="spacer"></div>
+<div class="bullet" dir="rtl">• يشبه جدول/قاموس.</div>
+<div class="bullet" dir="rtl">• سهل القراءة.</div>
+<div class="bullet" dir="rtl">• API عادة ترجع JSON.</div>
+<div class="spacer"></div>
+<h2>5.3 Sessions PHP</h2>
+<div class="spacer"></div>
+<p dir="ltr">Une **session** permet de dire: “cet utilisateur est connecté”.</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• Le serveur stocke `$_SESSION[&#x27;user_id&#x27;]`</div>
+<div class="bullet" dir="ltr">• Le navigateur garde un cookie de session</div>
+<div class="spacer"></div>
+<p dir="ltr">Dans le code, beaucoup de pages font:</p>
+<div class="spacer"></div>
+<pre class="code"><code class="language-php">
+session_start();
+if (!isset($_SESSION[&#x27;user_id&#x27;])) {
+  header(&#x27;Location: auth-login.php&#x27;);
+  exit;
+}
+</code></pre>
+<div class="spacer"></div>
+<h2>شرح بالعربية (ما هي Session؟)</h2>
+<div class="spacer"></div>
+<p dir="rtl">Session تعني: السيرفر يتذكر أن هذا المستخدم “مسجّل دخول”.</p>
+<div class="spacer"></div>
+<div class="bullet" dir="rtl">• إذا لم توجد Session، الموقع يرجعك لصفحة الدخول.</div>
+<div class="bullet" dir="rtl">• Session تُحفظ في السيرفر، والمتصفح يرسل Cookie صغير للتعريف.</div>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>6) Authentification (inscription/connexion)</h1>
+<div class="spacer"></div>
+<h2>6.1 Le fichier `auth.php`</h2>
+<div class="spacer"></div>
+<p dir="ltr">`auth.php` est une API PHP qui gère plusieurs actions via un paramètre `action`:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `action=register`</div>
+<div class="bullet" dir="ltr">• `action=login`</div>
+<div class="bullet" dir="ltr">• `action=logout`</div>
+<div class="bullet" dir="ltr">• `action=check_session`</div>
+<div class="bullet" dir="ltr">• `action=get_user_data`</div>
+<div class="spacer"></div>
+<p dir="ltr">Le principe:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">1. Le frontend envoie un POST</div>
+<div class="bullet" dir="ltr">2. PHP valide</div>
+<div class="bullet" dir="ltr">3. PHP écrit en base</div>
+<div class="bullet" dir="ltr">4. PHP met `$_SESSION[&#x27;user_id&#x27;]`</div>
+<div class="bullet" dir="ltr">5. PHP renvoie un JSON</div>
+<div class="spacer"></div>
+<h2>شرح بالعربية (التسجيل والدخول)</h2>
+<div class="spacer"></div>
+<p dir="rtl">`auth.php` هو ملف PHP يعمل كـ API.</p>
+<div class="spacer"></div>
+<div class="bullet" dir="rtl">• `register`: تسجيل حساب جديد.</div>
+<div class="bullet" dir="rtl">• `login`: دخول.</div>
+<div class="bullet" dir="rtl">• `logout`: خروج.</div>
+<div class="bullet" dir="rtl">• `check_session`: يتأكد هل المستخدم داخل أم لا.</div>
+<div class="spacer"></div>
+<p dir="rtl">عند التسجيل:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="rtl">1. المتصفح يرسل البيانات.</div>
+<div class="bullet" dir="rtl">2. السيرفر يتحقق منها.</div>
+<div class="bullet" dir="rtl">3. يحفظها في قاعدة البيانات.</div>
+<div class="bullet" dir="rtl">4. يفتح Session.</div>
+<div class="spacer"></div>
+<h2>6.2 Inscription (register)</h2>
+<div class="spacer"></div>
+<p dir="ltr">Pendant l’inscription, le backend:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• vérifie les champs</div>
+<div class="bullet" dir="ltr">• hash le mot de passe avec `password_hash(..., PASSWORD_BCRYPT)`</div>
+<div class="bullet" dir="ltr">• crée l’utilisateur</div>
+<div class="bullet" dir="ltr">• crée 10 lignes de progression (stages 1..10)</div>
+<div class="bullet" dir="ltr">• crée 1 ligne de récompenses</div>
+<div class="spacer"></div>
+<h3>Exemple: requête (pseudo-code JS)</h3>
+<div class="spacer"></div>
+<pre class="code"><code class="language-js">
+await fetch(&#x27;auth.php?action=register&#x27;, {
+  method: &#x27;POST&#x27;,
+  headers: { &#x27;Content-Type&#x27;: &#x27;application/json&#x27; },
+  credentials: &#x27;include&#x27;,
+  body: JSON.stringify({
+    username: &#x27;eleve1&#x27;,
+    email: &#x27;eleve1@example.com&#x27;,
+    password: &#x27;secret123&#x27;,
+    password_confirm: &#x27;secret123&#x27;
+  })
+});
+</code></pre>
+<div class="spacer"></div>
+<h2>6.3 Connexion (login)</h2>
+<div class="spacer"></div>
+<p dir="ltr">Le backend:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• cherche l’utilisateur par username ou email</div>
+<div class="bullet" dir="ltr">• vérifie le mot de passe avec `password_verify`</div>
+<div class="bullet" dir="ltr">• met à jour `last_login`</div>
+<div class="bullet" dir="ltr">• ouvre une session</div>
+<div class="spacer"></div>
+<h3>Exercice 1</h3>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">1. Créer un compte</div>
+<div class="bullet" dir="ltr">2. Se déconnecter</div>
+<div class="bullet" dir="ltr">3. Se reconnecter</div>
+<div class="bullet" dir="ltr">4. Observer: `dashboard-stages.php` vous reconnaît</div>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>7) Base de données</h1>
+<div class="spacer"></div>
+<h2>شرح بالعربية (قاعدة البيانات ببساطة)</h2>
+<div class="spacer"></div>
+<p dir="rtl">قاعدة البيانات هي مكان حفظ المعلومات:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="rtl">• حسابات المستخدمين</div>
+<div class="bullet" dir="rtl">• تقدم كل مرحلة</div>
+<div class="bullet" dir="rtl">• النقاط والجوائز</div>
+<div class="spacer"></div>
+<p dir="rtl">إذا لم نحفظ في قاعدة البيانات، قد تضيع المعلومات عند إغلاق المتصفح.</p>
+<div class="spacer"></div>
+<p dir="ltr">Le projet a **deux niveaux**:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">1. **Base simple** auto-créée par `config.php` (pour démarrer vite)</div>
+<div class="bullet" dir="ltr">2. **Base complète** `database/COMPLETE_DATABASE.sql` (production / très riche)</div>
+<div class="spacer"></div>
+<h2>7.1 Base simple (créée par `config.php`)</h2>
+<div class="spacer"></div>
+<p dir="ltr">Base: `mondo_magique`</p>
+<div class="spacer"></div>
+<p dir="ltr">Tables:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `users`</div>
+<div class="bullet" dir="ltr">• `progress`</div>
+<div class="bullet" dir="ltr">• `rewards`</div>
+<div class="bullet" dir="ltr">• `qcm_answers`</div>
+<div class="bullet" dir="ltr">• `essays`</div>
+<div class="spacer"></div>
+<h3>7.1.1 Table `users`</h3>
+<div class="spacer"></div>
+<p dir="ltr">Contient l’identifiant, username, email, password hash, dates.</p>
+<div class="spacer"></div>
+<h3>7.1.2 Table `progress`</h3>
+<div class="spacer"></div>
+<p dir="ltr">Une ligne par (user, stage).</p>
+<div class="spacer"></div>
+<p dir="ltr">Champs importants:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `stage_num`</div>
+<div class="bullet" dir="ltr">• `completed`</div>
+<div class="bullet" dir="ltr">• `qcm_score`</div>
+<div class="bullet" dir="ltr">• `essay_score`</div>
+<div class="bullet" dir="ltr">• `diamonds`, `coins`</div>
+<div class="bullet" dir="ltr">• `last_step`</div>
+<div class="spacer"></div>
+<h3>Exemple SQL (lecture)</h3>
+<div class="spacer"></div>
+<pre class="code"><code class="language-sql">
+SELECT * FROM progress WHERE user_id = 1 ORDER BY stage_num;
+</code></pre>
+<div class="spacer"></div>
+<h2>7.2 Base complète (fichier SQL)</h2>
+<div class="spacer"></div>
+<p dir="ltr">Base: `monde_magique`</p>
+<div class="spacer"></div>
+<p dir="ltr">Elle contient beaucoup plus:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• profils, settings JSON</div>
+<div class="bullet" dir="ltr">• `stages`, `stations`, `quiz_questions`, `quiz_results`</div>
+<div class="bullet" dir="ltr">• économie: `shop_items`, `transactions`</div>
+<div class="bullet" dir="ltr">• social: `friends`, `friend_requests`</div>
+<div class="bullet" dir="ltr">• logs: `activity_logs`</div>
+<div class="bullet" dir="ltr">• chatbot: `chatbot_conversations`, `chatbot_logs`</div>
+<div class="spacer"></div>
+<h3>Pourquoi c’est intéressant pédagogiquement?</h3>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• Vous apprenez un schéma “réaliste” d’un jeu web</div>
+<div class="bullet" dir="ltr">• Vous voyez l’usage de JSON en base (MySQL JSON)</div>
+<div class="bullet" dir="ltr">• Vous comprenez l’évolution “prototype → production”</div>
+<div class="spacer"></div>
+<h3>Exercice 2</h3>
+<div class="spacer"></div>
+<p dir="ltr">Dans phpMyAdmin:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">1. Ouvrir la table `stages`</div>
+<div class="bullet" dir="ltr">2. Trouver l’étape `tunisia`</div>
+<div class="bullet" dir="ltr">3. Changer son titre (attention à ne pas casser le code)</div>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>8) API de progression (`progress_api.php`)</h1>
+<div class="spacer"></div>
+<h2>شرح بالعربية (لماذا API للتقدم؟)</h2>
+<div class="spacer"></div>
+<p dir="rtl">المرحلة (Stage) عبارة عن صفحة HTML/JS.</p>
+<p dir="rtl">عندما يتقدم الطالب في المرحلة، نحتاج أن نرسل “التقدم” للسيرفر ليتم حفظه.</p>
+<div class="spacer"></div>
+<p dir="rtl">`progress_api.php` هو الملف الذي يستقبل هذه الطلبات ويحفظها في MySQL.</p>
+<div class="spacer"></div>
+<h2>8.1 Pourquoi une API?</h2>
+<div class="spacer"></div>
+<p dir="ltr">Les stages sont des pages HTML/JS. Quand l’élève avance dans le stage, on doit **sauvegarder** la progression sur le serveur.</p>
+<div class="spacer"></div>
+<p dir="ltr">`progress_api.php` reçoit une action et travaille avec la base.</p>
+<div class="spacer"></div>
+<p dir="ltr">Exemples d’actions:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `save_progress` (POST)</div>
+<div class="bullet" dir="ltr">• `load_progress` (GET)</div>
+<div class="bullet" dir="ltr">• `load_all_progress` (GET)</div>
+<div class="bullet" dir="ltr">• `save_qcm` (POST)</div>
+<div class="bullet" dir="ltr">• `save_essay` (POST)</div>
+<div class="bullet" dir="ltr">• `complete_stage` (POST)</div>
+<div class="bullet" dir="ltr">• `get_rewards` (GET)</div>
+<div class="spacer"></div>
+<h2>8.2 Format des données</h2>
+<div class="spacer"></div>
+<p dir="ltr">Deux styles existent dans le projet:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• Certaines fonctions lisent `php://input` (JSON)</div>
+<div class="bullet" dir="ltr">• D’autres attendent des `FormData` (POST classique)</div>
+<div class="spacer"></div>
+<p dir="ltr">Il faut donc faire attention: **le frontend doit envoyer le format attendu**.</p>
+<div class="spacer"></div>
+<h3>Exemple: sauvegarder progression (FormData)</h3>
+<div class="spacer"></div>
+<pre class="code"><code class="language-js">
+const fd = new FormData();
+fd.append(&#x27;action&#x27;, &#x27;save_progress&#x27;);
+fd.append(&#x27;stage_num&#x27;, 3);
+fd.append(&#x27;current_step&#x27;, 2);
+fd.append(&#x27;qcm_score&#x27;, 80);
+fd.append(&#x27;diamonds&#x27;, 5);
+fd.append(&#x27;coins&#x27;, 120);
+
+await fetch(&#x27;progress_api.php&#x27;, {
+  method: &#x27;POST&#x27;,
+  body: fd,
+  credentials: &#x27;include&#x27;
+});
+</code></pre>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>9) Dashboard des stages (`dashboard-stages.php`)</h1>
+<div class="spacer"></div>
+<h2>شرح بالعربية (لوحة المراحل)</h2>
+<div class="spacer"></div>
+<p dir="rtl">هذه الصفحة:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="rtl">• تتأكد أنك مسجّل دخول.</div>
+<div class="bullet" dir="rtl">• تقرأ تقدمك من قاعدة البيانات.</div>
+<div class="bullet" dir="rtl">• تعرض بطاقات المراحل.</div>
+<div class="bullet" dir="rtl">• كل بطاقة فيها زر لفتح المرحلة.</div>
+<div class="spacer"></div>
+<p dir="ltr">Le dashboard:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• vérifie la session</div>
+<div class="bullet" dir="ltr">• lit `rewards` + `progress`</div>
+<div class="bullet" dir="ltr">• calcule combien de stages sont terminés</div>
+<div class="bullet" dir="ltr">• affiche une grille de stages</div>
+<div class="spacer"></div>
+<p dir="ltr">Côté HTML, la page est en **arabe**:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `lang=&quot;ar&quot; dir=&quot;rtl&quot;`</div>
+<div class="spacer"></div>
+<p dir="ltr">Le JavaScript reçoit des variables générées par PHP:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `userProgress` (JSON)</div>
+<div class="bullet" dir="ltr">• `userRewards` (JSON)</div>
+<div class="spacer"></div>
+<p dir="ltr">Puis il rend les cartes (stages) et construit les boutons “Play”.</p>
+<div class="spacer"></div>
+<h3>Exercice 3</h3>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">1. Ouvrir le dashboard</div>
+<div class="bullet" dir="ltr">2. Cliquer stage 1</div>
+<div class="bullet" dir="ltr">3. Noter l’URL: `stage.php?stage=1`</div>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>10) Stage wrapper (`stage.php`)</h1>
+<div class="spacer"></div>
+<h2>شرح بالعربية (ما وظيفة stage.php؟)</h2>
+<div class="spacer"></div>
+<p dir="rtl">`stage.php` يشبه “غلاف” للمرحلة.</p>
+<div class="spacer"></div>
+<div class="bullet" dir="rtl">• يمنع فتح المرحلة بدون تسجيل دخول.</div>
+<div class="bullet" dir="rtl">• يفتح ملف المرحلة HTML الصحيح.</div>
+<div class="bullet" dir="rtl">• يضيف JavaScript يساعد على حفظ التقدم.</div>
+<div class="spacer"></div>
+<h2>10.1 Pourquoi un wrapper?</h2>
+<div class="spacer"></div>
+<p dir="ltr">Les fichiers `stage-1-tunisia.html`, etc. sont des pages HTML (front).</p>
+<div class="spacer"></div>
+<p dir="ltr">Mais on veut:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• empêcher l’accès si non connecté</div>
+<div class="bullet" dir="ltr">• injecter `api-manager.js`</div>
+<div class="bullet" dir="ltr">• restaurer la progression au chargement</div>
+<div class="bullet" dir="ltr">• sauvegarder automatiquement au clic “next”</div>
+<div class="spacer"></div>
+<p dir="ltr">C’est ce que fait `stage.php`:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">1. Vérifie la session</div>
+<div class="bullet" dir="ltr">2. Charge le bon fichier HTML de stage</div>
+<div class="bullet" dir="ltr">3. Lit la progression en DB</div>
+<div class="bullet" dir="ltr">4. Injecte des scripts JS avant `&lt;/body&gt;`</div>
+<div class="spacer"></div>
+<h2>10.2 Injection (principe)</h2>
+<div class="spacer"></div>
+<p dir="ltr">`stage.php` fait:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `file_get_contents(stage-*.html)`</div>
+<div class="bullet" dir="ltr">• remplace `&lt;/body&gt;` par `... + scripts + &lt;/body&gt;`</div>
+<div class="spacer"></div>
+<p dir="ltr">Cela permet d’ajouter une couche API sans réécrire chaque stage.</p>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>11) JavaScript: `api-manager.js`</h1>
+<div class="spacer"></div>
+<h2>شرح بالعربية (JavaScript الذي يحفظ التقدم)</h2>
+<div class="spacer"></div>
+<p dir="rtl">`api-manager.js` يرسل طلبات إلى `auth.php` و `progress_api.php`.</p>
+<div class="spacer"></div>
+<p dir="rtl">مثال:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="rtl">• عند الضغط “التالي”: يرسل `saveProgress()` لحفظ رقم الخطوة والنتيجة.</div>
+<div class="spacer"></div>
+<h2>11.1 Rôle de `APIDataManager`</h2>
+<div class="spacer"></div>
+<p dir="ltr">La classe `APIDataManager`:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• vérifie la session via `auth.php?action=check_session`</div>
+<div class="bullet" dir="ltr">• mémorise `userId`</div>
+<div class="bullet" dir="ltr">• mémorise `stageNum`</div>
+<div class="bullet" dir="ltr">• expose des méthodes:</div>
+<div class="bullet" dir="ltr">• `saveProgress()`</div>
+<div class="bullet" dir="ltr">• `loadProgress()`</div>
+<div class="bullet" dir="ltr">• `saveQCM()`</div>
+<div class="bullet" dir="ltr">• `saveEssay()`</div>
+<div class="bullet" dir="ltr">• `completeStage()`</div>
+<div class="bullet" dir="ltr">• `getRewards()`</div>
+<div class="spacer"></div>
+<h2>11.2 Important: cohérence des champs JSON</h2>
+<div class="spacer"></div>
+<p dir="ltr">Quand vous créez une API, il faut une convention stricte.</p>
+<div class="spacer"></div>
+<p dir="ltr">Exemple:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• Backend renvoie `logged_in: true`</div>
+<div class="bullet" dir="ltr">• Front attend `authenticated: true`</div>
+<div class="spacer"></div>
+<p dir="ltr">Si ce n’est pas identique, le front peut croire que l’utilisateur n’est pas connecté.</p>
+<div class="spacer"></div>
+<p dir="ltr">&gt; Dans un TP “debug”, on apprendra à repérer ce type de bug.</p>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>12) Données: progression, QCM, essai, récompenses</h1>
+<div class="spacer"></div>
+<h2>شرح بالعربية (ما الذي يتم حفظه؟)</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="rtl">• **Progression**: أين وصلت داخل المرحلة.</div>
+<div class="bullet" dir="rtl">• **QCM**: إجابات الاختيار من متعدد والنتيجة.</div>
+<div class="bullet" dir="rtl">• **Essai**: النص الذي يكتبه الطالب وعدد الكلمات.</div>
+<div class="bullet" dir="rtl">• **Récompenses**: العملات والألماس.</div>
+<div class="spacer"></div>
+<h2>12.1 Progression</h2>
+<div class="spacer"></div>
+<p dir="ltr">Progression = où en est l’élève dans le stage.</p>
+<div class="spacer"></div>
+<p dir="ltr">Exemples de champs:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `last_step` ou `current_step`</div>
+<div class="bullet" dir="ltr">• `completed`</div>
+<div class="spacer"></div>
+<h2>12.2 QCM</h2>
+<div class="spacer"></div>
+<p dir="ltr">Le QCM a:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• les réponses de l’utilisateur (A/B/C/D)</div>
+<div class="bullet" dir="ltr">• quelles questions sont correctes</div>
+<div class="bullet" dir="ltr">• un score</div>
+<div class="spacer"></div>
+<h2>12.3 Essai (texte)</h2>
+<div class="spacer"></div>
+<p dir="ltr">Un essai est sauvegardé avec:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `content`</div>
+<div class="bullet" dir="ltr">• `word_count`</div>
+<div class="bullet" dir="ltr">• `score`</div>
+<div class="spacer"></div>
+<p dir="ltr">Le score peut être calculé simplement (ex: basé sur nombre de mots).</p>
+<div class="spacer"></div>
+<h2>12.4 Récompenses</h2>
+<div class="spacer"></div>
+<p dir="ltr">Récompenses totales dans `rewards`:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `total_diamonds`</div>
+<div class="bullet" dir="ltr">• `total_coins`</div>
+<div class="bullet" dir="ltr">• `total_stages_completed`</div>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>13) Debugging: erreurs fréquentes</h1>
+<div class="spacer"></div>
+<h2>شرح بالعربية (أخطاء شائعة)</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="rtl">• 401 غير مُصادق: يعني لم يتم تسجيل الدخول أو لم تُرسل Session.</div>
+<div class="bullet" dir="rtl">• خطأ JSON: غالبًا بسبب خطأ/تحذير في PHP قبل طباعة JSON.</div>
+<div class="bullet" dir="rtl">• مشكلة قاعدة البيانات: اسم قاعدة مختلف أو MySQL متوقف.</div>
+<div class="spacer"></div>
+<h2>13.1 Erreur 401 “Non authentifié”</h2>
+<div class="spacer"></div>
+<p dir="ltr">Cause typique:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• session pas créée</div>
+<div class="bullet" dir="ltr">• cookie pas envoyé (manque `credentials: &#x27;include&#x27;` en fetch)</div>
+<div class="spacer"></div>
+<p dir="ltr">Solution:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• vérifier `session_start()`</div>
+<div class="bullet" dir="ltr">• vérifier `credentials: &#x27;include&#x27;`</div>
+<div class="spacer"></div>
+<h2>13.2 Erreur JSON invalide</h2>
+<div class="spacer"></div>
+<p dir="ltr">Cause:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• PHP affiche un warning avant le JSON</div>
+<div class="spacer"></div>
+<p dir="ltr">Solution:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• activer logs</div>
+<div class="bullet" dir="ltr">• corriger warning</div>
+<div class="spacer"></div>
+<h2>13.3 Base de données incorrecte</h2>
+<div class="spacer"></div>
+<p dir="ltr">Cause:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• confusion `mondo_magique` vs `monde_magique`</div>
+<div class="spacer"></div>
+<p dir="ltr">Solution:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• choisir une base</div>
+<div class="bullet" dir="ltr">• aligner `DB_NAME`</div>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>14) Sécurité (bonnes pratiques)</h1>
+<div class="spacer"></div>
+<h2>شرح بالعربية (أمان بسيط)</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="rtl">• لا تخزن كلمة السر كما هي، بل استخدم `password_hash`.</div>
+<div class="bullet" dir="rtl">• لا تسمح لأي شخص بالدخول للصفحات الحساسة بدون Session.</div>
+<div class="bullet" dir="rtl">• انتبه لحقن SQL (استعمل طرق آمنة للـ SQL).</div>
+<div class="spacer"></div>
+<h2>14.1 Mots de passe</h2>
+<div class="spacer"></div>
+<p dir="ltr">Toujours:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `password_hash` pour stocker</div>
+<div class="bullet" dir="ltr">• `password_verify` pour vérifier</div>
+<div class="spacer"></div>
+<h2>14.2 SQL injection</h2>
+<div class="spacer"></div>
+<p dir="ltr">Le projet utilise `real_escape_string` dans plusieurs endroits.</p>
+<div class="spacer"></div>
+<p dir="ltr">Pour aller plus loin, enseigner aux élèves:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• requêtes préparées (`prepare`, `bind_param`)</div>
+<div class="spacer"></div>
+<h2>14.3 Sessions</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• ne jamais exposer `user_id` dans le HTML inutilement</div>
+<div class="bullet" dir="ltr">• vérifier la session côté serveur sur les pages sensibles</div>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>15) Extensions: comment ajouter du contenu</h1>
+<div class="spacer"></div>
+<h2>15.1 Ajouter un nouveau stage</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">1. Créer un fichier `stage-11-xxx.html`</div>
+<div class="bullet" dir="ltr">2. Mettre à jour la map `$stageFiles` dans `stage.php`</div>
+<div class="bullet" dir="ltr">3. Ajouter la ligne en DB (si vous utilisez la base complète)</div>
+<div class="bullet" dir="ltr">4. Ajouter une carte dans le dashboard</div>
+<div class="spacer"></div>
+<h2>15.2 Ajouter une question QCM</h2>
+<div class="spacer"></div>
+<p dir="ltr">Dans la base complète:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• table `quiz_questions`</div>
+<div class="spacer"></div>
+<p dir="ltr">Dans la version simple:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• les réponses sont stockées dans `qcm_answers`</div>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>16) Série de TP (exercices guidés)</h1>
+<div class="spacer"></div>
+<h2>TP 1 — Installer et lancer</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• Démarrer Apache/MySQL</div>
+<div class="bullet" dir="ltr">• Ouvrir la page d’accueil</div>
+<div class="bullet" dir="ltr">• S’inscrire</div>
+<div class="bullet" dir="ltr">• Accéder au dashboard</div>
+<div class="spacer"></div>
+<h2>TP 2 — Lire la progression en base</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• Ouvrir phpMyAdmin</div>
+<div class="bullet" dir="ltr">• Observer la table `progress`</div>
+<div class="bullet" dir="ltr">• Comprendre les colonnes</div>
+<div class="spacer"></div>
+<h2>TP 3 — Appels API à la main</h2>
+<div class="spacer"></div>
+<p dir="ltr">Objectif: comprendre l’API.</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• Dans la console (F12), faire un `fetch` manuel vers `progress_api.php?action=load_all_progress`</div>
+<div class="bullet" dir="ltr">• Lire la réponse</div>
+<div class="spacer"></div>
+<h2>TP 4 — Débogage “champ JSON incohérent”</h2>
+<div class="spacer"></div>
+<p dir="ltr">Objectif: comprendre pourquoi un front “redirige” vers login.</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• Voir la réponse de `auth.php?action=check_session`</div>
+<div class="bullet" dir="ltr">• Comparer avec ce que le JS attend</div>
+<div class="bullet" dir="ltr">• Proposer une correction</div>
+<div class="spacer"></div>
+<h2>TP 5 — Petite amélioration</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• Ajouter l’affichage du `qcm_score` sur une carte de stage dans le dashboard</div>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>17) Glossaire</h1>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• **Endpoint**: URL d’une API</div>
+<div class="bullet" dir="ltr">• **Session**: mémoire serveur pour un utilisateur</div>
+<div class="bullet" dir="ltr">• **Credential cookie**: cookie envoyé avec `fetch(..., { credentials: &#x27;include&#x27; })`</div>
+<div class="bullet" dir="ltr">• **CRUD**: Create/Read/Update/Delete</div>
+<div class="bullet" dir="ltr">• **InnoDB**: moteur MySQL supportant les clés étrangères</div>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>Annexes (exemples supplémentaires)</h1>
+<div class="spacer"></div>
+<h2>A) Exemple de diagramme de flux (texte)</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">1. User → Dashboard → clique Stage</div>
+<div class="bullet" dir="ltr">2. Dashboard → `stage.php?stage=3`</div>
+<div class="bullet" dir="ltr">3. `stage.php` → injecte JS</div>
+<div class="bullet" dir="ltr">4. JS → `loadProgress()`</div>
+<div class="bullet" dir="ltr">5. User joue → `saveProgress()`</div>
+<div class="bullet" dir="ltr">6. DB stocke → dashboard reflète progression</div>
+<div class="spacer"></div>
+<h2>B) Mini-questions pour révision</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">1. Pourquoi on utilise une session?</div>
+<div class="bullet" dir="ltr">2. Différence entre GET et POST?</div>
+<div class="bullet" dir="ltr">3. Pourquoi on hash les mots de passe?</div>
+<div class="bullet" dir="ltr">4. Que signifie 401?</div>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>18) Comprendre la structure des pages (Frontend)</h1>
+<div class="spacer"></div>
+<p dir="ltr">Cette section est dédiée aux élèves débutants qui ne savent pas encore “lire” un projet web.</p>
+<div class="spacer"></div>
+<h2>18.1 Les fichiers HTML</h2>
+<div class="spacer"></div>
+<p dir="ltr">Le projet contient:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• des pages générales: `index.html`, `profile.html`, `shop.html`, etc.</div>
+<div class="bullet" dir="ltr">• des pages de jeu: `stage-1-tunisia.html` … `stage-10-world.html`</div>
+<div class="spacer"></div>
+<h3>À retenir</h3>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• Une page HTML contient le contenu (titres, boutons, images)</div>
+<div class="bullet" dir="ltr">• Le CSS rend la page jolie</div>
+<div class="bullet" dir="ltr">• Le JavaScript donne la logique (clics, scores, transitions)</div>
+<div class="spacer"></div>
+<h2>18.2 CSS: pourquoi il y a un dossier `css/`</h2>
+<div class="spacer"></div>
+<p dir="ltr">Le CSS sert à:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• mettre des couleurs</div>
+<div class="bullet" dir="ltr">• créer des grilles</div>
+<div class="bullet" dir="ltr">• gérer le responsive (mobile/tablette)</div>
+<div class="bullet" dir="ltr">• animer (transitions)</div>
+<div class="spacer"></div>
+<h3>Exercice 4 (CSS facile)</h3>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">1. Ouvrir une page (ex: `dashboard-stages.php`)</div>
+<div class="bullet" dir="ltr">2. Chercher une règle CSS (ex: `.header h1`)</div>
+<div class="bullet" dir="ltr">3. Modifier une taille de police</div>
+<div class="bullet" dir="ltr">4. Rafraîchir la page et observer</div>
+<div class="spacer"></div>
+<h2>18.3 Bilingue et RTL (arabe)</h2>
+<div class="spacer"></div>
+<p dir="ltr">Certaines pages sont en arabe et utilisent:</p>
+<div class="spacer"></div>
+<pre class="code"><code class="language-html">
+&lt;html lang=&quot;ar&quot; dir=&quot;rtl&quot;&gt;
+</code></pre>
+<div class="spacer"></div>
+<p dir="ltr">Explications:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `lang=&quot;ar&quot;`: indique la langue</div>
+<div class="bullet" dir="ltr">• `dir=&quot;rtl&quot;`: l’écriture va de droite à gauche</div>
+<div class="spacer"></div>
+<h3>Exercice 5</h3>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">1. Remplacer temporairement `dir=&quot;rtl&quot;` par `dir=&quot;ltr&quot;`</div>
+<div class="bullet" dir="ltr">2. Observer comment l’interface change</div>
+<div class="bullet" dir="ltr">3. Remettre `rtl`</div>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>19) Backend PHP: comprendre `config.php`</h1>
+<div class="spacer"></div>
+<p dir="ltr">Le fichier `config.php` est inclus par les pages PHP.</p>
+<div class="spacer"></div>
+<p dir="ltr">Il fait 3 choses principales:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">1. Se connecter à MySQL</div>
+<div class="bullet" dir="ltr">2. Créer la base + tables si elles n’existent pas (version simple)</div>
+<div class="bullet" dir="ltr">3. Définir des headers JSON/CORS</div>
+<div class="spacer"></div>
+<h2>19.1 Connexion MySQL</h2>
+<div class="spacer"></div>
+<p dir="ltr">Dans la version simple:</p>
+<div class="spacer"></div>
+<pre class="code"><code class="language-php">
+define(&#x27;DB_HOST&#x27;, &#x27;localhost&#x27;);
+define(&#x27;DB_USER&#x27;, &#x27;root&#x27;);
+define(&#x27;DB_PASS&#x27;, &#x27;&#x27;);
+define(&#x27;DB_NAME&#x27;, &#x27;mondo_magique&#x27;);
+</code></pre>
+<div class="spacer"></div>
+<h3>Exercice 6</h3>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">1. Ouvrir phpMyAdmin</div>
+<div class="bullet" dir="ltr">2. Vérifier si la base `mondo_magique` existe</div>
+<div class="bullet" dir="ltr">3. Si oui, ouvrir `users` et voir les données après inscription</div>
+<div class="spacer"></div>
+<h2>19.2 Auto-création des tables</h2>
+<div class="spacer"></div>
+<p dir="ltr">Le tableau `$tables_sql` contient des instructions `CREATE TABLE IF NOT EXISTS ...`.</p>
+<div class="spacer"></div>
+<p dir="ltr">Avantage (débutants):</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• on n’a pas besoin d’importer un SQL pour démarrer</div>
+<div class="spacer"></div>
+<p dir="ltr">Inconvénient (projet réel):</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• la version “simple” n’a pas toutes les tables et fonctionnalités</div>
+<div class="spacer"></div>
+<h2>19.3 Headers JSON et CORS</h2>
+<div class="spacer"></div>
+<p dir="ltr">Le fichier active:</p>
+<div class="spacer"></div>
+<pre class="code"><code class="language-php">
+header(&#x27;Content-Type: application/json; charset=utf-8&#x27;);
+header(&#x27;Access-Control-Allow-Origin: *&#x27;);
+</code></pre>
+<div class="spacer"></div>
+<p dir="ltr">Attention: sur des projets réels, `Access-Control-Allow-Origin: *` n’est pas toujours souhaité.</p>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>20) Contrat de l’API (spécification simple)</h1>
+<div class="spacer"></div>
+<p dir="ltr">Cette section est très utile pour les élèves: elle décrit “ce que l’API promet”.</p>
+<div class="spacer"></div>
+<h2>20.1 API Auth (`auth.php`)</h2>
+<div class="spacer"></div>
+<p dir="ltr">Base URL (local):</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `http://localhost/monde-magique/auth.php`</div>
+<div class="spacer"></div>
+<h3>`POST auth.php?action=register`</h3>
+<div class="spacer"></div>
+<p dir="ltr">Entrée (JSON):</p>
+<div class="spacer"></div>
+<pre class="code"><code class="language-json">
+{
+  &quot;username&quot;: &quot;eleve1&quot;,
+  &quot;email&quot;: &quot;eleve1@example.com&quot;,
+  &quot;password&quot;: &quot;secret123&quot;,
+  &quot;password_confirm&quot;: &quot;secret123&quot;
+}
+</code></pre>
+<div class="spacer"></div>
+<p dir="ltr">Sortie (succès):</p>
+<div class="spacer"></div>
+<pre class="code"><code class="language-json">
+{
+  &quot;success&quot;: &quot;Inscription réussie&quot;,
+  &quot;user_id&quot;: 1,
+  &quot;username&quot;: &quot;eleve1&quot;
+}
+</code></pre>
+<div class="spacer"></div>
+<p dir="ltr">Erreurs possibles:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `400` champs manquants</div>
+<div class="bullet" dir="ltr">• `400` mot de passe trop court</div>
+<div class="bullet" dir="ltr">• `400` utilisateur existe</div>
+<div class="spacer"></div>
+<h3>`POST auth.php?action=login`</h3>
+<div class="spacer"></div>
+<p dir="ltr">Entrée (JSON):</p>
+<div class="spacer"></div>
+<pre class="code"><code class="language-json">
+{
+  &quot;username&quot;: &quot;eleve1&quot;,
+  &quot;password&quot;: &quot;secret123&quot;
+}
+</code></pre>
+<div class="spacer"></div>
+<p dir="ltr">Sortie (succès):</p>
+<div class="spacer"></div>
+<pre class="code"><code class="language-json">
+{
+  &quot;success&quot;: &quot;Connexion réussie&quot;,
+  &quot;user_id&quot;: 1,
+  &quot;username&quot;: &quot;eleve1&quot;
+}
+</code></pre>
+<div class="spacer"></div>
+<h3>`GET auth.php?action=check_session`</h3>
+<div class="spacer"></div>
+<p dir="ltr">Sortie possible:</p>
+<div class="spacer"></div>
+<pre class="code"><code class="language-json">
+{ &quot;logged_in&quot;: true, &quot;user_id&quot;: 1, &quot;username&quot;: &quot;eleve1&quot; }
+</code></pre>
+<div class="spacer"></div>
+<p dir="ltr">ou</p>
+<div class="spacer"></div>
+<pre class="code"><code class="language-json">
+{ &quot;logged_in&quot;: false }
+</code></pre>
+<div class="spacer"></div>
+<p dir="ltr">&gt; Point pédagogique: le frontend doit attendre `logged_in`, pas `authenticated`.</p>
+<div class="spacer"></div>
+<h2>20.2 API Progression (`progress_api.php`)</h2>
+<div class="spacer"></div>
+<p dir="ltr">Base URL:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `http://localhost/monde-magique/progress_api.php`</div>
+<div class="spacer"></div>
+<h3>`GET progress_api.php?action=load_progress&amp;stage_num=1`</h3>
+<div class="spacer"></div>
+<p dir="ltr">Retour: un objet décrivant la progression du stage.</p>
+<div class="spacer"></div>
+<h3>`GET progress_api.php?action=load_all_progress`</h3>
+<div class="spacer"></div>
+<p dir="ltr">Retour: un objet avec les stages (1..10).</p>
+<div class="spacer"></div>
+<h3>`POST progress_api.php` (FormData)</h3>
+<div class="spacer"></div>
+<p dir="ltr">Les actions `save_progress`, `save_qcm`, `save_essay`, `complete_stage` utilisent des champs `FormData`.</p>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>21) Étude de cas: comment un stage sauvegarde sa progression</h1>
+<div class="spacer"></div>
+<p dir="ltr">Cette section suit exactement le chemin d’un clic “next”.</p>
+<div class="spacer"></div>
+<h2>21.1 Au chargement du stage</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">1. L’utilisateur ouvre: `stage.php?stage=3`</div>
+<div class="bullet" dir="ltr">2. `stage.php` charge `stage-3-africa.html`</div>
+<div class="bullet" dir="ltr">3. `stage.php` injecte `api-manager.js`</div>
+<div class="bullet" dir="ltr">4. JS appelle `waitForSession()`</div>
+<div class="bullet" dir="ltr">5. Puis `apiManager.loadProgress()`</div>
+<div class="bullet" dir="ltr">6. Le stage restaure `currentStep` et les ressources</div>
+<div class="spacer"></div>
+<h2>21.2 Au clic sur “next”</h2>
+<div class="spacer"></div>
+<p dir="ltr">Le wrapper redéfinit `nextStep()` pour:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• exécuter la logique du stage</div>
+<div class="bullet" dir="ltr">• puis appeler `apiManager.saveProgress(...)`</div>
+<div class="spacer"></div>
+<h3>Exercice 7 (observer en vrai)</h3>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">1. Ouvrir un stage</div>
+<div class="bullet" dir="ltr">2. Appuyer F12 → onglet Network</div>
+<div class="bullet" dir="ltr">3. Cliquer “next”</div>
+<div class="bullet" dir="ltr">4. Observer l’appel à `progress_api.php`</div>
+<div class="bullet" dir="ltr">5. Lire les champs envoyés</div>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>22) Base complète: explication pédagogique du grand schéma SQL</h1>
+<div class="spacer"></div>
+<p dir="ltr">La base complète (`database/COMPLETE_DATABASE.sql`) est un exemple “pro” de base de données de jeu.</p>
+<div class="spacer"></div>
+<h2>22.1 Tables centrales</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `users`: profils, langue, préférences, économie</div>
+<div class="bullet" dir="ltr">• `stages`: les 10 régions/étapes</div>
+<div class="bullet" dir="ltr">• `stations`: contenu et type (quiz, vidéo, chatbot...)</div>
+<div class="bullet" dir="ltr">• `quiz_questions` + `quiz_results`</div>
+<div class="bullet" dir="ltr">• `transactions` + `shop_items`</div>
+<div class="spacer"></div>
+<h2>22.2 JSON en base</h2>
+<div class="spacer"></div>
+<p dir="ltr">Exemples d’usage:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `users.settings` (préférences)</div>
+<div class="bullet" dir="ltr">• `stages.base_rewards`</div>
+<div class="bullet" dir="ltr">• `stations.questions`</div>
+<div class="spacer"></div>
+<h3>Exercice 8 (lecture JSON)</h3>
+<div class="spacer"></div>
+<p dir="ltr">Dans MySQL:</p>
+<div class="spacer"></div>
+<pre class="code"><code class="language-sql">
+SELECT stage_key, JSON_EXTRACT(base_rewards, &#x27;$.coins&#x27;) AS coins
+FROM stages
+ORDER BY stage_order;
+</code></pre>
+<div class="spacer"></div>
+<h2>22.3 Clés étrangères</h2>
+<div class="spacer"></div>
+<p dir="ltr">Les clés étrangères imposent la cohérence:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• un `stage_progress.user_id` doit exister dans `users`</div>
+<div class="bullet" dir="ltr">• si on supprime un user, ses progressions peuvent être supprimées (cascade)</div>
+<div class="spacer"></div>
+<h3>Exercice 9</h3>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">1. Trouver une table avec `FOREIGN KEY`</div>
+<div class="bullet" dir="ltr">2. Comprendre `ON DELETE CASCADE`</div>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>23) Debugging avancé (atelier)</h1>
+<div class="spacer"></div>
+<p dir="ltr">Cette partie est faite pour l’enseignant: elle crée des “bugs” éducatifs.</p>
+<div class="spacer"></div>
+<h2>23.1 Bug: le JS pense que la session est invalide</h2>
+<div class="spacer"></div>
+<p dir="ltr">Symptôme:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• redirection vers `auth-login.php`</div>
+<div class="spacer"></div>
+<p dir="ltr">Cause possible:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• le JS attend `data.authenticated` mais l’API renvoie `logged_in`</div>
+<div class="spacer"></div>
+<p dir="ltr">Méthode:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">1. Ouvrir Network</div>
+<div class="bullet" dir="ltr">2. Lire la réponse JSON</div>
+<div class="bullet" dir="ltr">3. Corriger la condition côté JS</div>
+<div class="spacer"></div>
+<h2>23.2 Bug: l’API attend JSON mais on envoie FormData (ou inverse)</h2>
+<div class="spacer"></div>
+<p dir="ltr">Symptôme:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• champs vides côté PHP</div>
+<div class="spacer"></div>
+<p dir="ltr">Méthode:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">1. Vérifier si PHP lit `php://input`</div>
+<div class="bullet" dir="ltr">2. Vérifier si le JS envoie `Content-Type: application/json`</div>
+<div class="spacer"></div>
+<h2>23.3 Bug: “Warning” PHP casse le JSON</h2>
+<div class="spacer"></div>
+<p dir="ltr">Symptôme:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `Unexpected token &lt; in JSON`</div>
+<div class="spacer"></div>
+<p dir="ltr">Cause:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• un warning PHP est envoyé avant le JSON</div>
+<div class="spacer"></div>
+<p dir="ltr">Solution:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• corriger le warning</div>
+<div class="bullet" dir="ltr">• éviter `echo` de HTML dans une API JSON</div>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>24) Séances de cours (plan enseignant)</h1>
+<div class="spacer"></div>
+<p dir="ltr">Cette proposition donne un cursus sur 6 à 8 séances.</p>
+<div class="spacer"></div>
+<h2>Séance 1 — Découverte du projet (60-90 min)</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• Lancer XAMPP</div>
+<div class="bullet" dir="ltr">• Ouvrir le site</div>
+<div class="bullet" dir="ltr">• Visiter le dashboard</div>
+<div class="bullet" dir="ltr">• Comprendre “frontend vs backend”</div>
+<div class="spacer"></div>
+<h2>Séance 2 — Authentification et sessions</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `auth.php` actions</div>
+<div class="bullet" dir="ltr">• `session_start()`</div>
+<div class="bullet" dir="ltr">• comprendre cookies</div>
+<div class="bullet" dir="ltr">• exercice: bloquer une page si non connecté</div>
+<div class="spacer"></div>
+<h2>Séance 3 — Base de données (simple)</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• lire `config.php`</div>
+<div class="bullet" dir="ltr">• explorer tables `users`, `progress`, `rewards`</div>
+<div class="bullet" dir="ltr">• exercice: faire une requête SELECT</div>
+<div class="spacer"></div>
+<h2>Séance 4 — API progression</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• explorer `progress_api.php`</div>
+<div class="bullet" dir="ltr">• exercice: appeler `load_all_progress`</div>
+<div class="bullet" dir="ltr">• comprendre codes HTTP</div>
+<div class="spacer"></div>
+<h2>Séance 5 — Front JS</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• `fetch`, `FormData`</div>
+<div class="bullet" dir="ltr">• observer Network</div>
+<div class="bullet" dir="ltr">• exercice: afficher un score sur le dashboard</div>
+<div class="spacer"></div>
+<h2>Séance 6 — Mini-projet</h2>
+<div class="spacer"></div>
+<p dir="ltr">Au choix:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• ajouter un badge simple</div>
+<div class="bullet" dir="ltr">• ajouter une page “aide”</div>
+<div class="bullet" dir="ltr">• ajouter une statistique</div>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>25) Corrigés (résumés)</h1>
+<div class="spacer"></div>
+<h2>Corrigé Exercice 1</h2>
+<div class="spacer"></div>
+<p dir="ltr">Attendu:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• un utilisateur apparaît dans `users`</div>
+<div class="bullet" dir="ltr">• 10 lignes apparaissent dans `progress`</div>
+<div class="bullet" dir="ltr">• 1 ligne apparaît dans `rewards`</div>
+<div class="spacer"></div>
+<h2>Corrigé Exercice 7</h2>
+<div class="spacer"></div>
+<p dir="ltr">Attendu:</p>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• dans Network, un POST vers `progress_api.php`</div>
+<div class="bullet" dir="ltr">• les champs `stage_num`, `current_step` évoluent</div>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>26) Bonus: commandes utiles (pour élèves)</h1>
+<div class="spacer"></div>
+<h2>26.1 Vérifier Apache</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• URL: `http://localhost/`</div>
+<div class="spacer"></div>
+<h2>26.2 Vérifier phpMyAdmin</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• URL: `http://localhost/phpmyadmin`</div>
+<div class="spacer"></div>
+<h2>26.3 Vérifier le projet</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• URL: `http://localhost/monde-magique/`</div>
+<div class="spacer"></div>
+<hr />
+<div class="spacer"></div>
+<h1>27) Checklists</h1>
+<div class="spacer"></div>
+<h2>Checklist installation</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• [ ] Apache démarré</div>
+<div class="bullet" dir="ltr">• [ ] MySQL démarré</div>
+<div class="bullet" dir="ltr">• [ ] Le site s’ouvre</div>
+<div class="bullet" dir="ltr">• [ ] Inscription fonctionne</div>
+<div class="bullet" dir="ltr">• [ ] Dashboard affiche stages</div>
+<div class="spacer"></div>
+<h2>Checklist debugging</h2>
+<div class="spacer"></div>
+<div class="bullet" dir="ltr">• [ ] Console sans erreurs critiques</div>
+<div class="bullet" dir="ltr">• [ ] Network montre les appels API</div>
+<div class="bullet" dir="ltr">• [ ] Les réponses API sont du JSON valide</div>
+<div class="spacer"></div>
+  </div>
+</body>
+</html>

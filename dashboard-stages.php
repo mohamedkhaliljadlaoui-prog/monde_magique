@@ -161,10 +161,14 @@ $rewards_json = json_encode($rewards, JSON_UNESCAPED_UNICODE);
         function renderStages(){
             const container=document.getElementById('stagesContainer');
             container.innerHTML='';
+            const isStageCompleted = (n) => {
+                const v = userProgress?.[n]?.completed;
+                return v === true || v === 1 || v === '1';
+            };
             stages.forEach((s,i)=>{
-                const isCompleted=userProgress[s.num]?.completed||false;
-                // Tous les stages sont ouverts pour le test
-                const isLocked = false;
+                const isCompleted = isStageCompleted(s.num);
+                const prevCompleted = (s.num === 1) ? true : isStageCompleted(s.num - 1);
+                const isLocked = (!isCompleted && !prevCompleted);
                 const card=document.createElement('div');
                 card.className='stage-card'+(isCompleted?' completed':'')+(isLocked?' locked':'');
                 card.innerHTML=`

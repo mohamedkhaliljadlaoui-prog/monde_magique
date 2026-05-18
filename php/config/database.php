@@ -5,28 +5,165 @@ class Database {
     private static $instance = null;
     private $connection;
     
-    private function __construct() {
+    public function __construct() {
+        // Charger la configuration depuis .env ou config
+        $config = $this->loadConfig();
+
+        $host = $config['host'] ?? 'localhost';
+        $database = $config['database'] ?? 'monde_magique';
+        $username = $config['username'] ?? 'root';
+        $password = $config['password'] ?? '';
+        $port = $config['port'] ?? '3306';
+
+        $options = [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
+            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4",
+            PDO::ATTR_PERSISTENT => true
+        ];
+
+        $hostsToTry = [$host];
+        if ($host === 'localhost') {
+            $hostsToTry[] = '127.0.0.1';
+        } elseif ($host === '127.0.0.1') {
+            $hostsToTry[] = 'localhost';
+        }
+
+        $portsToTry = [$port, '3306', '3307', '3308'];
+        $portsToTry = array_values(array_unique(array_filter($portsToTry, fn($p) => $p !== null && $p !== '')));
+
+        $lastException = null;
+        $connectedHost = null;
+        $connectedPort = null;
+
+        foreach ($hostsToTry as $h) {
+            foreach ($portsToTry as $p) {
+                try {
+                    $dsn = "mysql:host={$h};port={$p};dbname={$database};charset=utf8mb4";
+                    $this->connection = new PDO($dsn, $username, $password, $options);
+                    $connectedHost = $h;
+                    $connectedPort = $p;
+                    break 2;
+                } catch (PDOException $e) {
+                    $lastException = $e;
+                    $errorCode = (int)($e->errorInfo[1] ?? 0);
+
+                    // 1049 = Unknown database -> tenter de la créer, puis reconnecter
+                    if ($errorCode === 1049) {
+                        try {
+                            $dsnNoDb = "mysql:host={$h};port={$p};charset=utf8mb4";
+                            $tmp = new PDO($dsnNoDb, $username, $password, $options);
+
+                            $safeDb = preg_replace('/[^a-zA-Z0-9_]/', '', $database);
+                            if ($safeDb === '') {
+                                throw new Exception('Nom de base de données invalide');
+                            }
+                            $tmp->exec("CREATE DATABASE IF NOT EXISTS `{$safeDb}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+
+                            $this->connection = new PDO("mysql:host={$h};port={$p};dbname={$safeDb};charset=utf8mb4", $username, $password, $options);
+                            $connectedHost = $h;
+                            $connectedPort = $p;
+                            break 2;
+                        } catch (Throwable $inner) {
+                            $lastException = $inner;
+                            continue;
+                        }
+                    }
+
+                    // 2002/2006/1045 etc. -> continuer les essais
+                    continue;
+                }
+            }
+        }
+
+        if (!$this->connection) {
+            if ($lastException instanceof PDOException) {
+                error_log("Erreur connexion DB (PDO): " . $lastException->getMessage());
+            } elseif ($lastException) {
+                error_log("Erreur connexion DB: " . $lastException->getMessage());
+            }
+            $msg = "Impossible de se connecter à la base de données";
+            $msg .= " (vérifiez MySQL dans XAMPP, host={$host}, port={$port}, db={$database})";
+            throw new Exception($msg);
+        }
+
+        // Définir le fuseau horaire (ne pas bloquer si non autorisé)
         try {
-            // Charger la configuration depuis .env ou config
-            $config = $this->loadConfig();
-            
-            $dsn = "mysql:host={$config['host']};dbname={$config['database']};charset=utf8mb4";
-            $options = [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES => false,
-                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4",
-                PDO::ATTR_PERSISTENT => true // Connexion persistante
-            ];
-            
-            $this->connection = new PDO($dsn, $config['username'], $config['password'], $options);
-            
-            // Définir le fuseau horaire
             $this->connection->exec("SET time_zone = '+01:00'");
-            
-        } catch (PDOException $e) {
-            error_log("Erreur connexion DB: " . $e->getMessage());
-            throw new Exception("Impossible de se connecter à la base de données");
+        } catch (Throwable $e) {
+        }
+
+        // Assurer un schéma minimal (users) pour l'auth
+        $this->ensureSchema();
+    }
+
+    private function ensureSchema() {
+        // Table users requise pour register/login
+        try {
+            $stmt = $this->connection->prepare("SHOW TABLES LIKE 'users'");
+            $stmt->execute();
+            $hasUsers = $stmt->rowCount() > 0;
+
+            if (!$hasUsers) {
+                $this->connection->exec(
+                    "CREATE TABLE IF NOT EXISTS users (
+                        id INT PRIMARY KEY AUTO_INCREMENT,
+                        username VARCHAR(50) UNIQUE NOT NULL,
+                        email VARCHAR(100) UNIQUE NOT NULL,
+                        password VARCHAR(255) NOT NULL,
+                        gender VARCHAR(20) NULL,
+                        birth_date DATE NULL,
+                        age INT NULL,
+                        guide_name VARCHAR(50) NULL,
+                        language VARCHAR(10) NULL,
+                        parent_email VARCHAR(100) NULL,
+                        level INT NOT NULL DEFAULT 1,
+                        xp INT NOT NULL DEFAULT 0,
+                        coins INT NOT NULL DEFAULT 0,
+                        diamonds INT NOT NULL DEFAULT 0,
+                        current_stage INT NOT NULL DEFAULT 1,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        last_login TIMESTAMP NULL
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
+                );
+                return;
+            }
+
+            $existing = [];
+            $cols = $this->connection->query("SHOW COLUMNS FROM users");
+            while ($row = $cols->fetch()) {
+                $existing[$row['Field']] = true;
+            }
+
+            $migrations = [
+                'password' => "ALTER TABLE users ADD COLUMN password VARCHAR(255) NOT NULL",
+                'gender' => "ALTER TABLE users ADD COLUMN gender VARCHAR(20) NULL",
+                'birth_date' => "ALTER TABLE users ADD COLUMN birth_date DATE NULL",
+                'age' => "ALTER TABLE users ADD COLUMN age INT NULL",
+                'guide_name' => "ALTER TABLE users ADD COLUMN guide_name VARCHAR(50) NULL",
+                'language' => "ALTER TABLE users ADD COLUMN language VARCHAR(10) NULL",
+                'parent_email' => "ALTER TABLE users ADD COLUMN parent_email VARCHAR(100) NULL",
+                'level' => "ALTER TABLE users ADD COLUMN level INT NOT NULL DEFAULT 1",
+                'xp' => "ALTER TABLE users ADD COLUMN xp INT NOT NULL DEFAULT 0",
+                'coins' => "ALTER TABLE users ADD COLUMN coins INT NOT NULL DEFAULT 0",
+                'diamonds' => "ALTER TABLE users ADD COLUMN diamonds INT NOT NULL DEFAULT 0",
+                'current_stage' => "ALTER TABLE users ADD COLUMN current_stage INT NOT NULL DEFAULT 1",
+                'created_at' => "ALTER TABLE users ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+                'last_login' => "ALTER TABLE users ADD COLUMN last_login TIMESTAMP NULL"
+            ];
+
+            foreach ($migrations as $col => $sql) {
+                if (!isset($existing[$col])) {
+                    try {
+                        $this->connection->exec($sql);
+                    } catch (Throwable $e) {
+                        // ignorer
+                    }
+                }
+            }
+        } catch (Throwable $e) {
+            // ne pas bloquer l'app pour un souci de migration
         }
     }
     
@@ -151,7 +288,7 @@ class Database {
         $backupFile = $backupPath . '/backup_' . date('Y-m-d_H-i-s') . '.sql';
         
         $command = "mysqldump --user={$config['username']} --password={$config['password']} " .
-                   "--host={$config['host']} {$config['database']} > $backupFile";
+                   "--host={$config['host']} --port={$config['port']} {$config['database']} > $backupFile";
         
         system($command, $output);
         

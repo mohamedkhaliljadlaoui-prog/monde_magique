@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ù„ÙˆØ­Ø© ØªØ­ÙƒÙ… Ø£ÙˆÙ„ÙŠØ§Ø¡ Ø§Ù„Ø£Ù…ÙˆØ± - Monde Magique</title>
+    <title>لوحة تحكم أولياء الأمور - Monde Magique</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/dashboard.css">
     <link rel="stylesheet" href="css/arabic.css">
@@ -11,23 +14,58 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
-            background: linear-gradient(180deg, #f7fbff 0%, #eef7ff 45%, #f0f2f5 100%);
+            font-family: 'Fredoka', 'Segoe UI', sans-serif;
+            color: #2d2f38;
         }
 
         .parent-dashboard {
-            padding: 30px 20px 40px;
+            padding: 84px 20px 40px;
             max-width: 1400px;
             margin: 0 auto;
         }
 
         .dashboard-header {
-            background: linear-gradient(135deg, #ffffff 0%, #f7f9ff 100%);
+            position: relative;
+            background: var(--cartoon-card);
             padding: 30px;
             border-radius: 22px;
-            color: #3b3b3b;
+            color: #2d2f38;
             margin-bottom: 30px;
-            box-shadow: 0 12px 28px rgba(0,0,0,0.12);
-            border: 2px dashed rgba(33, 150, 243, 0.25);
+            box-shadow: var(--cartoon-shadow);
+            border: 3px solid rgba(255, 255, 255, 0.7);
+            overflow: hidden;
+        }
+
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
+            inset: -90px -90px auto auto;
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.18), transparent 65%);
+            transform: rotate(15deg);
+            pointer-events: none;
+        }
+
+        .dashboard-header::after {
+            content: '';
+            position: absolute;
+            inset: 10px;
+            border-radius: 18px;
+            border: 2px dashed rgba(102, 126, 234, 0.18);
+            pointer-events: none;
+        }
+
+        .dashboard-header h1 {
+            margin: 0 0 6px;
+            font-size: 1.9rem;
+            letter-spacing: 0.2px;
+        }
+
+        .dashboard-header p {
+            margin: 0;
+            color: rgba(45, 47, 56, 0.75);
+            font-weight: 600;
         }
 
         .header-content {
@@ -42,19 +80,30 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            background: #f5f7ff;
+            background: rgba(102, 126, 234, 0.08);
             padding: 15px 20px;
             border-radius: 12px;
-            border: 2px solid rgba(33, 150, 243, 0.2);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .child-selector label {
+            font-weight: 700;
+            color: rgba(45, 47, 56, 0.9);
         }
 
         .child-selector select {
             background: white;
-            border: none;
+            border: 2px solid rgba(102, 126, 234, 0.18);
             padding: 10px 15px;
             border-radius: 8px;
             font-size: 16px;
             min-width: 200px;
+        }
+
+        .child-selector select:focus {
+            outline: none;
+            border-color: rgba(102, 126, 234, 0.35);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
         }
 
         .stats-grid {
@@ -65,16 +114,28 @@
         }
 
         .stat-card {
-            background: white;
+            position: relative;
+            background: var(--cartoon-card);
             padding: 25px;
             border-radius: 18px;
-            box-shadow: 0 8px 18px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-            border: 2px dashed rgba(156, 39, 176, 0.2);
+            box-shadow: var(--cartoon-shadow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 3px solid rgba(255, 255, 255, 0.7);
+            overflow: hidden;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            inset: 10px;
+            border-radius: 14px;
+            border: 2px dashed rgba(118, 75, 162, 0.16);
+            pointer-events: none;
         }
 
         .stat-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 14px 30px rgba(0,0,0,0.14);
         }
 
         .stat-header {
@@ -92,7 +153,10 @@
         .stat-value {
             font-size: 2.5em;
             font-weight: bold;
-            color: #2196F3;
+            background: linear-gradient(135deg, var(--cartoon-primary) 0%, var(--cartoon-secondary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .stat-label {
@@ -109,11 +173,22 @@
         }
 
         .chart-card {
-            background: white;
+            position: relative;
+            background: var(--cartoon-card);
             padding: 25px;
             border-radius: 18px;
-            box-shadow: 0 8px 18px rgba(0,0,0,0.1);
-            border: 2px solid rgba(33, 150, 243, 0.15);
+            box-shadow: var(--cartoon-shadow);
+            border: 3px solid rgba(255, 255, 255, 0.7);
+            overflow: hidden;
+        }
+
+        .chart-card::after {
+            content: '';
+            position: absolute;
+            inset: 10px;
+            border-radius: 14px;
+            border: 2px dashed rgba(102, 126, 234, 0.14);
+            pointer-events: none;
         }
 
         .chart-title {
@@ -145,18 +220,29 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #2196F3 0%, #9C27B0 100%);
+            background: linear-gradient(90deg, var(--cartoon-primary) 0%, var(--cartoon-secondary) 100%);
             border-radius: 10px;
             transition: width 0.3s ease;
         }
 
         .activity-timeline {
-            background: white;
+            position: relative;
+            background: var(--cartoon-card);
             padding: 25px;
             border-radius: 18px;
-            box-shadow: 0 8px 18px rgba(0,0,0,0.1);
+            box-shadow: var(--cartoon-shadow);
             margin-bottom: 30px;
-            border: 2px solid rgba(33, 150, 243, 0.15);
+            border: 3px solid rgba(255, 255, 255, 0.7);
+            overflow: hidden;
+        }
+
+        .activity-timeline::after {
+            content: '';
+            position: absolute;
+            inset: 10px;
+            border-radius: 14px;
+            border: 2px dashed rgba(102, 126, 234, 0.14);
+            pointer-events: none;
         }
 
         .timeline-item {
@@ -173,7 +259,7 @@
         .timeline-icon {
             width: 40px;
             height: 40px;
-            background: #2196F3;
+            background: linear-gradient(135deg, var(--cartoon-primary) 0%, var(--cartoon-secondary) 100%);
             color: white;
             border-radius: 50%;
             display: flex;
@@ -204,11 +290,22 @@
         }
 
         .recommendations {
-            background: white;
+            position: relative;
+            background: var(--cartoon-card);
             padding: 25px;
             border-radius: 18px;
-            box-shadow: 0 8px 18px rgba(0,0,0,0.1);
-            border: 2px solid rgba(33, 150, 243, 0.15);
+            box-shadow: var(--cartoon-shadow);
+            border: 3px solid rgba(255, 255, 255, 0.7);
+            overflow: hidden;
+        }
+
+        .recommendations::after {
+            content: '';
+            position: absolute;
+            inset: 10px;
+            border-radius: 14px;
+            border: 2px dashed rgba(102, 126, 234, 0.14);
+            pointer-events: none;
         }
 
         .recommendation-item {
@@ -216,7 +313,7 @@
             align-items: start;
             gap: 15px;
             padding: 15px;
-            background: #f8f9fa;
+            background: rgba(102, 126, 234, 0.06);
             border-radius: 10px;
             margin-bottom: 15px;
         }
@@ -238,7 +335,7 @@
             border-radius: 8px;
             font-size: 1em;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -247,16 +344,18 @@
         .btn-primary {
             background: linear-gradient(135deg, #ffd86b 0%, #ff9f1c 100%);
             color: #3b2b00;
+            box-shadow: 0 10px 24px rgba(255, 159, 28, 0.35);
         }
 
         .btn-secondary {
-            background: #f8f9fa;
-            color: #333;
+            background: rgba(255, 255, 255, 0.85);
+            color: #2d2f38;
+            border: 2px solid rgba(102, 126, 234, 0.14);
         }
 
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 14px 30px rgba(0,0,0,0.18);
         }
 
         @media (max-width: 768px) {
@@ -272,32 +371,32 @@
 </head>
 <body class="cartoon-theme">
     <div class="cartoon-controls">
-        <button class="cartoon-toggle" data-theme-toggle data-day-label="ðŸŒž Ù†Ù‡Ø§Ø±" data-night-label="ðŸŒ™ Ù„ÙŠÙ„">ðŸŒž Ù†Ù‡Ø§Ø±</button>
-        <button class="cartoon-toggle" data-sound-toggle data-sound-on-label="ðŸ”Š ØµÙˆØª" data-sound-off-label="ðŸ”‡ ØµØ§Ù…Øª">ðŸ”‡ ØµØ§Ù…Øª</button>
+        <button class="cartoon-toggle" data-theme-toggle data-day-label="🌞 نهار" data-night-label="🌙 ليل">🌞 نهار</button>
+        <button class="cartoon-toggle" data-sound-toggle data-sound-on-label="🔊 صوت" data-sound-off-label="🔇 صامت">🔇 صامت</button>
     </div>
     <div class="parent-dashboard">
         <!-- Header -->
         <div class="dashboard-header">
             <div class="header-content">
                 <div>
-                    <h1>ðŸ‘¨â€ðŸ‘©â€ðŸ‘§â€ðŸ‘¦ Ù„ÙˆØ­Ø© ØªØ­ÙƒÙ… Ø£ÙˆÙ„ÙŠØ§Ø¡ Ø§Ù„Ø£Ù…ÙˆØ±</h1>
-                    <p>ØªØ§Ø¨Ø¹ ØªÙ‚Ø¯Ù… Ø·ÙÙ„Ùƒ ÙÙŠ Ø±Ø­Ù„ØªÙ‡ Ø§Ù„ØªØ¹Ù„ÙŠÙ…ÙŠØ©</p>
+                    <h1>👨‍👩‍👧‍👦 لوحة تحكم أولياء الأمور</h1>
+                    <p>تابع تقدم طفلك في رحلته التعليمية</p>
                 </div>
                 
                 <div class="child-selector">
-                    <label>ðŸ‘¶ Ø§Ù„Ø·ÙÙ„:</label>
+                    <label>👶 الطفل:</label>
                     <select id="childSelect" onchange="loadChildData()">
-                        <option value="">Ø§Ø®ØªØ± Ø§Ù„Ø·ÙÙ„...</option>
+                        <option value="">اختر الطفل...</option>
                         <!-- Sera rempli dynamiquement -->
                     </select>
                 </div>
 
                 <div class="action-buttons">
                     <button class="btn btn-secondary" onclick="exportReport()">
-                        <i class="fas fa-download"></i> ØªØµØ¯ÙŠØ± ØªÙ‚Ø±ÙŠØ±
+                        <i class="fas fa-download"></i> تصدير تقرير
                     </button>
                     <button class="btn btn-secondary" onclick="window.location.href='dashboard.html'">
-                        <i class="fas fa-sign-out-alt"></i> Ø§Ù„Ø¹ÙˆØ¯Ø©
+                        <i class="fas fa-sign-out-alt"></i> العودة
                     </button>
                 </div>
             </div>
@@ -307,60 +406,60 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-header">
-                    <div class="stat-icon">â±ï¸</div>
+                    <div class="stat-icon">⏱️</div>
                     <div>
                         <div class="stat-value" id="totalTime">0</div>
-                        <div class="stat-label">Ø¥Ø¬Ù…Ø§Ù„ÙŠ ÙˆÙ‚Øª Ø§Ù„Ù„Ø¹Ø¨ (Ø³Ø§Ø¹Ø§Øª)</div>
+                        <div class="stat-label">إجمالي وقت اللعب (ساعات)</div>
                     </div>
                 </div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-header">
-                    <div class="stat-icon">ðŸŽ¯</div>
+                    <div class="stat-icon">🎯</div>
                     <div>
                         <div class="stat-value" id="stagesCompleted">0/10</div>
-                        <div class="stat-label">Ø§Ù„Ù…Ø±Ø§Ø­Ù„ Ø§Ù„Ù…ÙƒØªÙ…Ù„Ø©</div>
+                        <div class="stat-label">المراحل المكتملة</div>
                     </div>
                 </div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-header">
-                    <div class="stat-icon">â­</div>
+                    <div class="stat-icon">⭐</div>
                     <div>
                         <div class="stat-value" id="averageScore">0%</div>
-                        <div class="stat-label">Ù…ØªÙˆØ³Ø· Ø§Ù„Ù†Ù‚Ø§Ø·</div>
+                        <div class="stat-label">متوسط النقاط</div>
                     </div>
                 </div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-header">
-                    <div class="stat-icon">ðŸ†</div>
+                    <div class="stat-icon">🏆</div>
                     <div>
                         <div class="stat-value" id="achievements">0</div>
-                        <div class="stat-label">Ø§Ù„Ø¥Ù†Ø¬Ø§Ø²Ø§Øª Ø§Ù„Ù…Ø­Ù‚Ù‚Ø©</div>
+                        <div class="stat-label">الإنجازات المحققة</div>
                     </div>
                 </div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-header">
-                    <div class="stat-icon">ðŸ“…</div>
+                    <div class="stat-icon">📅</div>
                     <div>
-                        <div class="stat-value" id="lastActive">Ø§Ù„ÙŠÙˆÙ…</div>
-                        <div class="stat-label">Ø¢Ø®Ø± Ù†Ø´Ø§Ø·</div>
+                        <div class="stat-value" id="lastActive">اليوم</div>
+                        <div class="stat-label">آخر نشاط</div>
                     </div>
                 </div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-header">
-                    <div class="stat-icon">ðŸ¤–</div>
+                    <div class="stat-icon">🤖</div>
                     <div>
                         <div class="stat-value" id="chatbotUsage">0</div>
-                        <div class="stat-label">Ø£Ø³Ø¦Ù„Ø© Ø§Ù„Ø´Ø§Øª Ø¨ÙˆØª</div>
+                        <div class="stat-label">أسئلة الشات بوت</div>
                     </div>
                 </div>
             </div>
@@ -370,7 +469,7 @@
         <div class="charts-section">
             <!-- Progress by Stage -->
             <div class="chart-card">
-                <h3 class="chart-title">ðŸ“Š Ø§Ù„ØªÙ‚Ø¯Ù… Ø­Ø³Ø¨ Ø§Ù„Ù…Ø±Ø­Ù„Ø©</h3>
+                <h3 class="chart-title">📊 التقدم حسب المرحلة</h3>
                 <div id="stageProgress">
                     <!-- Sera rempli dynamiquement -->
                 </div>
@@ -378,7 +477,7 @@
 
             <!-- Weekly Activity -->
             <div class="chart-card">
-                <h3 class="chart-title">ðŸ“ˆ Ø§Ù„Ù†Ø´Ø§Ø· Ø§Ù„Ø£Ø³Ø¨ÙˆØ¹ÙŠ</h3>
+                <h3 class="chart-title">📈 النشاط الأسبوعي</h3>
                 <div id="weeklyActivity">
                     <!-- Sera rempli dynamiquement -->
                 </div>
@@ -387,7 +486,7 @@
 
         <!-- Activity Timeline -->
         <div class="activity-timeline">
-            <h3 class="chart-title">ðŸ“œ Ø³Ø¬Ù„ Ø§Ù„Ù†Ø´Ø§Ø·Ø§Øª Ø§Ù„Ø£Ø®ÙŠØ±Ø©</h3>
+            <h3 class="chart-title">📜 سجل النشاطات الأخيرة</h3>
             <div id="activityLog">
                 <!-- Sera rempli dynamiquement -->
             </div>
@@ -395,7 +494,7 @@
 
         <!-- Recommendations -->
         <div class="recommendations">
-            <h3 class="chart-title">ðŸ’¡ ØªÙˆØµÙŠØ§Øª ÙˆÙ…Ù„Ø§Ø­Ø¸Ø§Øª</h3>
+            <h3 class="chart-title">💡 توصيات وملاحظات</h3>
             <div id="recommendations">
                 <!-- Sera rempli dynamiquement -->
             </div>
@@ -406,43 +505,122 @@
     <script src="js/auth.js"></script>
     <script>
         const STAGE_NAMES = [
-            'ØªÙˆÙ†Ø³', 'Ø§Ù„Ù…ØºØ±Ø¨ Ø§Ù„Ø¹Ø±Ø¨ÙŠ', 'Ø£ÙØ±ÙŠÙ‚ÙŠØ§', 'Ø£ÙˆØ±ÙˆØ¨Ø§', 'Ø¢Ø³ÙŠØ§',
-            'Ø£Ù…Ø±ÙŠÙƒØ§ Ø§Ù„Ø´Ù…Ø§Ù„ÙŠØ©', 'Ø£Ù…Ø±ÙŠÙƒØ§ Ø§Ù„Ø¬Ù†ÙˆØ¨ÙŠØ©', 'Ø£ÙˆÙ‚ÙŠØ§Ù†ÙˆØ³ÙŠØ§', 'Ø§Ù„Ù‚Ø·Ø¨ÙŠÙ†', 'Ø¬ÙˆÙ„Ø© Ø­ÙˆÙ„ Ø§Ù„Ø¹Ø§Ù„Ù…'
+            'تونس', 'المغرب العربي', 'أفريقيا', 'أوروبا', 'آسيا',
+            'أمريكا الشمالية', 'أمريكا الجنوبية', 'أوقيانوسيا', 'القطبين', 'جولة حول العالم'
         ];
 
         async function loadChildData() {
             const childId = document.getElementById('childSelect').value;
             if (!childId) return;
 
-            try {
-                const response = await fetch(`php/api/parent.php?action=getChildProgress&childId=${childId}`);
-                const data = await response.json();
+            const parentEmail = localStorage.getItem('parentEmail');
+            if (!parentEmail) {
+                window.location.href = 'parent-login.html';
+                return;
+            }
 
-                if (data.success) {
-                    displayChildData(data.data);
+            try {
+                const response = await fetch(`php/api/parent.php?action=getChildProgress&user_id=${encodeURIComponent(childId)}`);
+                const payload = await response.json();
+
+                if (!payload.success) {
+                    console.error('Parent API error:', payload.message);
+                    return;
                 }
+
+                displayChildDataFromApi(payload.data);
+                await loadActivityLog(childId);
             } catch (error) {
                 console.error('Error loading child data:', error);
             }
         }
 
-        function displayChildData(data) {
+        function displayChildDataFromApi(apiData) {
+            const stageRows = Array.isArray(apiData.stage_progress) ? apiData.stage_progress : [];
+            const quizStats = apiData.quiz_stats || {};
+
+            let totalTime = 0;
+            let completedStages = 0;
+            let scoreSum = 0;
+            let scoreCount = 0;
+
+            // Construire un tableau de 10 stages (1..10)
+            const stages = [];
+            for (let i = 1; i <= 10; i++) {
+                const row = stageRows.find(r => Number(r.stage_id) === i);
+                const completedStations = row ? Number(row.completed_stations || 0) : 0;
+                const totalStations = row ? Number(row.total_stations || 7) : 7;
+                const completion = totalStations > 0 ? Math.round((completedStations / 7) * 100) : 0;
+
+                if (completedStations >= 7) completedStages++;
+                if (row && row.avg_score !== null && row.avg_score !== undefined) {
+                    scoreSum += Number(row.avg_score || 0);
+                    scoreCount++;
+                }
+                if (row && row.total_time !== null && row.total_time !== undefined) {
+                    totalTime += Number(row.total_time || 0);
+                }
+
+                stages.push({
+                    stage_num: i,
+                    completion: Math.max(0, Math.min(100, completion)),
+                    completed: completedStations >= 7,
+                    qcm_score: 0,
+                });
+            }
+
+            const avgScore = quizStats.avg_quiz_score !== null && quizStats.avg_quiz_score !== undefined
+                ? Math.round(Number(quizStats.avg_quiz_score || 0))
+                : (scoreCount > 0 ? Math.round(scoreSum / scoreCount) : 0);
+
             // Update statistics
-            document.getElementById('totalTime').textContent = (data.total_play_time / 3600).toFixed(1);
-            document.getElementById('stagesCompleted').textContent = `${data.stages_completed}/10`;
-            document.getElementById('averageScore').textContent = `${data.average_score}%`;
-            document.getElementById('achievements').textContent = data.achievements_count;
-            document.getElementById('lastActive').textContent = formatDate(data.last_login);
-            document.getElementById('chatbotUsage').textContent = data.chatbot_questions;
+            document.getElementById('totalTime').textContent = (totalTime / 3600).toFixed(1);
+            document.getElementById('stagesCompleted').textContent = `${completedStages}/10`;
+            document.getElementById('averageScore').textContent = `${avgScore}%`;
+            document.getElementById('achievements').textContent = 0;
+            document.getElementById('lastActive').textContent = '-';
+            document.getElementById('chatbotUsage').textContent = 0;
 
-            // Display stage progress
-            displayStageProgress(data.stage_progress);
+            displayStageProgress(stages);
+            displayRecommendations({
+                average_score: avgScore,
+                daily_playtime: 0,
+                chatbot_questions: 0,
+                stages_completed: completedStages,
+            });
+        }
 
-            // Display activity log
-            displayActivityLog(data.recent_activities);
+        async function loadActivityLog(childId) {
+            try {
+                const response = await fetch(`php/api/parent.php?action=getActivityLog&user_id=${encodeURIComponent(childId)}`);
+                const payload = await response.json();
+                if (!payload.success) {
+                    return;
+                }
+                const activities = Array.isArray(payload.data) ? payload.data : [];
+                const mapped = activities.map(a => {
+                    const type = a.type === 'quiz' ? 'quiz_pass' : 'progress';
+                    const stageId = a.stage_id ? Number(a.stage_id) : null;
+                    const stationId = a.station_id ? Number(a.station_id) : null;
+                    const score = a.score !== null && a.score !== undefined ? Number(a.score) : null;
+                    const title = a.type === 'quiz'
+                        ? `اختبار المرحلة ${stageId}`
+                        : `تقدّم المرحلة ${stageId}`;
+                    const description = a.type === 'quiz'
+                        ? (score !== null ? `النتيجة: ${Math.round(score)}%` : 'اختبار')
+                        : (stationId ? `المحطة: ${stationId}` : 'تقدّم');
 
-            // Display recommendations
-            displayRecommendations(data);
+                    return {
+                        type,
+                        title,
+                        description,
+                        created_at: a.timestamp,
+                    };
+                });
+                displayActivityLog(mapped);
+            } catch (e) {
+                console.error('Error loading activity log:', e);
+            }
         }
 
         function displayStageProgress(stages) {
@@ -510,33 +688,33 @@
 
             if (data.average_score < 70) {
                 recommendations.push({
-                    icon: 'ðŸ“š',
-                    title: 'ØªØ­Ø³ÙŠÙ† Ø§Ù„Ø£Ø¯Ø§Ø¡',
-                    description: 'ÙŠÙ†ØµØ­ Ø¨Ù…Ø±Ø§Ø¬Ø¹Ø© Ø§Ù„Ù…ÙˆØ§Ø¯ Ø§Ù„ØªØ¹Ù„ÙŠÙ…ÙŠØ© Ù‚Ø¨Ù„ Ø¨Ø¯Ø¡ Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø±Ø§Øª'
+                    icon: '📚',
+                    title: 'تحسين الأداء',
+                    description: 'يُنصح بمراجعة المواد التعليمية قبل بدء الاختبارات'
                 });
             }
 
             if (data.daily_playtime > 120) {
                 recommendations.push({
-                    icon: 'â°',
-                    title: 'ÙˆÙ‚Øª Ø§Ù„Ù„Ø¹Ø¨',
-                    description: 'ÙˆÙ‚Øª Ø§Ù„Ù„Ø¹Ø¨ Ø§Ù„ÙŠÙˆÙ…ÙŠ Ù…Ø±ØªÙØ¹. Ù†Ù†ØµØ­ Ø¨Ø£Ø®Ø° Ø§Ø³ØªØ±Ø§Ø­Ø§Øª Ù…Ù†ØªØ¸Ù…Ø©'
+                    icon: '⏰',
+                    title: 'وقت اللعب',
+                    description: 'وقت اللعب اليومي مرتفع. ننصح بأخذ استراحات منتظمة'
                 });
             }
 
             if (data.chatbot_questions < 5) {
                 recommendations.push({
-                    icon: 'ðŸ¤–',
-                    title: 'Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„Ù…Ø³Ø§Ø¹Ø¯ Ø§Ù„Ø°ÙƒÙŠ',
-                    description: 'Ø´Ø¬Ø¹ Ø·ÙÙ„Ùƒ Ø¹Ù„Ù‰ Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„Ù…Ø³Ø§Ø¹Ø¯ Ø§Ù„Ø°ÙƒÙŠ Ù„Ù„Ø­ØµÙˆÙ„ Ø¹Ù„Ù‰ Ù…Ø³Ø§Ø¹Ø¯Ø© Ø¥Ø¶Ø§ÙÙŠØ©'
+                    icon: '🤖',
+                    title: 'استخدام المساعد الذكي',
+                    description: 'شجّع طفلك على استخدام المساعد الذكي للحصول على مساعدة إضافية'
                 });
             }
 
             if (data.stages_completed >= 5) {
                 recommendations.push({
-                    icon: 'ðŸŽ‰',
-                    title: 'ØªÙ‚Ø¯Ù… Ù…Ù…ØªØ§Ø²!',
-                    description: 'Ø·ÙÙ„Ùƒ ÙŠØ­Ù‚Ù‚ ØªÙ‚Ø¯Ù…Ø§Ù‹ Ø±Ø§Ø¦Ø¹Ø§Ù‹ ÙÙŠ Ø§Ù„Ø±Ø­Ù„Ø© Ø§Ù„ØªØ¹Ù„ÙŠÙ…ÙŠØ©'
+                    icon: '🎉',
+                    title: 'تقدّم ممتاز!',
+                    description: 'طفلك يحقق تقدّمًا رائعًا في الرحلة التعليمية'
                 });
             }
 
@@ -545,48 +723,47 @@
 
         function getActivityIcon(type) {
             const icons = {
-                'stage_complete': 'âœ…',
-                'quiz_pass': 'ðŸ“',
-                'achievement': 'ðŸ†',
-                'purchase': 'ðŸ›’',
-                'chatbot': 'ðŸ¤–',
-                'login': 'ðŸšª'
+                'stage_complete': '✅',
+                'quiz_pass': '📝',
+                'achievement': '🏆',
+                'purchase': '🛒',
+                'chatbot': '🤖',
+                'login': '🚪'
             };
-            return icons[type] || 'ðŸ“Œ';
+            return icons[type] || '📌';
         }
 
         function formatDate(dateString) {
+            if (!dateString) return '-';
             const date = new Date(dateString);
+            if (isNaN(date.getTime())) return '-';
             const now = new Date();
             const diff = now - date;
             const hours = Math.floor(diff / 3600000);
             const days = Math.floor(hours / 24);
 
-            if (hours < 1) return 'Ù…Ù†Ø° Ø¯Ù‚Ø§Ø¦Ù‚';
-            if (hours < 24) return `Ù…Ù†Ø° ${hours} Ø³Ø§Ø¹Ø©`;
-            if (days < 7) return `Ù…Ù†Ø° ${days} ÙŠÙˆÙ…`;
+            if (hours < 1) return 'منذ دقائق';
+            if (hours < 24) return `منذ ${hours} ساعة`;
+            if (days < 7) return `منذ ${days} يوم`;
             return date.toLocaleDateString('ar-EG');
         }
 
         async function exportReport() {
             const childId = document.getElementById('childSelect').value;
             if (!childId) {
-                alert('Ø§Ù„Ø±Ø¬Ø§Ø¡ Ø§Ø®ØªÙŠØ§Ø± Ø·ÙÙ„ Ø£ÙˆÙ„Ø§Ù‹');
+                alert('الرجاء اختيار طفل أولاً');
                 return;
             }
 
             try {
-                const response = await fetch(`php/api/parent.php?action=exportReport&childId=${childId}`);
-                const blob = await response.blob();
-                
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `report_${childId}_${Date.now()}.pdf`;
-                a.click();
+                const response = await fetch(`parent_api.php?action=export_report&childId=${childId}`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                alert(data.error || data.message || 'Export non disponible');
             } catch (error) {
                 console.error('Error exporting report:', error);
-                alert('Ø­Ø¯Ø« Ø®Ø·Ø£ Ø£Ø«Ù†Ø§Ø¡ ØªØµØ¯ÙŠØ± Ø§Ù„ØªÙ‚Ø±ÙŠØ±');
+                alert('حدث خطأ أثناء تصدير التقرير');
             }
         }
 
@@ -599,7 +776,7 @@
                     return;
                 }
 
-                const response = await fetch(`php/api/parent.php?action=getChildren&email=${parentEmail}`);
+                const response = await fetch(`php/api/parent.php?action=getChildren&email=${encodeURIComponent(parentEmail)}`);
                 const data = await response.json();
 
                 if (data.success) {
@@ -628,7 +805,6 @@
         });
     </script>
     <script src="js/cartoon-theme.js"></script>
-    
     <!-- ✨ Nouvelles fonctionnalités -->
     <script src="js/assistant.js"></script>
     <script src="js/resources.js"></script>
